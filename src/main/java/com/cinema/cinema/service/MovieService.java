@@ -12,7 +12,7 @@ public class MovieService {
 
     private MovieRepository movieRepository;
 
-    public Movie getMovie(Long id){
+    public Movie getMovie(long id){
         return movieRepository.findMovieById(id);
     }
 
@@ -20,10 +20,37 @@ public class MovieService {
         return movieRepository.findAllMovies();
     }
 
-    public void addMovie(String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genre, boolean isPremiere){
+    public void addMovie(String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genres, boolean isPremiere){
         Movie movie = new Movie();
-
+        movie.setTitle(title);
+        movie.setDuration(duration);
+        movie.setAgeRestriction(ageRestriction);
+        movie.setShortDescription(shortDescription);
+        movie.setLongDescription(longDescription);
+        movie.setImageUrl(imageUrl);
+        movie.setGenres(genres);
+        movie.setIsPremiere(isPremiere);
+        movie.setRating(0.0);
         movieRepository.create(movie);
+    }
+
+    public void editMovie(long id, String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genres, boolean isPremiere){
+        Movie movie = getMovie(id);
+        movie.setTitle(title);
+        movie.setDuration(duration);
+        movie.setAgeRestriction(ageRestriction);
+        movie.setShortDescription(shortDescription);
+        movie.setLongDescription(longDescription);
+        movie.setImageUrl(imageUrl);
+        movie.setGenres(genres);
+        movie.setIsPremiere(isPremiere);
+        movieRepository.update(id, movie);
+    }
+
+    public void editIsPremiere(long id, boolean isPremiere){
+        Movie movie = getMovie(id);
+        movie.setIsPremiere(isPremiere);
+        movieRepository.update(id, movie);
     }
 
 }

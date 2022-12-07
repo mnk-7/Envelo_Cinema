@@ -8,7 +8,7 @@ import java.util.List;
 //TODO
 public class MovieRepository {
 
-    public Movie findMovieById(Long id){
+    public Movie findMovieById(long id){
         return new Movie();
     }
 
@@ -18,6 +18,6 @@ public class MovieRepository {
 
     public void create(Movie movie){}
 
-    public void update(Long id, Movie movie){}
+    public void update(long id, Movie movie){}
 
 }

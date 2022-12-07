@@ -8,7 +8,7 @@ import java.util.List;
 //TODO
 public class VenueRepository {
 
-    public Venue findVenueById(Long id) {
+    public Venue findVenueById(long id) {
         return new Venue();
     }
 
@@ -19,7 +19,7 @@ public class VenueRepository {
     public void create(Venue venue) {
     }
 
-    public void update(Long id, Venue venue) {
+    public void update(long id, Venue venue) {
     }
 
 }
