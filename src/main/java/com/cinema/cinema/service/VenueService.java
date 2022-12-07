@@ -11,7 +11,7 @@ public class VenueService {
 
     private VenueRepository venueRepository;
 
-    public Venue getVenue(long id) {
+    public Venue getVenue(Long id) {
         return venueRepository.findVenueById(id);
     }
 
@@ -29,14 +29,14 @@ public class VenueService {
         venueRepository.create(venue);
     }
 
-    public Venue editVenueName(long id, String name) {
+    public Venue editVenueName(Long id, String name) {
         Venue venue = getVenue(id);
         venue.setName(name);
         venueRepository.update(id, venue);
         return venue;
     }
 
-    public Venue editVenueStructure(long id, int rows, int columns, Set<Seat> seats) {
+    public Venue editVenueStructure(Long id, int rows, int columns, Set<Seat> seats) {
         Venue editedVenue = getVenue(id);
         Venue newVenue = new Venue();
         newVenue.setName(editedVenue.getName());

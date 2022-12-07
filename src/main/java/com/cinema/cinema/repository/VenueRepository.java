@@ -13,15 +13,11 @@ public class VenueRepository {
     }
 
     public List<Venue> findAllActiveVenues() {
-        List<Venue> list = new ArrayList<>();
-        list.add(new Venue());
-        return list;
+        return new ArrayList<>();
     }
 
     public void create(Venue venue) {
     }
-
-    ;
 
     public void update(Long id, Venue venue) {
     }
