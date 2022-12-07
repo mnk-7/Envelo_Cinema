@@ -1,9 +1,17 @@
 package com.cinema.cinema.model;
 
 import com.cinema.cinema.model.seat.Seat;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Venue { //created for each new screening hall configuration
 
     private Long id;
