@@ -27,7 +27,7 @@ public class StandardUserService extends UserService<StandardUser> {
     }
 
     @Override
-    public void editUser(long id, String firstName, String lastName, String password, String email, int phone){
+    public StandardUser editUser(long id, String firstName, String lastName, String password, String email, int phone){
         StandardUser user = getUser(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -35,6 +35,7 @@ public class StandardUserService extends UserService<StandardUser> {
         user.setEmail(email);
         user.setPhone(phone);
         userRepository.update(id, user);
+        return user;
     }
 
     public void editIsActive(long id, boolean isActive){

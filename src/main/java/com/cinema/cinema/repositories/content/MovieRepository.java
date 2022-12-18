@@ -1,4 +1,4 @@
-package com.cinema.cinema.repositories;
+package com.cinema.cinema.repositories.content;
 
 import com.cinema.cinema.models.content.Movie;
 import org.springframework.stereotype.Repository;

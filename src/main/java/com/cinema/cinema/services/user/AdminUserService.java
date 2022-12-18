@@ -22,7 +22,7 @@ public class AdminUserService extends UserService<AdminUser> {
     }
 
     @Override
-    public void editUser(long id, String firstName, String lastName, String password, String email, int phone) {
+    public AdminUser editUser(long id, String firstName, String lastName, String password, String email, int phone) {
         AdminUser user = getUser(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -30,6 +30,7 @@ public class AdminUserService extends UserService<AdminUser> {
         user.setEmail(email);
         user.setPhone(phone);
         userRepository.update(id, user);
+        return user;
     }
 
 }
