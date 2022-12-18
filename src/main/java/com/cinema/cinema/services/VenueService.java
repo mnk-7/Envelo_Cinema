@@ -4,11 +4,13 @@ import com.cinema.cinema.exceptions.VenueException;
 import com.cinema.cinema.models.Venue;
 import com.cinema.cinema.models.seat.Seat;
 import com.cinema.cinema.repositories.VenueRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Service
 public class VenueService {
 
     private VenueRepository venueRepository;
@@ -35,14 +37,13 @@ public class VenueService {
         venueRepository.create(venue);
     }
 
-    public Venue editVenueName(long id, String name) {
+    public void editVenueName(long id, String name) {
         Venue venue = getVenue(id);
         venue.setName(name);
         venueRepository.update(id, venue);
-        return venue;
     }
 
-    public Venue editVenueStructure(long id, int rows, int columns, Set<Seat> seats) {
+    public void editVenueStructure(long id, int rows, int columns, Set<Seat> seats) {
         Venue editedVenue = getVenue(id);
         Venue newVenue = new Venue();
         newVenue.setName(editedVenue.getName());
@@ -53,7 +54,6 @@ public class VenueService {
         editedVenue.setIsActive(false);
         venueRepository.create(newVenue);
         venueRepository.update(editedVenue.getId(), editedVenue);
-        return newVenue;
     }
 
 }

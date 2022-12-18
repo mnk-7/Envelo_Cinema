@@ -4,10 +4,12 @@ import com.cinema.cinema.exceptions.GenreException;
 import com.cinema.cinema.models.categories.Genre;
 import com.cinema.cinema.models.content.Movie;
 import com.cinema.cinema.repositories.GenreRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class GenreService {
 
     private GenreRepository genreRepository;
@@ -24,7 +26,7 @@ public class GenreService {
         return genreRepository.findAllGenres();
     }
 
-    public List<Genre> getAllGenreForMovie(Movie movie) {
+    public List<Genre> getAllGenresForMovie(Movie movie) {
         return genreRepository.findAllGenresByMovie(movie);
     }
 

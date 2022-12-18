@@ -3,10 +3,12 @@ package com.cinema.cinema.services;
 import com.cinema.cinema.exceptions.AgeRestrictionException;
 import com.cinema.cinema.models.categories.AgeRestriction;
 import com.cinema.cinema.repositories.AgeRestrictionRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class AgeRestrictionService {
 
     private AgeRestrictionRepository ageRestrictionRepository;

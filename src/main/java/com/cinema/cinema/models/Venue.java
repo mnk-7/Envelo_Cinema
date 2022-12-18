@@ -1,6 +1,7 @@
 package com.cinema.cinema.models;
 
 import com.cinema.cinema.models.seat.Seat;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class Venue { //created for each new screening hall configuration
 
     private Long id;
