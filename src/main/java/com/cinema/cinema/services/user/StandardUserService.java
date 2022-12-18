@@ -13,39 +13,47 @@ public class StandardUserService extends UserService<StandardUser> {
 
     private StandardUserRepository userRepository;
 
+    public StandardUser getStandardUser(long id) {
+        return getUser(id);
+    }
+
     @Override
-    public StandardUser getUser(long id){
+    protected StandardUser getUser(long id) {
         Optional<StandardUser> user = userRepository.findStandardUserById(id);
-        if (user.isEmpty()){
+        if (user.isEmpty()) {
             throw new UserException("User with given ID not found");
         }
         return user.get();
     }
 
-    public List<StandardUser> getAllUsers(){
+    public List<StandardUser> getAllUsers() {
         return userRepository.findAllStandardUsers();
     }
 
+    public void editStandardUser(long id, String firstName, String lastName, String password, String email, int phone) {
+        StandardUser user = editUser(id, firstName, lastName, password, email, phone);
+        userRepository.update(id, user);
+    }
+
     @Override
-    public StandardUser editUser(long id, String firstName, String lastName, String password, String email, int phone){
-        StandardUser user = getUser(id);
+    protected StandardUser editUser(long id, String firstName, String lastName, String password, String email, int phone) {
+        StandardUser user = getStandardUser(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
         user.setEmail(email);
         user.setPhone(phone);
-        userRepository.update(id, user);
         return user;
     }
 
-    public void editIsActive(long id, boolean isActive){
-        StandardUser user = getUser(id);
+    public void editIsActive(long id, boolean isActive) {
+        StandardUser user = getStandardUser(id);
         user.setIsActive(isActive);
         userRepository.update(id, user);
     }
 
-    public void editPassword(long id, String password){
-        StandardUser user = getUser(id);
+    public void editPassword(long id, String password) {
+        StandardUser user = getStandardUser(id);
         user.setPassword(password);
         userRepository.update(id, user);
     }

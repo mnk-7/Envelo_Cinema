@@ -17,7 +17,7 @@ public class VenueService {
 
     public Venue getVenue(long id) {
         Optional<Venue> venue = venueRepository.findVenueById(id);
-        if (venue.isEmpty()){
+        if (venue.isEmpty()) {
             throw new VenueException("Venue with given ID not found");
         }
         return venue.get();

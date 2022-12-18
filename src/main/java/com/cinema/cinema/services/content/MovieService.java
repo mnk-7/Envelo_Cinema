@@ -16,24 +16,24 @@ public class MovieService extends ContentService<Movie> {
 
     private MovieRepository movieRepository;
 
-    public Movie getMovie(long id){
+    public Movie getMovie(long id) {
         return getContent(id);
     }
 
     @Override
-    public Movie getContent(long id){
+    protected Movie getContent(long id) {
         Optional<Movie> movie = movieRepository.findMovieById(id);
-        if (movie.isEmpty()){
+        if (movie.isEmpty()) {
             throw new MovieException("Movie wit given ID not found");
         }
         return movie.get();
     }
 
-    public List<Movie> getAllMovies(){
+    public List<Movie> getAllMovies() {
         return movieRepository.findAllMovies();
     }
 
-    public void addMovie(String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genres, boolean isPremiere){
+    public void addMovie(String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genres, boolean isPremiere) {
         Movie movie = addContent(title, duration, ageRestriction, shortDescription, longDescription, imageUrl);
         movie.setGenres(genres);
         movie.setIsPremiere(isPremiere);
@@ -42,7 +42,7 @@ public class MovieService extends ContentService<Movie> {
     }
 
     @Override
-    public Movie addContent(String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl){
+    protected Movie addContent(String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl) {
         Movie movie = new Movie();
         movie.setTitle(title);
         movie.setDuration(duration);
@@ -53,7 +53,7 @@ public class MovieService extends ContentService<Movie> {
         return movie;
     }
 
-    public void editMovie(long id, String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genres, boolean isPremiere){
+    public void editMovie(long id, String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genres, boolean isPremiere) {
         Movie movie = editContent(id, title, duration, ageRestriction, shortDescription, longDescription, imageUrl);
         movie.setGenres(genres);
         movie.setIsPremiere(isPremiere);
@@ -61,7 +61,7 @@ public class MovieService extends ContentService<Movie> {
     }
 
     @Override
-    public Movie editContent(long id, String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl){
+    protected Movie editContent(long id, String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl) {
         Movie movie = getContent(id);
         movie.setTitle(title);
         movie.setDuration(duration);
@@ -72,7 +72,7 @@ public class MovieService extends ContentService<Movie> {
         return movie;
     }
 
-    public void editIsPremiere(long id, boolean isPremiere){
+    public void editIsPremiere(long id, boolean isPremiere) {
         Movie movie = getContent(id);
         movie.setIsPremiere(isPremiere);
         movieRepository.update(id, movie);

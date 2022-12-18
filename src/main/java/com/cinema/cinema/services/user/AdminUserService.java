@@ -12,24 +12,32 @@ public class AdminUserService extends UserService<AdminUser> {
 
     private AdminUserRepository userRepository;
 
+    public AdminUser getAdminUser(long id) {
+        return getUser(id);
+    }
+
     @Override
-    public AdminUser getUser(long id){
+    protected AdminUser getUser(long id) {
         Optional<AdminUser> user = userRepository.findAdminUserById(id);
-        if (user.isEmpty()){
+        if (user.isEmpty()) {
             throw new UserException("User with given ID not found");
         }
         return user.get();
     }
 
+    public void editAdminUser(long id, String firstName, String lastName, String password, String email, int phone) {
+        AdminUser user = editUser(id, firstName, lastName, password, email, phone);
+        userRepository.update(id, user);
+    }
+
     @Override
-    public AdminUser editUser(long id, String firstName, String lastName, String password, String email, int phone) {
-        AdminUser user = getUser(id);
+    protected AdminUser editUser(long id, String firstName, String lastName, String password, String email, int phone) {
+        AdminUser user = getAdminUser(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
         user.setEmail(email);
         user.setPhone(phone);
-        userRepository.update(id, user);
         return user;
     }
 
