@@ -13,18 +13,21 @@ import java.util.Optional;
 @Repository
 public class ShowRepository {
 
-    public Optional<Show> findShowById(long id){
+    public Optional<Show> findShowById(long id) {
         return Optional.of(new Show());
     }
 
-    public List<Show> findAllFutureShows(LocalDate date, LocalTime localTime){
+    public List<Show> findAllFutureShows(LocalDate date, LocalTime localTime) {
         return new ArrayList<>();
     }
 
-    public void create(Show show){}
+    public void create(Show show) {
+    }
 
-    public void update(long id, Show show){}
+    public void update(long id, Show show) {
+    }
 
-    public void delete(long id){}
+    public void delete(long id) {
+    }
 
 }

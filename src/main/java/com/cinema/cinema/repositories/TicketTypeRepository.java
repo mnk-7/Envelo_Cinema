@@ -11,22 +11,22 @@ import java.util.Optional;
 @Repository
 public class TicketTypeRepository {
 
-    public Optional<TicketType> findTicketTypeById(long id){
+    public Optional<TicketType> findTicketTypeById(long id) {
         return Optional.of(new TicketType());
     }
 
-    public List<TicketType> findAllTicketTypes(){
+    public List<TicketType> findAllTicketTypes() {
         return new ArrayList<>();
     }
 
-    public List<TicketType> findAllActiveTicketTypes(){
+    public List<TicketType> findAllActiveTicketTypes() {
         return new ArrayList<>();
     }
 
-    public void create(TicketType ticketType){
+    public void create(TicketType ticketType) {
     }
 
-    public void update(long id, TicketType ticketType){
+    public void update(long id, TicketType ticketType) {
     }
 
 }

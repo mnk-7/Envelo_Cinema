@@ -19,19 +19,19 @@ public class ShowService {
 
     private ShowRepository showRepository;
 
-    public Show getShow(long id){
+    public Show getShow(long id) {
         Optional<Show> show = showRepository.findShowById(id);
-        if (show.isEmpty()){
+        if (show.isEmpty()) {
             throw new ShowException("Show with given ID not found");
         }
         return show.get();
     }
 
-    public List<Show> getAllShows(){
+    public List<Show> getAllShows() {
         return showRepository.findAllFutureShows(LocalDate.now(), LocalTime.now());
     }
 
-    public void addShow(Venue venue, Content content, LocalDate date, LocalTime startTime, int breakAfter){
+    public void addShow(Venue venue, Content content, LocalDate date, LocalTime startTime, int breakAfter) {
         Show show = new Show();
         show.setVenue(venue);
         show.setContent(content);
@@ -42,7 +42,7 @@ public class ShowService {
         showRepository.create(show);
     }
 
-    public void editShow(long id, Venue venue, Content content, LocalDate date, LocalTime startTime, int breakAfter){
+    public void editShow(long id, Venue venue, Content content, LocalDate date, LocalTime startTime, int breakAfter) {
         Show show = getShow(id);
         show.setVenue(venue);
         show.setContent(content);
@@ -52,7 +52,7 @@ public class ShowService {
         showRepository.update(id, show);
     }
 
-    public void cancelShow(long id){
+    public void cancelShow(long id) {
         Show show = getShow(id);
         LocalDate currentDate = LocalDate.now();
         if (show.getTickets().size() > 0) {

@@ -13,19 +13,19 @@ public class OrderService {
 
     private OrderRepository orderRepository;
 
-    public Order getOrder(long id){
+    public Order getOrder(long id) {
         Optional<Order> order = orderRepository.findOrderById(id);
-        if (order.isEmpty()){
+        if (order.isEmpty()) {
             throw new OrderException("Order with given ID not found");
         }
         return order.get();
     }
 
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders() {
         return orderRepository.findAllOrders();
     }
 
-    public void cancelOrder(long id){
+    public void cancelOrder(long id) {
         orderRepository.delete(id);
     }
 

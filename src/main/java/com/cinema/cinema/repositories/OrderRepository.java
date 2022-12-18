@@ -11,18 +11,21 @@ import java.util.Optional;
 @Repository
 public class OrderRepository {
 
-    public Optional<Order> findOrderById(long id){
+    public Optional<Order> findOrderById(long id) {
         return Optional.of(new Order());
     }
 
-    public List<Order> findAllOrders(){
+    public List<Order> findAllOrders() {
         return new ArrayList<>();
     }
 
-    public void create(Order order){}
+    public void create(Order order) {
+    }
 
-    public void update(long id, Order order){}
+    public void update(long id, Order order) {
+    }
 
-    public void delete(long id){}
+    public void delete(long id) {
+    }
 
 }
