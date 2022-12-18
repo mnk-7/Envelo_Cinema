@@ -1,9 +1,19 @@
 package com.cinema.cinema.models;
 
 import com.cinema.cinema.models.user.User;
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Order {
 
     private Long id;
