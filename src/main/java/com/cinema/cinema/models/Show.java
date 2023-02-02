@@ -1,14 +1,13 @@
 package com.cinema.cinema.models;
 
-import com.cinema.cinema.models.content.Content;
-import jakarta.persistence.Entity;
+import com.cinema.cinema.models.content.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -16,15 +15,29 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "shows")
 public class Show {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "venue_id")
     private Venue venue;
-    private Content content;
-    private LocalDate date;
-    private LocalTime startTime;
-    //private LocalTime endTime;
-    private Integer breakAfter; //in minutes
+
+    @ManyToOne
+    @JoinColumn(name = "content_id")
+    private Movie movie;
+//    @JoinTable(name = "content_in_shows",
+//            joinColumns = @JoinColumn(name = "show_id"),
+//            inverseJoinColumns = @JoinColumn(name = "content_id"))
+    //private Content content;
+
+    private LocalDateTime startDateTime;
+    private int breakAfterInMinutes;
+
+    @OneToMany(mappedBy = "show")
     private Set<Ticket> tickets;
 
 }

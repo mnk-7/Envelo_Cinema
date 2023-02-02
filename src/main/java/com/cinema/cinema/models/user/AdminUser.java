@@ -1,5 +1,9 @@
 package com.cinema.cinema.models.user;
 
-//any annotations needed? //TODO
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "admins")
 public class AdminUser extends User {
+
 }

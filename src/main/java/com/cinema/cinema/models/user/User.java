@@ -1,24 +1,30 @@
 package com.cinema.cinema.models.user;
 
-import com.cinema.cinema.models.categories.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import jakarta.persistence.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@Entity - where it should be located? //TODO
+@MappedSuperclass
 public abstract class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String firstName;
     private String lastName;
     private String password;
     private String email;
-    private Integer phone;
+    private int phone;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 }

@@ -1,20 +1,22 @@
 package com.cinema.cinema.services;
 
-import com.cinema.cinema.exceptions.AgeRestrictionException;
-import com.cinema.cinema.models.categories.AgeRestriction;
 import com.cinema.cinema.repositories.AgeRestrictionRepository;
+import com.cinema.cinema.exceptions.AgeRestrictionException;
+import com.cinema.cinema.models.AgeRestriction;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class AgeRestrictionService {
 
     private AgeRestrictionRepository ageRestrictionRepository;
 
     public AgeRestriction getAgeRestriction(long id) {
-        Optional<AgeRestriction> ageRestriction = ageRestrictionRepository.findAgeRestrictionById(id);
+        Optional<AgeRestriction> ageRestriction = ageRestrictionRepository.findById(id);
         if (ageRestriction.isEmpty()) {
             throw new AgeRestrictionException("Age restriction with given ID not found");
         }
@@ -22,19 +24,19 @@ public class AgeRestrictionService {
     }
 
     public List<AgeRestriction> getAllAgeRestrictions() {
-        return ageRestrictionRepository.findAllAgeRestrictions();
+        return ageRestrictionRepository.findAll();
     }
 
     public void addAgeRestriction(String minAge) {
         AgeRestriction ageRestriction = new AgeRestriction();
         ageRestriction.setMinAge(minAge);
-        ageRestrictionRepository.create(ageRestriction);
+        ageRestrictionRepository.save(ageRestriction);
     }
 
     public void editAgeRestriction(long id, String minAge) {
         AgeRestriction ageRestriction = getAgeRestriction(id);
         ageRestriction.setMinAge(minAge);
-        ageRestrictionRepository.update(id, ageRestriction);
+        ageRestrictionRepository.save(ageRestriction);
     }
 
 }

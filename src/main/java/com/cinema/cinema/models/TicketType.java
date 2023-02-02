@@ -1,10 +1,10 @@
-package com.cinema.cinema.models.categories;
+package com.cinema.cinema.models;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
@@ -13,12 +13,16 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "ticket_types")
 public class TicketType {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String description;
     private BigDecimal price;
-    private Boolean isAvailable;
+    private boolean isAvailable;
 
 }

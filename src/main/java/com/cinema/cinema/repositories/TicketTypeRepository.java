@@ -1,32 +1,14 @@
 package com.cinema.cinema.repositories;
 
-import com.cinema.cinema.models.categories.TicketType;
+import com.cinema.cinema.models.TicketType;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-//TODO
 @Repository
-public class TicketTypeRepository {
+public interface TicketTypeRepository extends JpaRepository<TicketType, Long> {
 
-    public Optional<TicketType> findTicketTypeById(long id) {
-        return Optional.of(new TicketType());
-    }
-
-    public List<TicketType> findAllTicketTypes() {
-        return new ArrayList<>();
-    }
-
-    public List<TicketType> findAllActiveTicketTypes() {
-        return new ArrayList<>();
-    }
-
-    public void create(TicketType ticketType) {
-    }
-
-    public void update(long id, TicketType ticketType) {
-    }
+    List<TicketType> findAllByIsAvailableTrue();
 
 }

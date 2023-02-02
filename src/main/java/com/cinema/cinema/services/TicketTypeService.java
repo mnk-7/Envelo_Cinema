@@ -1,21 +1,23 @@
 package com.cinema.cinema.services;
 
 import com.cinema.cinema.exceptions.TicketTypeException;
-import com.cinema.cinema.models.categories.TicketType;
+import com.cinema.cinema.models.TicketType;
 import com.cinema.cinema.repositories.TicketTypeRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class TicketTypeService {
 
     private TicketTypeRepository ticketTypeRepository;
 
     public TicketType getTicketType(long id) {
-        Optional<TicketType> ticketType = ticketTypeRepository.findTicketTypeById(id);
+        Optional<TicketType> ticketType = ticketTypeRepository.findById(id);
         if (ticketType.isEmpty()) {
             throw new TicketTypeException("Ticket type with given ID not found");
         }
@@ -23,11 +25,11 @@ public class TicketTypeService {
     }
 
     public List<TicketType> getAllTicketTypes() {
-        return ticketTypeRepository.findAllTicketTypes();
+        return ticketTypeRepository.findAll();
     }
 
     public List<TicketType> getAllActiveTicketTypes() {
-        return ticketTypeRepository.findAllActiveTicketTypes();
+        return ticketTypeRepository.findAllByIsAvailableTrue();
     }
 
     public void addTicketType(String name, String description, BigDecimal price, boolean isAvailable) {
@@ -35,8 +37,8 @@ public class TicketTypeService {
         ticketType.setName(name);
         ticketType.setDescription(description);
         ticketType.setPrice(price);
-        ticketType.setIsAvailable(isAvailable);
-        ticketTypeRepository.create(ticketType);
+        ticketType.setAvailable(isAvailable);
+        ticketTypeRepository.save(ticketType);
     }
 
     public void editTicketType(long id, String name, String description, BigDecimal price, boolean isAvailable) {
@@ -44,14 +46,8 @@ public class TicketTypeService {
         ticketType.setName(name);
         ticketType.setDescription(description);
         ticketType.setPrice(price);
-        ticketType.setIsAvailable(isAvailable);
-        ticketTypeRepository.update(id, ticketType);
-    }
-
-    public void editIsAvailable(long id, boolean isAvailable) {
-        TicketType ticketType = getTicketType(id);
-        ticketType.setIsAvailable(isAvailable);
-        ticketTypeRepository.update(id, ticketType);
+        ticketType.setAvailable(isAvailable);
+        ticketTypeRepository.save(ticketType);
     }
 
 }

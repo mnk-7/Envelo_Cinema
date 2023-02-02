@@ -3,10 +3,12 @@ package com.cinema.cinema.services.user;
 import com.cinema.cinema.exceptions.UserException;
 import com.cinema.cinema.models.user.AdminUser;
 import com.cinema.cinema.repositories.user.AdminUserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class AdminUserService extends UserService<AdminUser> {
 
@@ -18,7 +20,7 @@ public class AdminUserService extends UserService<AdminUser> {
 
     @Override
     protected AdminUser getUser(long id) {
-        Optional<AdminUser> user = userRepository.findAdminUserById(id);
+        Optional<AdminUser> user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new UserException("User with given ID not found");
         }
@@ -27,7 +29,7 @@ public class AdminUserService extends UserService<AdminUser> {
 
     public void editAdminUser(long id, String firstName, String lastName, String password, String email, int phone) {
         AdminUser user = editUser(id, firstName, lastName, password, email, phone);
-        userRepository.update(id, user);
+        userRepository.save(user);
     }
 
     @Override

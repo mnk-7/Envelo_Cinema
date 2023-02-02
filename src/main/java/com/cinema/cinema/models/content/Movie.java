@@ -1,10 +1,13 @@
 package com.cinema.cinema.models.content;
 
-import com.cinema.cinema.models.categories.Genre;
+import com.cinema.cinema.models.Genre;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import jakarta.persistence.*;
 
 import java.util.Set;
 
@@ -12,10 +15,20 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "movies")
 public class Movie extends Content {
 
+    @ManyToMany
+    @JoinTable(name = "genres_in_movies",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> genres;
-    private Double rating;
-    private Boolean isPremiere;
+
+    @Transient
+    private double rating;
+
+    //private int ratingCount;
+    private boolean isPremiere;
 
 }

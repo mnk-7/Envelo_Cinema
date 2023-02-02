@@ -1,26 +1,31 @@
 package com.cinema.cinema.services;
 
-import com.cinema.cinema.exceptions.ShowException;
 import com.cinema.cinema.models.Show;
+import com.cinema.cinema.models.Ticket;
 import com.cinema.cinema.models.Venue;
-import com.cinema.cinema.models.content.Content;
+import com.cinema.cinema.models.content.Movie;
+import com.cinema.cinema.models.seat.Seat;
 import com.cinema.cinema.repositories.ShowRepository;
+import com.cinema.cinema.exceptions.ShowException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+@AllArgsConstructor
 @Service
 public class ShowService {
 
     private ShowRepository showRepository;
 
     public Show getShow(long id) {
-        Optional<Show> show = showRepository.findShowById(id);
+        Optional<Show> show = showRepository.findById(id);
         if (show.isEmpty()) {
             throw new ShowException("Show with given ID not found");
         }
@@ -28,43 +33,71 @@ public class ShowService {
     }
 
     public List<Show> getAllShows() {
-        return showRepository.findAllFutureShows(LocalDate.now(), LocalTime.now());
+        return showRepository.findAllByStartDateTimeAfter(LocalDateTime.now());
     }
 
-    public void addShow(Venue venue, Content content, LocalDate date, LocalTime startTime, int breakAfter) {
+    public List<Show> getAllShowsForCurrentWeek() {
+        //TODO - adjusting logic
+        LocalDateTime dateTimeFrom = LocalDateTime.now();
+        LocalDateTime dateTimeTo = dateTimeFrom.plusDays(7);
+        return showRepository.findAllByStartDateTimeBetween(dateTimeFrom, dateTimeTo);
+    }
+
+    public void addShow(Venue venue, Movie content, LocalDateTime startDateTime, int breakAfter) {
         Show show = new Show();
         show.setVenue(venue);
-        show.setContent(content);
-        show.setDate(date);
-        show.setStartTime(startTime);
-        show.setBreakAfter(breakAfter);
+        show.setMovie(content);
+        show.setStartDateTime(startDateTime);
+        show.setBreakAfterInMinutes(breakAfter);
         show.setTickets(new HashSet<>());
-        showRepository.create(show);
+        showRepository.save(show);
     }
 
-    public void editShow(long id, Venue venue, Content content, LocalDate date, LocalTime startTime, int breakAfter) {
+    public void editShow(long id, Venue venue, Movie content, LocalDateTime startDateTime, int breakAfter) {
         Show show = getShow(id);
         show.setVenue(venue);
-        show.setContent(content);
-        show.setDate(date);
-        show.setStartTime(startTime);
-        show.setBreakAfter(breakAfter);
-        showRepository.update(id, show);
+        show.setMovie(content);
+        show.setStartDateTime(startDateTime);
+        show.setBreakAfterInMinutes(breakAfter);
+        showRepository.save(show);
     }
 
+    //TODO - exception hierarchy
     public void cancelShow(long id) {
         Show show = getShow(id);
-        LocalDate currentDate = LocalDate.now();
+        LocalDateTime currentDateTime = LocalDateTime.now();
         if (show.getTickets().size() > 0) {
             throw new ShowException("Tickets for this show have already been sold. The show cannot be cancelled");
         }
-        if (show.getDate().isAfter(currentDate)) {
+        if (show.getStartDateTime().isAfter(currentDateTime)) {
             throw new ShowException("The show is in the past. It cannot be cancelled");
         }
-        if (Period.between(show.getDate(), LocalDate.now()).getDays() <= 1) {
+        if (Period.between(show.getStartDateTime().toLocalDate(), LocalDate.now()).getDays() <= 1) {
             throw new ShowException("The show starts soon. It cannot be cancelled anymore");
         }
-        showRepository.delete(id);
+        showRepository.deleteById(id);
+    }
+
+    public void addTicket(long id, Ticket ticket) {
+        Show show = getShow(id);
+        show.getTickets().add(ticket);
+        showRepository.save(show);
+    }
+
+    public void removeTicket(long id, Ticket ticket) {
+        Show show = getShow(id);
+        show.getTickets().remove(ticket);
+        showRepository.save(show);
+    }
+
+    public Set<Ticket> getAllTickets(long id) {
+        Show show = getShow(id);
+        return show.getTickets();
+    }
+
+    public Set<Seat> getAllSeats(long id) {
+        Show show = getShow(id);
+        return show.getVenue().getSeats();
     }
 
 }
