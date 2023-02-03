@@ -11,15 +11,21 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleElementNotFoundException(ElementNotFoundException notFoundException, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        return createResponseEntity(request.getRequestURI(), status, notFoundException.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleElementFoundException(ElementFoundException foundException, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return createResponseEntity(request.getRequestURI(), status, foundException.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleElementNotFoundException(ElementNotFoundException notFoundException, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        return createResponseEntity(request.getRequestURI(), status, notFoundException.getMessage());
+    public ResponseEntity<ErrorResponse> handleElementNotModifiedException(ElementNotModifiedException modifiedException, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return createResponseEntity(request.getRequestURI(), status, modifiedException.getMessage());
     }
 
     private ResponseEntity<ErrorResponse> createResponseEntity(String request, HttpStatus status, String exceptionMessage) {
