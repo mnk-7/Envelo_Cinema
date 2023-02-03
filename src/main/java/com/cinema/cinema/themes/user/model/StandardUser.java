@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.user.model;
 
 import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.cart.Cart;
-import com.cinema.cinema.themes.order.Order;
+import com.cinema.cinema.themes.cart.model.Cart;
+import com.cinema.cinema.themes.order.model.Order;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

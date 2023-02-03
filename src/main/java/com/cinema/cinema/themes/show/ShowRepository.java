@@ -1,5 +1,6 @@
 package com.cinema.cinema.themes.show;
 
+import com.cinema.cinema.themes.show.model.Show;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

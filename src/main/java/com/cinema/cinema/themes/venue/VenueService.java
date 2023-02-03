@@ -5,6 +5,7 @@ import com.cinema.cinema.themes.seat.model.Seat;
 import com.cinema.cinema.themes.seat.model.SingleSeat;
 import com.cinema.cinema.themes.seat.service.DoubleSeatService;
 import com.cinema.cinema.themes.seat.service.SingleSeatService;
+import com.cinema.cinema.themes.venue.model.Venue;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

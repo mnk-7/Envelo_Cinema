@@ -1,6 +1,6 @@
-package com.cinema.cinema.themes.cart;
+package com.cinema.cinema.themes.cart.model;
 
-import com.cinema.cinema.themes.ticket.Ticket;
+import com.cinema.cinema.themes.ticket.model.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

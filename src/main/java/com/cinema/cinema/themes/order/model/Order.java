@@ -1,9 +1,9 @@
-package com.cinema.cinema.themes.order;
+package com.cinema.cinema.themes.order.model;
 
-import com.cinema.cinema.themes.couponCode.CouponCode;
-import com.cinema.cinema.themes.invoice.Invoice;
+import com.cinema.cinema.themes.couponCode.model.CouponCode;
+import com.cinema.cinema.themes.invoice.model.Invoice;
 import com.cinema.cinema.themes.user.model.StandardUser;
-import com.cinema.cinema.themes.ticket.Ticket;
+import com.cinema.cinema.themes.ticket.model.Ticket;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;

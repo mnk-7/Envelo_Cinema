@@ -1,6 +1,7 @@
 package com.cinema.cinema.themes.couponCode;
 
-import com.cinema.cinema.themes.order.Order;
+import com.cinema.cinema.themes.couponCode.model.CouponCode;
+import com.cinema.cinema.themes.order.model.Order;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

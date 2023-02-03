@@ -1,13 +1,14 @@
 package com.cinema.cinema.themes.order;
 
 import com.cinema.cinema.themes.cart.CartService;
-import com.cinema.cinema.themes.couponCode.CouponCode;
-import com.cinema.cinema.themes.ticket.Ticket;
+import com.cinema.cinema.themes.couponCode.model.CouponCode;
+import com.cinema.cinema.themes.order.model.Order;
+import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.user.model.StandardUser;
 import com.cinema.cinema.themes.user.model.User;
 import com.cinema.cinema.themes.user.service.StandardUserService;
 import com.cinema.cinema.themes.ticket.TicketService;
-import com.cinema.cinema.themes.invoice.Invoice;
+import com.cinema.cinema.themes.invoice.model.Invoice;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,7 @@ package com.cinema.cinema.themes.seat.service;
 import com.cinema.cinema.themes.seat.repository.DoubleSeatRepository;
 import com.cinema.cinema.themes.seat.SeatException;
 import com.cinema.cinema.themes.seat.model.DoubleSeat;
-import com.cinema.cinema.themes.venue.Venue;
+import com.cinema.cinema.themes.venue.model.Venue;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

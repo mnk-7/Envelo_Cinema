@@ -1,7 +1,8 @@
 package com.cinema.cinema.themes.show;
 
-import com.cinema.cinema.themes.ticket.Ticket;
-import com.cinema.cinema.themes.venue.Venue;
+import com.cinema.cinema.themes.show.model.Show;
+import com.cinema.cinema.themes.ticket.model.Ticket;
+import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.themes.seat.model.Seat;
 import lombok.AllArgsConstructor;

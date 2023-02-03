@@ -2,9 +2,9 @@ package com.cinema.cinema.themes.user.service;
 
 import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.themes.user.UserException;
-import com.cinema.cinema.themes.cart.Cart;
-import com.cinema.cinema.themes.invoice.Invoice;
-import com.cinema.cinema.themes.order.Order;
+import com.cinema.cinema.themes.cart.model.Cart;
+import com.cinema.cinema.themes.invoice.model.Invoice;
+import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.user.model.StandardUser;
 import com.cinema.cinema.themes.user.repository.StandardUserRepository;
 import com.cinema.cinema.themes.content.MovieService;

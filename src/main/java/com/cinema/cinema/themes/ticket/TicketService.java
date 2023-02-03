@@ -2,11 +2,12 @@ package com.cinema.cinema.themes.ticket;
 
 import com.cinema.cinema.themes.cart.CartService;
 import com.cinema.cinema.themes.show.ShowService;
-import com.cinema.cinema.themes.show.Show;
+import com.cinema.cinema.themes.show.model.Show;
+import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.themes.seat.model.SingleSeat;
 import com.cinema.cinema.themes.user.model.User;
-import com.cinema.cinema.themes.order.Order;
+import com.cinema.cinema.themes.order.model.Order;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

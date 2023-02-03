@@ -1,6 +1,6 @@
 package com.cinema.cinema.themes.seat.model;
 
-import com.cinema.cinema.themes.venue.Venue;
+import com.cinema.cinema.themes.venue.model.Venue;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,5 +1,6 @@
 package com.cinema.cinema.themes.cart;
 
+import com.cinema.cinema.themes.cart.model.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

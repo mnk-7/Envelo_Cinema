@@ -1,9 +1,9 @@
-package com.cinema.cinema.themes.ticket;
+package com.cinema.cinema.themes.ticket.model;
 
 import com.cinema.cinema.themes.ticketType.model.TicketType;
-import com.cinema.cinema.themes.order.Order;
+import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.seat.model.Seat;
-import com.cinema.cinema.themes.show.Show;
+import com.cinema.cinema.themes.show.model.Show;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

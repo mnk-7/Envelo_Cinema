@@ -1,6 +1,7 @@
 package com.cinema.cinema.themes.cart;
 
-import com.cinema.cinema.themes.ticket.Ticket;
+import com.cinema.cinema.themes.cart.model.Cart;
+import com.cinema.cinema.themes.ticket.model.Ticket;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

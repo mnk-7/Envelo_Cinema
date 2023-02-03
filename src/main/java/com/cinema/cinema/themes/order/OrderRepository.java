@@ -1,5 +1,6 @@
 package com.cinema.cinema.themes.order;
 
+import com.cinema.cinema.themes.order.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

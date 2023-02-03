@@ -1,6 +1,6 @@
 package com.cinema.cinema.themes.seat.service;
 
-import com.cinema.cinema.themes.venue.Venue;
+import com.cinema.cinema.themes.venue.model.Venue;
 
 import java.util.List;
 import java.util.Set;

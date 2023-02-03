@@ -1,4 +1,4 @@
-package com.cinema.cinema.themes.venue;
+package com.cinema.cinema.themes.venue.model;
 
 import com.cinema.cinema.themes.seat.model.Seat;
 import lombok.AllArgsConstructor;

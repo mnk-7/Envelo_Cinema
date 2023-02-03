@@ -1,7 +1,8 @@
 package com.cinema.cinema.themes.invoice;
 
+import com.cinema.cinema.themes.invoice.model.Invoice;
 import com.cinema.cinema.themes.order.OrderService;
-import com.cinema.cinema.themes.order.Order;
+import com.cinema.cinema.themes.order.model.Order;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
