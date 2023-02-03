@@ -19,7 +19,7 @@ import java.util.Set;
 @Service
 public class ShowService {
 
-    private ShowRepository showRepository;
+    private final ShowRepository showRepository;
 
     public Show getShow(long id) {
         Optional<Show> show = showRepository.findById(id);

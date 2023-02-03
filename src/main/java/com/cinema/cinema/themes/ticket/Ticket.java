@@ -1,6 +1,6 @@
 package com.cinema.cinema.themes.ticket;
 
-import com.cinema.cinema.themes.ticketType.TicketType;
+import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.themes.order.Order;
 import com.cinema.cinema.themes.seat.model.Seat;
 import com.cinema.cinema.themes.show.Show;

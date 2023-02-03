@@ -19,14 +19,14 @@ import java.util.Optional;
 @Service
 public class AgeRestrictionService {
 
-    private AgeRestrictionRepository ageRestrictionRepository;
-    private DtoMapperService mapperService;
+    private final AgeRestrictionRepository ageRestrictionRepository;
+    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
     public List<AgeRestrictionDtoRead> getAllAgeRestrictions() {
         List<AgeRestriction> ageRestrictions = ageRestrictionRepository.findAll(Sort.by("minAge"));
         return ageRestrictions.stream()
-                .map(ageRestriction -> mapperService.mapToAgeRestrictionDto(ageRestriction))
+                .map(mapperService::mapToAgeRestrictionDto)
                 .toList();
     }
 

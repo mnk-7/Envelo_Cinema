@@ -19,8 +19,8 @@ import java.util.Set;
 @Service
 public class StandardUserService extends UserService<StandardUser> {
 
-    private StandardUserRepository userRepository;
-    private MovieService movieService;
+    private final StandardUserRepository userRepository;
+    private final MovieService movieService;
 
     public List<StandardUser> getAllUsers() {
         return userRepository.findAll();

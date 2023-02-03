@@ -3,7 +3,7 @@ package com.cinema.cinema.themes.ticket;
 import com.cinema.cinema.themes.cart.CartService;
 import com.cinema.cinema.themes.show.ShowService;
 import com.cinema.cinema.themes.show.Show;
-import com.cinema.cinema.themes.ticketType.TicketType;
+import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.themes.seat.model.SingleSeat;
 import com.cinema.cinema.themes.user.model.User;
 import com.cinema.cinema.themes.order.Order;
@@ -17,9 +17,9 @@ import java.util.Set;
 @Service
 public class TicketService {
 
-    private TicketRepository ticketRepository;
-    private CartService cartService;
-    private ShowService showService;
+    private final TicketRepository ticketRepository;
+    private final CartService cartService;
+    private final ShowService showService;
 
     public Ticket getTicket(long id) {
         Optional<Ticket> ticket = ticketRepository.findById(id);

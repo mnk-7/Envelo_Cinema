@@ -14,7 +14,7 @@ import java.util.Set;
 @Service
 public class MovieService extends ContentService<Movie> {
 
-    private MovieRepository movieRepository;
+    private final MovieRepository movieRepository;
 
     public Movie getMovie(long id) {
         return getContent(id);

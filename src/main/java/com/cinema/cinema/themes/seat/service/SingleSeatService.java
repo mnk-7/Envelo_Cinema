@@ -15,7 +15,7 @@ import java.util.Set;
 @Service
 public class SingleSeatService extends SeatService<SingleSeat> {
 
-    private SingleSeatRepository seatRepository;
+    private final SingleSeatRepository seatRepository;
 
     @Override
     public SingleSeat getSeat(long id) {

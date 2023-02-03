@@ -19,14 +19,14 @@ import java.util.Optional;
 @Service
 public class GenreService {
 
-    private GenreRepository genreRepository;
-    private DtoMapperService mapperService;
+    private final GenreRepository genreRepository;
+    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
     public List<GenreDtoRead> getAllGenres() {
         List<Genre> genres = genreRepository.findAll(Sort.by("name"));
         return genres.stream()
-                .map(genre -> mapperService.mapToGenreDto(genre))
+                .map(mapperService::mapToGenreDto)
                 .toList();
     }
 

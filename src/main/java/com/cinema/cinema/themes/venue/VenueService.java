@@ -17,9 +17,9 @@ import java.util.Set;
 @Service
 public class VenueService {
 
-    private VenueRepository venueRepository;
-    private SingleSeatService singleSeatService;
-    private DoubleSeatService doubleSeatService;
+    private final VenueRepository venueRepository;
+    private final SingleSeatService singleSeatService;
+    private final DoubleSeatService doubleSeatService;
 
     public Venue getVenue(long id) {
         Optional<Venue> venue = venueRepository.findById(id);

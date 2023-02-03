@@ -17,8 +17,8 @@ import java.util.Optional;
 @Service
 public class SubscriberService {
 
-    private SubscriberRepository subscriberRepository;
-    private DtoMapperService mapperService;
+    private final SubscriberRepository subscriberRepository;
+    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
     //wywoływane, gdy wysyłana jest notyfikacja do subskrybentów, docelowo brak endpointu, dlatego brak konwersji na dto

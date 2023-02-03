@@ -19,10 +19,10 @@ import java.util.Set;
 @Service
 public class OrderService {
 
-    private OrderRepository orderRepository;
-    private StandardUserService userService;
-    private CartService cartService;
-    private TicketService ticketService;
+    private final OrderRepository orderRepository;
+    private final StandardUserService userService;
+    private final CartService cartService;
+    private final TicketService ticketService;
 
     public Order getOrder(long id) {
         Optional<Order> order = orderRepository.findById(id);

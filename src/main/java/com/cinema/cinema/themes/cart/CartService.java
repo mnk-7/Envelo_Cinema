@@ -12,7 +12,7 @@ import java.util.Set;
 @Service
 public class CartService {
 
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
     public Cart getCart(long id) {
         Optional<Cart> cart = cartRepository.findById(id);

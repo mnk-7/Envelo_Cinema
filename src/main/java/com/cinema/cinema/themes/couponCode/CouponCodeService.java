@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 public class CouponCodeService {
 
-    private CouponCodeRepository couponCodeRepository;
+    private final CouponCodeRepository couponCodeRepository;
 
     public CouponCode getCouponCode(String code) {
         Optional<CouponCode> couponCode = couponCodeRepository.findByCode(code);

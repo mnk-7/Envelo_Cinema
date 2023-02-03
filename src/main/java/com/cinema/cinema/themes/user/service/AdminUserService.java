@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class AdminUserService extends UserService<AdminUser> {
 
-    private AdminUserRepository userRepository;
+    private final AdminUserRepository userRepository;
 
     public AdminUser getAdminUser(long id) {
         return getUser(id);

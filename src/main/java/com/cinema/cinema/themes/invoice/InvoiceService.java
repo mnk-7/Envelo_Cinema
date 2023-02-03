@@ -2,17 +2,19 @@ package com.cinema.cinema.themes.invoice;
 
 import com.cinema.cinema.themes.order.OrderService;
 import com.cinema.cinema.themes.order.Order;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class InvoiceService {
 
-    private InvoiceRepository invoiceRepository;
-    private OrderService orderService;
+    private final InvoiceRepository invoiceRepository;
+    private final OrderService orderService;
 
     public Invoice getInvoice(long id) {
         Optional<Invoice> invoice = invoiceRepository.findById(id);
