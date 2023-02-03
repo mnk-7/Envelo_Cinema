@@ -3,8 +3,6 @@ package com.cinema.cinema.themes.genre;
 import com.cinema.cinema.exceptions.ElementFoundException;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ElementNotModifiedException;
-import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
-import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionDtoWrite;
 import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreDtoRead;
 import com.cinema.cinema.themes.genre.model.GenreDtoWrite;
@@ -43,7 +41,7 @@ public class GenreService {
         //checkGenreDataFormat(genreDto);
         validateGenreNotExists(genreDto);
         Genre genre = mapperService.mapToGenre(genreDto);
-        genreRepository.save(genre);
+        genre = genreRepository.save(genre);
         return mapperService.mapToGenreDto(genre);
     }
 

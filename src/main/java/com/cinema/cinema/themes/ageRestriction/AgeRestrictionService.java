@@ -41,7 +41,7 @@ public class AgeRestrictionService {
         //checkAgeRestrictionDataFormat(ageRestrictionDto);
         validateAgeRestrictionNotExists(ageRestrictionDto);
         AgeRestriction ageRestriction = mapperService.mapToAgeRestriction(ageRestrictionDto);
-        ageRestrictionRepository.save(ageRestriction);
+        ageRestriction = ageRestrictionRepository.save(ageRestriction);
         return mapperService.mapToAgeRestrictionDto(ageRestriction);
     }
 

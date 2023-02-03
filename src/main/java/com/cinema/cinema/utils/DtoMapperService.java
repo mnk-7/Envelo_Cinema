@@ -6,6 +6,9 @@ import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
 import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreDtoRead;
 import com.cinema.cinema.themes.genre.model.GenreDtoWrite;
+import com.cinema.cinema.themes.subscriber.model.Subscriber;
+import com.cinema.cinema.themes.subscriber.model.SubscriberDtoRead;
+import com.cinema.cinema.themes.subscriber.model.SubscriberDtoWrite;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,14 @@ public class DtoMapperService {
 
     public GenreDtoRead mapToGenreDto(Genre genre) {
         return mapper.map(genre, GenreDtoRead.class);
+    }
+
+    public Subscriber mapToSubscriber(SubscriberDtoWrite subscriberDto) {
+        return mapper.map(subscriberDto, Subscriber.class);
+    }
+
+    public SubscriberDtoRead mapToSubscriberDto(Subscriber subscriber) {
+        return mapper.map(subscriber, SubscriberDtoRead.class);
     }
 
 }

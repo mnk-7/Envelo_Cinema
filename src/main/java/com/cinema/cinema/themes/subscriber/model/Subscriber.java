@@ -1,4 +1,4 @@
-package com.cinema.cinema.themes.subscriber;
+package com.cinema.cinema.themes.subscriber.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
