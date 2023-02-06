@@ -1,17 +1,23 @@
 package com.cinema.cinema.exceptions;
 
 import lombok.*;
-import org.springframework.http.HttpStatus;
+
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class ErrorResponse {
 
-    private String path;
-    private int code;
-    private HttpStatus status;
+    private Timestamp timestamp;
     private String details;
+    private Map<String, String> validationErrors;
+
+    public ErrorResponse(String details) {
+        this.details = details;
+        this.timestamp = new Timestamp(System.currentTimeMillis());
+        this.validationErrors = new HashMap<>();
+    }
 
 }

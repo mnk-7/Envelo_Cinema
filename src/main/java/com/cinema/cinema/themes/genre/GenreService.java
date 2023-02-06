@@ -1,5 +1,6 @@
 package com.cinema.cinema.themes.genre;
 
+import com.cinema.cinema.exceptions.ArgumentNotValidException;
 import com.cinema.cinema.exceptions.ElementFoundException;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ElementNotModifiedException;
@@ -7,13 +8,14 @@ import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreDtoRead;
 import com.cinema.cinema.themes.genre.model.GenreDtoWrite;
 import com.cinema.cinema.utils.DtoMapperService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -21,6 +23,7 @@ public class GenreService {
 
     private final GenreRepository genreRepository;
     private final DtoMapperService mapperService;
+    private final Validator validator;
 
     @Transactional(readOnly = true)
     public List<GenreDtoRead> getAllGenres() {
@@ -38,9 +41,9 @@ public class GenreService {
 
     @Transactional
     public GenreDtoRead addGenre(GenreDtoWrite genreDto) {
-        //checkGenreDataFormat(genreDto);
         validateGenreNotExists(genreDto);
         Genre genre = mapperService.mapToGenre(genreDto);
+        validateInputForGenre(genre);
         genre = genreRepository.save(genre);
         return mapperService.mapToGenreDto(genre);
     }
@@ -48,11 +51,23 @@ public class GenreService {
     @Transactional
     public void editGenre(long id, GenreDtoWrite genreDto) {
         Genre genre = validateGenreExists(id);
-        validateGenreChanged(genre, genreDto);
-        //checkGenreDataFormat(genreDto);
+        Genre genreFromDto = mapperService.mapToGenre(genreDto);
+        validateInputForGenre(genreFromDto);
+        validateGenreChanged(genre, genreFromDto);
         validateGenreNotExists(genreDto);
-        genre.setName(genreDto.getName());
-        genreRepository.save(genre);
+        genreFromDto.setId(genre.getId());
+        genreRepository.save(genreFromDto);
+    }
+
+    private void validateInputForGenre(Genre genre) {
+        Set<ConstraintViolation<Genre>> violations = validator.validate(genre);
+        if (!violations.isEmpty()) {
+            Map<String, String> messages = new HashMap<>();
+            for (ConstraintViolation<Genre> violation : violations) {
+                messages.put(violation.getPropertyPath().toString(), violation.getMessage());
+            }
+            throw new ArgumentNotValidException("Not valid data provided", messages);
+        }
     }
 
     private Genre validateGenreExists(long id) {
@@ -70,8 +85,8 @@ public class GenreService {
         }
     }
 
-    private void validateGenreChanged(Genre genre, GenreDtoWrite genreDto) {
-        if (genre.getName().equals(genreDto.getName())) {
+    private void validateGenreChanged(Genre genre, Genre genreFromDto) {
+        if (genre.equals(genreFromDto)) {
             throw new ElementNotModifiedException("No change detected, genre with name " + genre.getName() + " has not been modified");
         }
     }
