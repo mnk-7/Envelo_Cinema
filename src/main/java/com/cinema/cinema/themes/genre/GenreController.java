@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/${app.prefix}/${app.version}/genres")
 public class GenreController {
 
-    private final GenreService genreService;
+    private final GenreService service;
 
     @GetMapping
     @Operation(summary = "Get all genres")
@@ -29,7 +29,7 @@ public class GenreController {
             @ApiResponse(responseCode = "200", description = "List with genres returned"),
             @ApiResponse(responseCode = "204", description = "No genre found")})
     public ResponseEntity<List<GenreDtoRead>> getAllGenres() {
-        List<GenreDtoRead> genres = genreService.getAllGenres();
+        List<GenreDtoRead> genres = service.getAllGenres();
         HttpStatus status = genres.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(genres, status);
     }
@@ -40,7 +40,7 @@ public class GenreController {
             @ApiResponse(responseCode = "200", description = "Genre returned"),
             @ApiResponse(responseCode = "404", description = "Genre not found")})
     public ResponseEntity<GenreDtoRead> getGenre(@PathVariable long id) {
-        GenreDtoRead genre = genreService.getGenreById(id);
+        GenreDtoRead genre = service.getGenreById(id);
         return new ResponseEntity<>(genre, HttpStatus.OK);
     }
 
@@ -50,7 +50,7 @@ public class GenreController {
             @ApiResponse(responseCode = "201", description = "Genre created"),
             @ApiResponse(responseCode = "400", description = "Genre already exists")})
     public ResponseEntity<Void> addGenre(@RequestBody GenreDtoWrite genre) {
-        GenreDtoRead genreCreated = genreService.addGenre(genre);
+        GenreDtoRead genreCreated = service.addGenre(genre);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -66,7 +66,7 @@ public class GenreController {
             @ApiResponse(responseCode = "400", description = "Genre already exists"),
             @ApiResponse(responseCode = "404", description = "Genre not found")})
     public ResponseEntity<Void> editGenre(@PathVariable long id, @RequestBody GenreDtoWrite genre) {
-        genreService.editGenre(id, genre);
+        service.editGenre(id, genre);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

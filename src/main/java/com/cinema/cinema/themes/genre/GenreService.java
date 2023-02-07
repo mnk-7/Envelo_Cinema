@@ -49,8 +49,12 @@ public class GenreService {
         validator.validateInput(genreFromDto);
         validator.validateChanged(genre, genreFromDto);
         validator.validateNotExists(genreFromDto);
-        genreFromDto.setId(genre.getId());
-        repository.save(genreFromDto);
+        setFields(genre, genreDto);
+        repository.save(genre);
+    }
+
+    private void setFields(Genre genre, GenreDtoWrite genreDto) {
+        genre.setName(genreDto.getName());
     }
 
 }

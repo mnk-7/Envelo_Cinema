@@ -28,7 +28,8 @@ public class Movie extends Content {
     @Transient
     private double rating;
 
-    //private int ratingCount;
+    private int ratingCount;
+    private int ratingSum;
     private boolean isPremiere;
 
 }

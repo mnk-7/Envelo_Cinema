@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/${app.prefix}/${app.version}/age-restrictions")
 public class AgeRestrictionController {
 
-    private final AgeRestrictionService ageRestrictionService;
+    private final AgeRestrictionService service;
 
     @GetMapping
     @Operation(summary = "Get all age restrictions")
@@ -29,7 +29,7 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "200", description = "List with age restrictions returned"),
             @ApiResponse(responseCode = "204", description = "No age restriction found")})
     public ResponseEntity<List<AgeRestrictionDtoRead>> getAllAgeRestrictions() {
-        List<AgeRestrictionDtoRead> ageRestrictions = ageRestrictionService.getAllAgeRestrictions();
+        List<AgeRestrictionDtoRead> ageRestrictions = service.getAllAgeRestrictions();
         HttpStatus status = ageRestrictions.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(ageRestrictions, status);
     }
@@ -40,7 +40,7 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "200", description = "Age restriction returned"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
     public ResponseEntity<AgeRestrictionDtoRead> getAgeRestriction(@PathVariable long id) {
-        AgeRestrictionDtoRead ageRestriction = ageRestrictionService.getAgeRestrictionById(id);
+        AgeRestrictionDtoRead ageRestriction = service.getAgeRestrictionById(id);
         return new ResponseEntity<>(ageRestriction, HttpStatus.OK);
     }
 
@@ -50,7 +50,7 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "201", description = "Age restriction created"),
             @ApiResponse(responseCode = "400", description = "Age restriction already exists")})
     public ResponseEntity<Void> addAgeRestriction(@RequestBody AgeRestrictionDtoWrite ageRestriction) {
-        AgeRestrictionDtoRead ageRestrictionCreated = ageRestrictionService.addAgeRestriction(ageRestriction);
+        AgeRestrictionDtoRead ageRestrictionCreated = service.addAgeRestriction(ageRestriction);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -66,7 +66,7 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "400", description = "Age restriction already exists"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
     public ResponseEntity<Void> editAgeRestriction(@PathVariable long id, @RequestBody AgeRestrictionDtoWrite ageRestriction) {
-        ageRestrictionService.editAgeRestriction(id, ageRestriction);
+        service.editAgeRestriction(id, ageRestriction);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

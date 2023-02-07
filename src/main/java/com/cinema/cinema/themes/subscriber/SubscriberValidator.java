@@ -28,7 +28,6 @@ public class SubscriberValidator extends ValidatorService<Subscriber> {
         return subscriber.get();
     }
 
-    @Override
     public void validateNotExists(Subscriber subscriberFromDto) {
         Optional<Subscriber> subscriber = repository.findByEmail(subscriberFromDto.getEmail());
         if (subscriber.isPresent()) {

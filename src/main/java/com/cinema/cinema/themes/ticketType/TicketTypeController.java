@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/${app.prefix}/${app.version}/ticket-types")
 public class TicketTypeController {
 
-    private final TicketTypeService ticketTypeService;
+    private final TicketTypeService service;
 
     @GetMapping
     @Operation(summary = "Get all ticket types")
@@ -29,7 +29,7 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "List with ticket types returned"),
             @ApiResponse(responseCode = "204", description = "No ticket type found")})
     public ResponseEntity<List<TicketTypeDtoRead>> getAllTicketTypes() {
-        List<TicketTypeDtoRead> ticketTypes = ticketTypeService.getAllTicketTypes();
+        List<TicketTypeDtoRead> ticketTypes = service.getAllTicketTypes();
         HttpStatus status = ticketTypes.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(ticketTypes, status);
     }
@@ -40,7 +40,7 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "List with active ticket types returned"),
             @ApiResponse(responseCode = "204", description = "No active ticket type found")})
     public ResponseEntity<List<TicketTypeDtoRead>> getAllActiveTicketTypes() {
-        List<TicketTypeDtoRead> ticketTypes = ticketTypeService.getAllActiveTicketTypes();
+        List<TicketTypeDtoRead> ticketTypes = service.getAllActiveTicketTypes();
         HttpStatus status = ticketTypes.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(ticketTypes, status);
     }
@@ -51,7 +51,7 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "Ticket type returned"),
             @ApiResponse(responseCode = "404", description = "Ticket type not found")})
     public ResponseEntity<TicketTypeDtoRead> getTicketType(@PathVariable long id) {
-        TicketTypeDtoRead ticketType = ticketTypeService.getTicketType(id);
+        TicketTypeDtoRead ticketType = service.getTicketType(id);
         return new ResponseEntity<>(ticketType, HttpStatus.OK);
     }
 
@@ -61,7 +61,7 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "201", description = "Ticket type created"),
             @ApiResponse(responseCode = "400", description = "Ticket type already exists")})
     public ResponseEntity<Void> addTicketType(@RequestBody TicketTypeDtoWrite ticketType) {
-        TicketTypeDtoRead ticketTypeCreated = ticketTypeService.addTicketType(ticketType);
+        TicketTypeDtoRead ticketTypeCreated = service.addTicketType(ticketType);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -77,7 +77,7 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "400", description = "Ticket type already exists"),
             @ApiResponse(responseCode = "404", description = "Ticket type not found")})
     public ResponseEntity<Void> editTicketType(@PathVariable long id, @RequestBody TicketTypeDtoWrite ticketType) {
-        ticketTypeService.editTicketType(id, ticketType);
+        service.editTicketType(id, ticketType);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

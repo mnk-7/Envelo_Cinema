@@ -29,7 +29,6 @@ public class AgeRestrictionValidator extends ValidatorService<AgeRestriction> {
         return ageRestriction.get();
     }
 
-    @Override
     public void validateNotExists(AgeRestriction ageRestrictionFromDto) {
         Optional<AgeRestriction> ageRestriction = repository.findByMinAge(ageRestrictionFromDto.getMinAge());
         if (ageRestriction.isPresent()) {

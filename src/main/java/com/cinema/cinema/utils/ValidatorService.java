@@ -29,6 +29,4 @@ public abstract class ValidatorService<T> {
 
     public abstract T validateExists(long id);
 
-    public abstract void validateNotExists(T t);
-
 }

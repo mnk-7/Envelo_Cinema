@@ -29,7 +29,6 @@ public class GenreValidator extends ValidatorService<Genre> {
         return genre.get();
     }
 
-    @Override
     public void validateNotExists(Genre genreFromDto) {
         Optional<Genre> genre = repository.findByName(genreFromDto.getName());
         if (genre.isPresent()) {

@@ -85,15 +85,15 @@ public class StandardUserService extends UserService<StandardUser> {
         userRepository.save(user);
     }
 
-    public void rateMovie(long id, Movie movie, int rate) {
-        StandardUser user = getStandardUser(id);
-        if (user.getRatedMovies().contains(movie)) {
-            throw new UserException("You have already rated this movie");
-        }
-        user.getRatedMovies().add(movie);
-        //TODO - should below part be moved to controller?
-        movieService.rateMovie(movie, rate);
-    }
+//    public void rateMovie(long id, Movie movie, int rate) {
+//        StandardUser user = getStandardUser(id);
+//        if (user.getRatedMovies().contains(movie)) {
+//            throw new UserException("You have already rated this movie");
+//        }
+//        user.getRatedMovies().add(movie);
+//        //TODO - should below part be moved to controller?
+//        movieService.rateMovie(movie, rate);
+//    }
 
     public Set<Order> getAllOrders(long id) {
         StandardUser user = getStandardUser(id);

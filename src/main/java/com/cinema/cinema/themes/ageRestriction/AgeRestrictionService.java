@@ -50,8 +50,8 @@ public class AgeRestrictionService {
         validator.validateInput(ageRestrictionFromDto);
         validator.validateChanged(ageRestriction, ageRestrictionFromDto);
         validator.validateNotExists(ageRestrictionFromDto);
-        ageRestrictionFromDto.setId(ageRestriction.getId());
-        repository.save(ageRestrictionFromDto);
+        setFields(ageRestriction, ageRestrictionDto);
+        repository.save(ageRestriction);
     }
 
 //    @Transactional
@@ -59,5 +59,9 @@ public class AgeRestrictionService {
 //        validateAgeRestrictionExists(id);
 //        ageRestrictionRepository.deleteById(id);
 //    }
+
+    private void setFields(AgeRestriction ageRestriction, AgeRestrictionDtoWrite ageRestrictionDto) {
+        ageRestriction.setMinAge(ageRestrictionDto.getMinAge());
+    }
 
 }

@@ -3,6 +3,9 @@ package com.cinema.cinema.utils;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionDtoWrite;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionDtoRead;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
+import com.cinema.cinema.themes.content.model.Movie;
+import com.cinema.cinema.themes.content.model.MovieDtoRead;
+import com.cinema.cinema.themes.content.model.MovieDtoWrite;
 import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreDtoRead;
 import com.cinema.cinema.themes.genre.model.GenreDtoWrite;
@@ -52,6 +55,14 @@ public class DtoMapperService {
 
     public TicketTypeDtoRead mapToTicketTypeDto(TicketType ticketType) {
         return mapper.map(ticketType, TicketTypeDtoRead.class);
+    }
+
+    public Movie mapToMovie(MovieDtoWrite movieDto) {
+        return mapper.map(movieDto, Movie.class);
+    }
+
+    public MovieDtoRead mapToMovieDto(Movie movie) {
+        return mapper.map(movie, MovieDtoRead.class);
     }
 
 }

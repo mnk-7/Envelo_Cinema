@@ -1,91 +1,83 @@
 package com.cinema.cinema.themes.content;
 
-import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
 import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.genre.model.Genre;
+import com.cinema.cinema.themes.content.model.MovieDtoRead;
+import com.cinema.cinema.themes.content.model.MovieDtoWrite;
+import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @AllArgsConstructor
 @Service
-public class MovieService extends ContentService<Movie> {
+public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
 
-    private final MovieRepository movieRepository;
+    private final MovieRepository repository;
+    private final MovieValidator validator;
+    private final DtoMapperService mapper;
 
-    public Movie getMovie(long id) {
-        return getContent(id);
-    }
-
-    //TODO - getContent should use getMovie
     @Override
-    protected Movie getContent(long id) {
-        Optional<Movie> movie = movieRepository.findById(id);
-        if (movie.isEmpty()) {
-            throw new MovieException("Movie wit given ID not found");
-        }
-        return movie.get();
-    }
-
-    public List<Movie> getAllMovies() {
-        return getAllContents();
+    @Transactional(readOnly = true)
+    public List<MovieDtoRead> getAllContents() {
+        List<Movie> movies = repository.findAll(Sort.by("title"));
+        return movies.stream()
+                .peek(movie -> movie.setRating(calculateRating(movie)))
+                .map(mapper::mapToMovieDto)
+                .toList();
     }
 
     @Override
-    protected List<Movie> getAllContents() {
-        return movieRepository.findAll();
+    @Transactional(readOnly = true)
+    protected MovieDtoRead getContent(long id) {
+        Movie movie = validator.validateExists(id);
+        movie.setRating(calculateRating(movie));
+        return mapper.mapToMovieDto(movie);
     }
 
-    public void addMovie(String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genres, boolean isPremiere) {
-        Movie movie = addContent(title, duration, ageRestriction, shortDescription, longDescription, imageUrl);
-        movie.setGenres(genres);
-        movie.setPremiere(isPremiere);
-        movie.setRating(0.0);
-        //movie.setRatingCount(0);
-        movieRepository.save(movie);
-    }
-
-    //TODO - builder, addContent should use addMovie
     @Override
-    protected Movie addContent(String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl) {
-        Movie movie = new Movie();
-        movie.setTitle(title);
-        movie.setDurationInMinutes(duration);
-        movie.setAgeRestriction(ageRestriction);
-        movie.setShortDescription(shortDescription);
-        movie.setLongDescription(longDescription);
-        movie.setImageUrl(imageUrl);
-        return movie;
+    @Transactional
+    public MovieDtoRead addContent(MovieDtoWrite movieDto) {
+        Movie movie = mapper.mapToMovie(movieDto);
+        validator.validateInput(movie);
+        movie = repository.save(movie);
+        return mapper.mapToMovieDto(movie);
     }
 
-    public void editMovie(long id, String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl, Set<Genre> genres, boolean isPremiere) {
-        Movie movie = editContent(id, title, duration, ageRestriction, shortDescription, longDescription, imageUrl);
-        movie.setGenres(genres);
-        movie.setPremiere(isPremiere);
-        movieRepository.save(movie);
-    }
-
-    //TODO - whole object instead of many parameters
     @Override
-    protected Movie editContent(long id, String title, int duration, AgeRestriction ageRestriction, String shortDescription, String longDescription, String imageUrl) {
-        Movie movie = getContent(id);
-        movie.setTitle(title);
-        movie.setDurationInMinutes(duration);
-        movie.setAgeRestriction(ageRestriction);
-        movie.setShortDescription(shortDescription);
-        movie.setLongDescription(longDescription);
-        movie.setImageUrl(imageUrl);
-        return movie;
+    @Transactional
+    public void editContent(long id, MovieDtoWrite movieDto) {
+        Movie movie = validator.validateExists(id);
+        Movie movieFromDto = mapper.mapToMovie(movieDto);
+        validator.validateInput(movieFromDto);
+        setFields(movie, movieDto);
+        repository.save(movie);
     }
 
-    public void rateMovie(Movie movie, int rate) {
-        //movie.setRatingCount(movie.getRatingCount() + 1);
-        //double newRating = (movie.getRating() + rate) / movie.getRatingCount();
-        //movie.setRating(newRating);
-        movieRepository.save(movie);
+    @Transactional
+    public void rateMovie(long id, int rate) {
+        Movie movie = validator.validateExists(id);
+        movie.setRatingCount(movie.getRatingCount() + 1);
+        movie.setRatingSum(movie.getRatingSum() + rate);
+        repository.save(movie);
     }
+
+    private void setFields(Movie movie, MovieDtoWrite movieDto) {
+        movie.setTitle(movieDto.getTitle());
+        movie.setDurationInMinutes(movieDto.getDurationInMinutes());
+        movie.setAgeRestriction(movieDto.getAgeRestriction());
+        movie.setShortDescription(movieDto.getShortDescription());
+        movie.setLongDescription(movieDto.getLongDescription());
+        movie.setImageUrl(movieDto.getImageUrl());
+        movie.setGenres(movieDto.getGenres());
+        movie.setPremiere(movieDto.isPremiere());
+    }
+
+    private double calculateRating(Movie movie) {
+        return (double) movie.getRatingSum() / movie.getRatingCount();
+    }
+
 }
 

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -21,7 +20,7 @@ import java.util.List;
 @RequestMapping("/${app.prefix}/${app.version}/subscribers")
 public class SubscriberController {
 
-    private final SubscriberService subscriberService;
+    private final SubscriberService service;
 
 //    @GetMapping //metoda dla testów
 //    @Operation(summary = "Get all subscribers emails")
@@ -29,7 +28,7 @@ public class SubscriberController {
 //            @ApiResponse(responseCode = "200", description = "List with subscribers' emails returned"),
 //            @ApiResponse(responseCode = "204", description = "No subscriber found")})
 //    public ResponseEntity<List<String>> getAllSubscribersEmails() {
-//        List<String> emails = subscriberService.getAllSubscribersEmails();
+//        List<String> emails = service.getAllSubscribersEmails();
 //        HttpStatus status = emails.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
 //        return new ResponseEntity<>(emails, status);
 //    }
@@ -40,7 +39,7 @@ public class SubscriberController {
             @ApiResponse(responseCode = "201", description = "Subscriber created"),
             @ApiResponse(responseCode = "400", description = "Subscriber already exists")})
     public ResponseEntity<Void> addSubscriber(@RequestBody SubscriberDtoWrite subscriber) {
-        SubscriberDtoRead subscriberCreated = subscriberService.addSubscriber(subscriber);
+        SubscriberDtoRead subscriberCreated = service.addSubscriber(subscriber);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -55,7 +54,7 @@ public class SubscriberController {
             @ApiResponse(responseCode = "204", description = "Subscriber deleted"),
             @ApiResponse(responseCode = "404", description = "Subscriber not found")})
     public ResponseEntity<Void> removeSubscriber(@RequestBody SubscriberDtoWrite subscriber) {
-        subscriberService.removeSubscriber(subscriber);
+        service.removeSubscriber(subscriber);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
