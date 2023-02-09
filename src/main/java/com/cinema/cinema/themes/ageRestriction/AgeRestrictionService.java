@@ -15,49 +15,49 @@ import java.util.*;
 @Service
 public class AgeRestrictionService {
 
-    private final AgeRestrictionRepository repository;
-    private final AgeRestrictionValidator validator;
-    private final DtoMapperService mapper;
+    private final AgeRestrictionRepository ageRestrictionRepository;
+    private final AgeRestrictionValidator ageRestrictionValidator;
+    private final DtoMapperService mapperService;
 
 
     @Transactional(readOnly = true)
     public List<AgeRestrictionDtoRead> getAllAgeRestrictions() {
-        List<AgeRestriction> ageRestrictions = repository.findAll(Sort.by("minAge"));
+        List<AgeRestriction> ageRestrictions = ageRestrictionRepository.findAll(Sort.by("minAge"));
         return ageRestrictions.stream()
-                .map(mapper::mapToAgeRestrictionDto)
+                .map(mapperService::mapToAgeRestrictionDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public AgeRestrictionDtoRead getAgeRestrictionById(long id) {
-        AgeRestriction ageRestriction = validator.validateExists(id);
-        return mapper.mapToAgeRestrictionDto(ageRestriction);
+    public AgeRestrictionDtoRead getAgeRestrictionById(long ageRestrictionId) {
+        AgeRestriction ageRestriction = ageRestrictionValidator.validateExists(ageRestrictionId);
+        return mapperService.mapToAgeRestrictionDto(ageRestriction);
     }
 
     @Transactional
     public AgeRestrictionDtoRead addAgeRestriction(AgeRestrictionDtoWrite ageRestrictionDto) {
-        AgeRestriction ageRestriction = mapper.mapToAgeRestriction(ageRestrictionDto);
-        validator.validateNotExists(ageRestriction);
-        validator.validateInput(ageRestriction);
-        ageRestriction = repository.save(ageRestriction);
-        return mapper.mapToAgeRestrictionDto(ageRestriction);
+        AgeRestriction ageRestriction = mapperService.mapToAgeRestriction(ageRestrictionDto);
+        ageRestrictionValidator.validateNotExists(ageRestriction);
+        ageRestrictionValidator.validateInput(ageRestriction);
+        ageRestriction = ageRestrictionRepository.save(ageRestriction);
+        return mapperService.mapToAgeRestrictionDto(ageRestriction);
     }
 
     @Transactional
-    public void editAgeRestriction(long id, AgeRestrictionDtoWrite ageRestrictionDto) {
-        AgeRestriction ageRestriction = validator.validateExists(id);
-        AgeRestriction ageRestrictionFromDto = mapper.mapToAgeRestriction(ageRestrictionDto);
-        validator.validateInput(ageRestrictionFromDto);
-        validator.validateChanged(ageRestriction, ageRestrictionFromDto);
-        validator.validateNotExists(ageRestrictionFromDto);
+    public void editAgeRestriction(long ageRestrictionId, AgeRestrictionDtoWrite ageRestrictionDto) {
+        AgeRestriction ageRestriction = ageRestrictionValidator.validateExists(ageRestrictionId);
+        AgeRestriction ageRestrictionFromDto = mapperService.mapToAgeRestriction(ageRestrictionDto);
+        ageRestrictionValidator.validateInput(ageRestrictionFromDto);
+        ageRestrictionValidator.validateChanged(ageRestriction, ageRestrictionFromDto);
+        ageRestrictionValidator.validateNotExists(ageRestrictionFromDto);
         setFields(ageRestriction, ageRestrictionDto);
-        repository.save(ageRestriction);
+        ageRestrictionRepository.save(ageRestriction);
     }
 
 //    @Transactional
-//    public void removeAgeRestriction(long id) {
-//        validateAgeRestrictionExists(id);
-//        ageRestrictionRepository.deleteById(id);
+//    public void removeAgeRestriction(long ageRestrictionId) {
+//        validateAgeRestrictionExists(ageRestrictionId);
+//        ageRestrictionRepository.deleteById(ageRestrictionId);
 //    }
 
     private void setFields(AgeRestriction ageRestriction, AgeRestrictionDtoWrite ageRestrictionDto) {

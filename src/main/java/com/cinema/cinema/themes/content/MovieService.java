@@ -15,30 +15,30 @@ import java.util.List;
 @Service
 public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
 
-    private final MovieRepository repository;
-    private final MovieValidator validator;
-    private final DtoMapperService mapper;
+    private final MovieRepository movieRepository;
+    private final MovieValidator movieValidator;
+    private final DtoMapperService mapperService;
 
     @Override
     @Transactional(readOnly = true)
     public List<MovieDtoRead> getAllContents() {
-        List<Movie> movies = repository.findAll(Sort.by("title"));
+        List<Movie> movies = movieRepository.findAll(Sort.by("title"));
         return movies.stream()
                 .peek(movie -> movie.setRating(calculateRating(movie)))
-                .map(mapper::mapToMovieDto)
+                .map(mapperService::mapToMovieDto)
                 .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public MovieDtoRead getContent(long id) {
-        Movie movie = getMovie(id);
-        return mapper.mapToMovieDto(movie);
+    public MovieDtoRead getContent(long movieId) {
+        Movie movie = getMovie(movieId);
+        return mapperService.mapToMovieDto(movie);
     }
 
     @Transactional(readOnly = true)
-    public Movie getMovie(long id) {
-        Movie movie = validator.validateExists(id);
+    public Movie getMovie(long movieId) {
+        Movie movie = movieValidator.validateExists(movieId);
         movie.setRating(calculateRating(movie));
         return movie;
     }
@@ -46,27 +46,27 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
     @Override
     @Transactional
     public MovieDtoRead addContent(MovieDtoWrite movieDto) {
-        Movie movie = mapper.mapToMovie(movieDto);
-        validator.validateInput(movie);
-        movie = repository.save(movie);
-        return mapper.mapToMovieDto(movie);
+        Movie movie = mapperService.mapToMovie(movieDto);
+        movieValidator.validateInput(movie);
+        movie = movieRepository.save(movie);
+        return mapperService.mapToMovieDto(movie);
     }
 
     @Override
     @Transactional
-    public void editContent(long id, MovieDtoWrite movieDto) {
-        Movie movie = validator.validateExists(id);
-        Movie movieFromDto = mapper.mapToMovie(movieDto);
-        validator.validateInput(movieFromDto);
+    public void editContent(long movieId, MovieDtoWrite movieDto) {
+        Movie movie = movieValidator.validateExists(movieId);
+        Movie movieFromDto = mapperService.mapToMovie(movieDto);
+        movieValidator.validateInput(movieFromDto);
         setFields(movie, movieDto);
-        repository.save(movie);
+        movieRepository.save(movie);
     }
 
     @Transactional
     public void rateMovie(Movie movie, int rate) {
         movie.setRatingCount(movie.getRatingCount() + 1);
         movie.setRatingSum(movie.getRatingSum() + rate);
-        repository.save(movie);
+        movieRepository.save(movie);
     }
 
     private void setFields(Movie movie, MovieDtoWrite movieDto) {

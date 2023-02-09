@@ -15,51 +15,51 @@ import java.util.*;
 @Service
 public class TicketTypeService {
 
-    private final TicketTypeRepository repository;
-    private final TicketTypeValidator validator;
-    private final DtoMapperService mapper;
+    private final TicketTypeRepository ticketTypeRepository;
+    private final TicketTypeValidator ticketTypeValidator;
+    private final DtoMapperService mapperService;
 
 
     @Transactional(readOnly = true)
     public List<TicketTypeDtoRead> getAllTicketTypes() {
-        List<TicketType> ticketTypes = repository.findAll(Sort.by("name"));
+        List<TicketType> ticketTypes = ticketTypeRepository.findAll(Sort.by("name"));
         return ticketTypes.stream()
-                .map(mapper::mapToTicketTypeDto)
+                .map(mapperService::mapToTicketTypeDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<TicketTypeDtoRead> getAllActiveTicketTypes() {
-        List<TicketType> ticketTypes = repository.findAllByIsAvailableTrue(Sort.by("name"));
+        List<TicketType> ticketTypes = ticketTypeRepository.findAllByIsAvailableTrue(Sort.by("name"));
         return ticketTypes.stream()
-                .map(mapper::mapToTicketTypeDto)
+                .map(mapperService::mapToTicketTypeDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public TicketTypeDtoRead getTicketType(long id) {
-        TicketType ticketType = validator.validateExists(id);
-        return mapper.mapToTicketTypeDto(ticketType);
+    public TicketTypeDtoRead getTicketType(long ticketTypeId) {
+        TicketType ticketType = ticketTypeValidator.validateExists(ticketTypeId);
+        return mapperService.mapToTicketTypeDto(ticketType);
     }
 
     @Transactional
     public TicketTypeDtoRead addTicketType(TicketTypeDtoWrite ticketTypeDto) {
-        TicketType ticketType = mapper.mapToTicketType(ticketTypeDto);
-        validator.validateNotExists(ticketType);
-        validator.validateInput(ticketType);
-        ticketType = repository.save(ticketType);
-        return mapper.mapToTicketTypeDto(ticketType);
+        TicketType ticketType = mapperService.mapToTicketType(ticketTypeDto);
+        ticketTypeValidator.validateNotExists(ticketType);
+        ticketTypeValidator.validateInput(ticketType);
+        ticketType = ticketTypeRepository.save(ticketType);
+        return mapperService.mapToTicketTypeDto(ticketType);
     }
 
     @Transactional
-    public void editTicketType(long id, TicketTypeDtoWrite ticketTypeDto) {
-        TicketType ticketType = validator.validateExists(id);
-        TicketType ticketTypeFromDto = mapper.mapToTicketType(ticketTypeDto);
-        validator.validateInput(ticketTypeFromDto);
-        validator.validateChanged(ticketType, ticketTypeFromDto);
-        validator.validateNotExists(id, ticketTypeDto.getName());
+    public void editTicketType(long ticketTypeId, TicketTypeDtoWrite ticketTypeDto) {
+        TicketType ticketType = ticketTypeValidator.validateExists(ticketTypeId);
+        TicketType ticketTypeFromDto = mapperService.mapToTicketType(ticketTypeDto);
+        ticketTypeValidator.validateInput(ticketTypeFromDto);
+        ticketTypeValidator.validateChanged(ticketType, ticketTypeFromDto);
+        ticketTypeValidator.validateNotExists(ticketTypeId, ticketTypeDto.getName());
         setFields(ticketType, ticketTypeDto);
-        repository.save(ticketType);
+        ticketTypeRepository.save(ticketType);
     }
 
     private void setFields(TicketType ticketType, TicketTypeDtoWrite ticketTypeDto) {

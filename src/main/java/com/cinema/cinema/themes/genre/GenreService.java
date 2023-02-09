@@ -15,42 +15,42 @@ import java.util.*;
 @Service
 public class GenreService {
 
-    private final GenreRepository repository;
-    private final GenreValidator validator;
-    private final DtoMapperService mapper;
+    private final GenreRepository genreRepository;
+    private final GenreValidator genreValidator;
+    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
     public List<GenreDtoRead> getAllGenres() {
-        List<Genre> genres = repository.findAll(Sort.by("name"));
+        List<Genre> genres = genreRepository.findAll(Sort.by("name"));
         return genres.stream()
-                .map(mapper::mapToGenreDto)
+                .map(mapperService::mapToGenreDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public GenreDtoRead getGenreById(long id) {
-        Genre genre = validator.validateExists(id);
-        return mapper.mapToGenreDto(genre);
+    public GenreDtoRead getGenreById(long genreId) {
+        Genre genre = genreValidator.validateExists(genreId);
+        return mapperService.mapToGenreDto(genre);
     }
 
     @Transactional
     public GenreDtoRead addGenre(GenreDtoWrite genreDto) {
-        Genre genre = mapper.mapToGenre(genreDto);
-        validator.validateNotExists(genre);
-        validator.validateInput(genre);
-        genre = repository.save(genre);
-        return mapper.mapToGenreDto(genre);
+        Genre genre = mapperService.mapToGenre(genreDto);
+        genreValidator.validateNotExists(genre);
+        genreValidator.validateInput(genre);
+        genre = genreRepository.save(genre);
+        return mapperService.mapToGenreDto(genre);
     }
 
     @Transactional
-    public void editGenre(long id, GenreDtoWrite genreDto) {
-        Genre genre = validator.validateExists(id);
-        Genre genreFromDto = mapper.mapToGenre(genreDto);
-        validator.validateInput(genreFromDto);
-        validator.validateChanged(genre, genreFromDto);
-        validator.validateNotExists(genreFromDto);
+    public void editGenre(long genreId, GenreDtoWrite genreDto) {
+        Genre genre = genreValidator.validateExists(genreId);
+        Genre genreFromDto = mapperService.mapToGenre(genreDto);
+        genreValidator.validateInput(genreFromDto);
+        genreValidator.validateChanged(genre, genreFromDto);
+        genreValidator.validateNotExists(genreFromDto);
         setFields(genre, genreDto);
-        repository.save(genre);
+        genreRepository.save(genre);
     }
 
     private void setFields(Genre genre, GenreDtoWrite genreDto) {

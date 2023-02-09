@@ -14,15 +14,15 @@ import java.util.*;
 @Service
 public class SubscriberService {
 
-    private final SubscriberRepository repository;
-    private final SubscriberValidator validator;
-    private final DtoMapperService mapper;
+    private final SubscriberRepository subscriberRepository;
+    private final SubscriberValidator subscriberValidator;
+    private final DtoMapperService mapperService;
 
 
     @Transactional(readOnly = true)
     //wywoływane, gdy wysyłana jest notyfikacja do subskrybentów, docelowo brak endpointu, dlatego brak konwersji na dto
     public List<String> getAllSubscribersEmails() {
-        List<Subscriber> subscribers = repository.findAll();
+        List<Subscriber> subscribers = subscriberRepository.findAll();
         return subscribers.stream()
                 .map(Subscriber::getEmail)
                 .toList();
@@ -30,17 +30,17 @@ public class SubscriberService {
 
     @Transactional
     public SubscriberDtoRead addSubscriber(SubscriberDtoWrite subscriberDto) {
-        Subscriber subscriber = mapper.mapToSubscriber(subscriberDto);
-        validator.validateNotExists(subscriber);
-        validator.validateInput(subscriber);
-        subscriber = repository.save(subscriber);
-        return mapper.mapToSubscriberDto(subscriber);
+        Subscriber subscriber = mapperService.mapToSubscriber(subscriberDto);
+        subscriberValidator.validateNotExists(subscriber);
+        subscriberValidator.validateInput(subscriber);
+        subscriber = subscriberRepository.save(subscriber);
+        return mapperService.mapToSubscriberDto(subscriber);
     }
 
     @Transactional
     public void removeSubscriber(SubscriberDtoWrite subscriberDto) {
-        Subscriber subscriber = validator.validateExists(subscriberDto.getEmail());
-        repository.deleteById(subscriber.getId());
+        Subscriber subscriber = subscriberValidator.validateExists(subscriberDto.getEmail());
+        subscriberRepository.deleteById(subscriber.getId());
     }
 
 }
