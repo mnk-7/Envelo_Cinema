@@ -31,10 +31,16 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
 
     @Override
     @Transactional(readOnly = true)
-    protected MovieDtoRead getContent(long id) {
+    public MovieDtoRead getContent(long id) {
+        Movie movie = getMovie(id);
+        return mapper.mapToMovieDto(movie);
+    }
+
+    @Transactional(readOnly = true)
+    public Movie getMovie(long id) {
         Movie movie = validator.validateExists(id);
         movie.setRating(calculateRating(movie));
-        return mapper.mapToMovieDto(movie);
+        return movie;
     }
 
     @Override
@@ -57,8 +63,7 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
     }
 
     @Transactional
-    public void rateMovie(long id, int rate) {
-        Movie movie = validator.validateExists(id);
+    public void rateMovie(Movie movie, int rate) {
         movie.setRatingCount(movie.getRatingCount() + 1);
         movie.setRatingSum(movie.getRatingSum() + rate);
         repository.save(movie);
@@ -76,6 +81,9 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
     }
 
     private double calculateRating(Movie movie) {
+        if (movie.getRatingCount() == 0) {
+            return 0;
+        }
         return (double) movie.getRatingSum() / movie.getRatingCount();
     }
 

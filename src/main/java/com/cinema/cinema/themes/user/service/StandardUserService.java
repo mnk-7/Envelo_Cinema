@@ -10,6 +10,7 @@ import com.cinema.cinema.themes.user.repository.StandardUserRepository;
 import com.cinema.cinema.themes.content.MovieService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,15 +86,16 @@ public class StandardUserService extends UserService<StandardUser> {
         userRepository.save(user);
     }
 
-//    public void rateMovie(long id, Movie movie, int rate) {
-//        StandardUser user = getStandardUser(id);
-//        if (user.getRatedMovies().contains(movie)) {
-//            throw new UserException("You have already rated this movie");
-//        }
-//        user.getRatedMovies().add(movie);
-//        //TODO - should below part be moved to controller?
-//        movieService.rateMovie(movie, rate);
-//    }
+    @Transactional
+    public void rateMovie(long userId, Movie movie, int rate) {
+        StandardUser user = getStandardUser(userId);
+        if (user.getRatedMovies().contains(movie)) {
+            throw new UserException("You have already rated this movie");
+        }
+        user.getRatedMovies().add(movie);
+        userRepository.save(user);
+        movieService.rateMovie(movie, rate);
+    }
 
     public Set<Order> getAllOrders(long id) {
         StandardUser user = getStandardUser(id);
