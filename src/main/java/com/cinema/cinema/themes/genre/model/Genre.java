@@ -25,7 +25,7 @@ public class Genre {
 
     @NotNull(message = "Field is mandatory")
     @NotBlank(message = "Field cannot be empty or blank")
-    @Size(max = 50, message = "Field cannot contain more than 50 characters")
+    @Size(max = 50, message = "Field cannot contain more than {max} characters")
     private String name;
 
     @Override

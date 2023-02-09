@@ -4,9 +4,11 @@ import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.utils.ValidatorService;
 import jakarta.validation.Validator;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class MovieValidator extends ValidatorService<Movie> {
 
     private final MovieRepository repository;

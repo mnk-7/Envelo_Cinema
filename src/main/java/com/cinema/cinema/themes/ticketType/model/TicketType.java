@@ -27,15 +27,15 @@ public class TicketType {
 
     @NotNull(message = "Field is mandatory")
     @NotBlank(message = "Field cannot be blank or empty")
-    @Size(max = 20, message = "Field cannot contain more than 20 characters")
+    @Size(max = 20, message = "Field cannot contain more than {max} characters")
     private String name;
 
     @NotNull(message = "Field is mandatory")
-    @Size(max = 250, message = "Field cannot contain more than 250 characters")
+    @Size(max = 250, message = "Field cannot contain more than {max} characters")
     private String description;
 
     @NotNull(message = "Field is mandatory")
-    @Min(value = 0, message = "Value cannot be less than 0")
+    @Min(value = 0, message = "Value cannot be less than {value}")
     private BigDecimal price;
     private boolean isAvailable;
 

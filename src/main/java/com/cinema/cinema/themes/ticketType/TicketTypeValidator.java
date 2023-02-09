@@ -4,7 +4,6 @@ import com.cinema.cinema.exceptions.ElementFoundException;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ElementNotModifiedException;
 import com.cinema.cinema.themes.ticketType.model.TicketType;
-import com.cinema.cinema.themes.ticketType.model.TicketTypeDtoWrite;
 import com.cinema.cinema.utils.ValidatorService;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,8 @@
 package com.cinema.cinema.exceptions;
 
 import lombok.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
