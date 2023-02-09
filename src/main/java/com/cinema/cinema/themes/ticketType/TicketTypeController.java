@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/${app.prefix}/${app.version}/ticket-types")
 public class TicketTypeController {
 
-    private final TicketTypeService service;
+    private final TicketTypeService ticketTypeService;
 
     @GetMapping
     @Operation(summary = "Get all ticket types")
@@ -29,7 +29,7 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "List with ticket types returned"),
             @ApiResponse(responseCode = "204", description = "No ticket type found")})
     public ResponseEntity<List<TicketTypeDtoRead>> getAllTicketTypes() {
-        List<TicketTypeDtoRead> ticketTypes = service.getAllTicketTypes();
+        List<TicketTypeDtoRead> ticketTypes = ticketTypeService.getAllTicketTypes();
         HttpStatus status = ticketTypes.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(ticketTypes, status);
     }
@@ -40,18 +40,18 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "List with active ticket types returned"),
             @ApiResponse(responseCode = "204", description = "No active ticket type found")})
     public ResponseEntity<List<TicketTypeDtoRead>> getAllActiveTicketTypes() {
-        List<TicketTypeDtoRead> ticketTypes = service.getAllActiveTicketTypes();
+        List<TicketTypeDtoRead> ticketTypes = ticketTypeService.getAllActiveTicketTypes();
         HttpStatus status = ticketTypes.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(ticketTypes, status);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{ticketTypeId}")
     @Operation(summary = "Get ticket type by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ticket type returned"),
             @ApiResponse(responseCode = "404", description = "Ticket type not found")})
-    public ResponseEntity<TicketTypeDtoRead> getTicketType(@PathVariable long id) {
-        TicketTypeDtoRead ticketType = service.getTicketType(id);
+    public ResponseEntity<TicketTypeDtoRead> getTicketType(@PathVariable long ticketTypeId) {
+        TicketTypeDtoRead ticketType = ticketTypeService.getTicketType(ticketTypeId);
         return new ResponseEntity<>(ticketType, HttpStatus.OK);
     }
 
@@ -59,25 +59,25 @@ public class TicketTypeController {
     @Operation(summary = "Create ticket type")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ticket type created"),
-            @ApiResponse(responseCode = "400", description = "Ticket type already exists")})
+            @ApiResponse(responseCode = "400", description = "Wrong data")})
     public ResponseEntity<Void> addTicketType(@RequestBody TicketTypeDtoWrite ticketType) {
-        TicketTypeDtoRead ticketTypeCreated = service.addTicketType(ticketType);
+        TicketTypeDtoRead ticketTypeCreated = ticketTypeService.addTicketType(ticketType);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{id}")
+                .path("/{ticketTypeId}")
                 .buildAndExpand(ticketTypeCreated.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{ticketTypeId}")
     @Operation(summary = "Update ticket type")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ticket type updated"),
-            @ApiResponse(responseCode = "400", description = "Ticket type already exists"),
+            @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Ticket type not found")})
-    public ResponseEntity<Void> editTicketType(@PathVariable long id, @RequestBody TicketTypeDtoWrite ticketType) {
-        service.editTicketType(id, ticketType);
+    public ResponseEntity<Void> editTicketType(@PathVariable long ticketTypeId, @RequestBody TicketTypeDtoWrite ticketType) {
+        ticketTypeService.editTicketType(ticketTypeId, ticketType);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

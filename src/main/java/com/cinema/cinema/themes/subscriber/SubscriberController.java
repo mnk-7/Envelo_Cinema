@@ -20,7 +20,7 @@ import java.net.URI;
 @RequestMapping("/${app.prefix}/${app.version}/subscribers")
 public class SubscriberController {
 
-    private final SubscriberService service;
+    private final SubscriberService subscriberService;
 
 //    @GetMapping //metoda dla testów
 //    @Operation(summary = "Get all subscribers emails")
@@ -37,12 +37,12 @@ public class SubscriberController {
     @Operation(summary = "Create subscriber")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Subscriber created"),
-            @ApiResponse(responseCode = "400", description = "Subscriber already exists")})
+            @ApiResponse(responseCode = "400", description = "Wrong data")})
     public ResponseEntity<Void> addSubscriber(@RequestBody SubscriberDtoWrite subscriber) {
-        SubscriberDtoRead subscriberCreated = service.addSubscriber(subscriber);
+        SubscriberDtoRead subscriberCreated = subscriberService.addSubscriber(subscriber);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{id}")
+                .path("/{subscriberId}")
                 .buildAndExpand(subscriberCreated.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
@@ -54,7 +54,7 @@ public class SubscriberController {
             @ApiResponse(responseCode = "204", description = "Subscriber deleted"),
             @ApiResponse(responseCode = "404", description = "Subscriber not found")})
     public ResponseEntity<Void> removeSubscriber(@RequestBody SubscriberDtoWrite subscriber) {
-        service.removeSubscriber(subscriber);
+        subscriberService.removeSubscriber(subscriber);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

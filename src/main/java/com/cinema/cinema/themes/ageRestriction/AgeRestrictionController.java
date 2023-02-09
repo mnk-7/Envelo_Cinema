@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/${app.prefix}/${app.version}/age-restrictions")
 public class AgeRestrictionController {
 
-    private final AgeRestrictionService service;
+    private final AgeRestrictionService ageRestrictionService;
 
     @GetMapping
     @Operation(summary = "Get all age restrictions")
@@ -29,18 +29,18 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "200", description = "List with age restrictions returned"),
             @ApiResponse(responseCode = "204", description = "No age restriction found")})
     public ResponseEntity<List<AgeRestrictionDtoRead>> getAllAgeRestrictions() {
-        List<AgeRestrictionDtoRead> ageRestrictions = service.getAllAgeRestrictions();
+        List<AgeRestrictionDtoRead> ageRestrictions = ageRestrictionService.getAllAgeRestrictions();
         HttpStatus status = ageRestrictions.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(ageRestrictions, status);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{ageRestrictionId}")
     @Operation(summary = "Get age restriction by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Age restriction returned"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
-    public ResponseEntity<AgeRestrictionDtoRead> getAgeRestriction(@PathVariable long id) {
-        AgeRestrictionDtoRead ageRestriction = service.getAgeRestrictionById(id);
+    public ResponseEntity<AgeRestrictionDtoRead> getAgeRestriction(@PathVariable long ageRestrictionId) {
+        AgeRestrictionDtoRead ageRestriction = ageRestrictionService.getAgeRestrictionById(ageRestrictionId);
         return new ResponseEntity<>(ageRestriction, HttpStatus.OK);
     }
 
@@ -48,35 +48,35 @@ public class AgeRestrictionController {
     @Operation(summary = "Create age restriction")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Age restriction created"),
-            @ApiResponse(responseCode = "400", description = "Age restriction already exists")})
+            @ApiResponse(responseCode = "400", description = "Wrong data")})
     public ResponseEntity<Void> addAgeRestriction(@RequestBody AgeRestrictionDtoWrite ageRestriction) {
-        AgeRestrictionDtoRead ageRestrictionCreated = service.addAgeRestriction(ageRestriction);
+        AgeRestrictionDtoRead ageRestrictionCreated = ageRestrictionService.addAgeRestriction(ageRestriction);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{id}")
+                .path("/{ageRestrictionId}")
                 .buildAndExpand(ageRestrictionCreated.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{ageRestrictionId}")
     @Operation(summary = "Update age restriction")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Age restriction updated"),
-            @ApiResponse(responseCode = "400", description = "Age restriction already exists"),
+            @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
-    public ResponseEntity<Void> editAgeRestriction(@PathVariable long id, @RequestBody AgeRestrictionDtoWrite ageRestriction) {
-        service.editAgeRestriction(id, ageRestriction);
+    public ResponseEntity<Void> editAgeRestriction(@PathVariable long ageRestrictionId, @RequestBody AgeRestrictionDtoWrite ageRestriction) {
+        ageRestrictionService.editAgeRestriction(ageRestrictionId, ageRestriction);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @DeleteMapping("/{id}")
+//    @DeleteMapping("/{ageRestrictionId}")
 //    @Operation(summary = "Delete age restriction")
 //    @ApiResponses(value = {
 //            @ApiResponse(responseCode = "204", description = "Age restriction deleted"),
 //            @ApiResponse(responseCode = "404", description = "Age restriction not found")})
-//    public ResponseEntity<Void> removeAgeRestriction(@PathVariable long id) {
-//        ageRestrictionService.removeAgeRestriction(id);
+//    public ResponseEntity<Void> removeAgeRestriction(@PathVariable long ageRestrictionId) {
+//        ageRestrictionService.removeAgeRestriction(ageRestrictionId);
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
 
