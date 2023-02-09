@@ -13,24 +13,24 @@ import java.util.Optional;
 @Service
 public class GenreValidator extends ValidatorService<Genre> {
 
-    private final GenreRepository repository;
+    private final GenreRepository genreRepository;
 
-    public GenreValidator(Validator validator, GenreRepository repository) {
+    public GenreValidator(Validator validator, GenreRepository genreRepository) {
         super(validator);
-        this.repository = repository;
+        this.genreRepository = genreRepository;
     }
 
     @Override
-    public Genre validateExists(long id) {
-        Optional<Genre> genre = repository.findById(id);
+    public Genre validateExists(long genreId) {
+        Optional<Genre> genre = genreRepository.findById(genreId);
         if (genre.isEmpty()) {
-            throw new ElementNotFoundException("Genre with ID " + id + " not found");
+            throw new ElementNotFoundException("Genre with ID " + genreId + " not found");
         }
         return genre.get();
     }
 
     public void validateNotExists(Genre genreFromDto) {
-        Optional<Genre> genre = repository.findByName(genreFromDto.getName());
+        Optional<Genre> genre = genreRepository.findByName(genreFromDto.getName());
         if (genre.isPresent()) {
             throw new ElementFoundException("Genre with name " + genre.get().getName() + " already exists");
         }

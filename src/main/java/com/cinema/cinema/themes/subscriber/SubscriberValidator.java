@@ -12,31 +12,31 @@ import java.util.Optional;
 @Service
 public class SubscriberValidator extends ValidatorService<Subscriber> {
 
-    private final SubscriberRepository repository;
+    private final SubscriberRepository subscriberRepository;
 
-    public SubscriberValidator(Validator validator, SubscriberRepository repository) {
+    public SubscriberValidator(Validator validator, SubscriberRepository subscriberRepository) {
         super(validator);
-        this.repository = repository;
+        this.subscriberRepository = subscriberRepository;
     }
 
     @Override
-    public Subscriber validateExists(long id) {
-        Optional<Subscriber> subscriber = repository.findById(id);
+    public Subscriber validateExists(long subscriberId) {
+        Optional<Subscriber> subscriber = subscriberRepository.findById(subscriberId);
         if (subscriber.isEmpty()) {
-            throw new ElementNotFoundException("Subscriber with ID " + id + " not found");
+            throw new ElementNotFoundException("Subscriber with ID " + subscriberId + " not found");
         }
         return subscriber.get();
     }
 
     public void validateNotExists(Subscriber subscriberFromDto) {
-        Optional<Subscriber> subscriber = repository.findByEmail(subscriberFromDto.getEmail());
+        Optional<Subscriber> subscriber = subscriberRepository.findByEmail(subscriberFromDto.getEmail());
         if (subscriber.isPresent()) {
             throw new ElementFoundException("Subscriber with email " + subscriber.get().getEmail() + " already exists");
         }
     }
 
     public Subscriber validateExists(String email) {
-        Optional<Subscriber> subscriber = repository.findByEmail(email);
+        Optional<Subscriber> subscriber = subscriberRepository.findByEmail(email);
         if (subscriber.isEmpty()) {
             throw new ElementNotFoundException("Subscriber with email " + email + " not found");
         }

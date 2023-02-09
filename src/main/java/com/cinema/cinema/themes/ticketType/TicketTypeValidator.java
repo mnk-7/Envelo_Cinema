@@ -13,24 +13,24 @@ import java.util.Optional;
 @Service
 public class TicketTypeValidator extends ValidatorService<TicketType> {
 
-    private final TicketTypeRepository repository;
+    private final TicketTypeRepository ticketTypeRepository;
 
-    public TicketTypeValidator(Validator validator, TicketTypeRepository repository) {
+    public TicketTypeValidator(Validator validator, TicketTypeRepository ticketTypeRepository) {
         super(validator);
-        this.repository = repository;
+        this.ticketTypeRepository = ticketTypeRepository;
     }
 
     @Override
-    public TicketType validateExists(long id) {
-        Optional<TicketType> ticketType = repository.findById(id);
+    public TicketType validateExists(long ticketTypeId) {
+        Optional<TicketType> ticketType = ticketTypeRepository.findById(ticketTypeId);
         if (ticketType.isEmpty()) {
-            throw new ElementNotFoundException("Ticket type with ID " + id + " not found");
+            throw new ElementNotFoundException("Ticket type with ID " + ticketTypeId + " not found");
         }
         return ticketType.get();
     }
 
     public void validateNotExists(TicketType ticketTypeFromDto) {
-        Optional<TicketType> ticketType = repository.findByName(ticketTypeFromDto.getName());
+        Optional<TicketType> ticketType = ticketTypeRepository.findByName(ticketTypeFromDto.getName());
         if (ticketType.isPresent()) {
             throw new ElementFoundException("Ticket type with name " + ticketType.get().getName() + " already exists");
         }
@@ -42,9 +42,9 @@ public class TicketTypeValidator extends ValidatorService<TicketType> {
         }
     }
 
-    public void validateNotExists(long id, String name) {
-        Optional<TicketType> ticketType = repository.findByName(name);
-        if (ticketType.isPresent() && ticketType.get().getId() != id) {
+    public void validateNotExists(long ticketTypeId, String name) {
+        Optional<TicketType> ticketType = ticketTypeRepository.findByName(name);
+        if (ticketType.isPresent() && ticketType.get().getId() != ticketTypeId) {
             throw new ElementFoundException("Ticket type with name " + ticketType.get().getName() + " already exists");
         }
     }

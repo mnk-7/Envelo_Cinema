@@ -11,18 +11,18 @@ import java.util.Optional;
 @Service
 public class MovieValidator extends ValidatorService<Movie> {
 
-    private final MovieRepository repository;
+    private final MovieRepository movieRepository;
 
-    public MovieValidator(Validator validator, MovieRepository repository) {
+    public MovieValidator(Validator validator, MovieRepository movieRepository) {
         super(validator);
-        this.repository = repository;
+        this.movieRepository = movieRepository;
     }
 
     @Override
-    public Movie validateExists(long id) {
-        Optional<Movie> movie = repository.findById(id);
+    public Movie validateExists(long movieId) {
+        Optional<Movie> movie = movieRepository.findById(movieId);
         if (movie.isEmpty()) {
-            throw new ElementNotFoundException("Movie with ID " + id + " not found");
+            throw new ElementNotFoundException("Movie with ID " + movieId + " not found");
         }
         return movie.get();
     }

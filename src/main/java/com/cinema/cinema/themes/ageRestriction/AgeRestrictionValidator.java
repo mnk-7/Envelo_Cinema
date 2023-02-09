@@ -13,24 +13,24 @@ import java.util.Optional;
 @Service
 public class AgeRestrictionValidator extends ValidatorService<AgeRestriction> {
 
-    private final AgeRestrictionRepository repository;
+    private final AgeRestrictionRepository ageRestrictionRepository;
 
-    public AgeRestrictionValidator(Validator validator, AgeRestrictionRepository repository) {
+    public AgeRestrictionValidator(Validator validator, AgeRestrictionRepository ageRestrictionRepository) {
         super(validator);
-        this.repository = repository;
+        this.ageRestrictionRepository = ageRestrictionRepository;
     }
 
     @Override
-    public AgeRestriction validateExists(long id) {
-        Optional<AgeRestriction> ageRestriction = repository.findById(id);
+    public AgeRestriction validateExists(long ageRestrictionId) {
+        Optional<AgeRestriction> ageRestriction = ageRestrictionRepository.findById(ageRestrictionId);
         if (ageRestriction.isEmpty()) {
-            throw new ElementNotFoundException("Age restriction with ID " + id + " not found");
+            throw new ElementNotFoundException("Age restriction with ID " + ageRestrictionId + " not found");
         }
         return ageRestriction.get();
     }
 
     public void validateNotExists(AgeRestriction ageRestrictionFromDto) {
-        Optional<AgeRestriction> ageRestriction = repository.findByMinAge(ageRestrictionFromDto.getMinAge());
+        Optional<AgeRestriction> ageRestriction = ageRestrictionRepository.findByMinAge(ageRestrictionFromDto.getMinAge());
         if (ageRestriction.isPresent()) {
             throw new ElementFoundException("Age restriction with min age " + ageRestriction.get().getMinAge() + " already exists");
         }
