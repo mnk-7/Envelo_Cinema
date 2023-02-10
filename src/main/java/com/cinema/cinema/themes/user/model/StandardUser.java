@@ -4,6 +4,7 @@ import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.themes.cart.model.Cart;
 import com.cinema.cinema.themes.order.model.Order;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.Set;
 @Table(name = "users")
 public class StandardUser extends User {
 
+    @NotNull(message = "Field is mandatory")
     private boolean isActive;
 
     @ManyToOne

@@ -73,17 +73,4 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //TODO - perform tests
-    @PutMapping("/{movieId}/rating")
-    @Operation(summary = "Rate movie")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Movie and user updated"),
-            @ApiResponse(responseCode = "400", description = "Wrong data"),
-            @ApiResponse(responseCode = "404", description = "Movie or user not found")})
-    public ResponseEntity<Void> rateMovie(long movieId, @RequestParam int rate, @RequestParam int userId) {
-        Movie movie = movieService.getMovie(movieId);
-        userService.rateMovie(userId, movie, rate);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
 }

@@ -50,7 +50,7 @@ public class OrderService {
         orderRepository.save(order);
         ticketService.editOrder(order, tickets);
         if (user != null) {
-            userService.addOrder(user.getId(), order);
+            //userService.addOrder(user.getId(), order);
             cartService.clearCart(user.getCart().getId());
         }
     }
@@ -58,7 +58,7 @@ public class OrderService {
     public void cancelOrder(long id, User user) {
         Order order = getOrder(id);
         orderRepository.deleteById(id);
-        userService.removeOrder(user.getId(), order);
+        //userService.removeOrder(user.getId(), order);
     }
 
     public void addInvoice(long id, Invoice invoice) {

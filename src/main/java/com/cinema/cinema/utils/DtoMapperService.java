@@ -15,6 +15,7 @@ import com.cinema.cinema.themes.subscriber.model.SubscriberDtoWrite;
 import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.themes.ticketType.model.TicketTypeDtoRead;
 import com.cinema.cinema.themes.ticketType.model.TicketTypeDtoWrite;
+import com.cinema.cinema.themes.user.model.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,22 @@ public class DtoMapperService {
 
     public MovieDtoRead mapToMovieDto(Movie movie) {
         return mapper.map(movie, MovieDtoRead.class);
+    }
+
+    public AdminUser mapToAdminUser(AdminUserDtoWrite adminDto) {
+        return mapper.map(adminDto, AdminUser.class);
+    }
+
+    public AdminUserDtoRead mapToAdminUserDto(AdminUser admin) {
+        return mapper.map(admin, AdminUserDtoRead.class);
+    }
+
+    public StandardUser mapToStandardUser(StandardUserDtoWrite userDto) {
+        return mapper.map(userDto, StandardUser.class);
+    }
+
+    public StandardUserDtoRead mapToStandardUserDto(StandardUser user) {
+        return mapper.map(user, StandardUserDtoRead.class);
     }
 
 }

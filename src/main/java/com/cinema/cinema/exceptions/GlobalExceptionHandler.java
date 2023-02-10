@@ -31,11 +31,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleProcessingException(ProcessingException ex) {
+        return createResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     private ResponseEntity<ErrorResponse> createResponseEntity(HttpStatus status, String exceptionMessage) {
         ErrorResponse errorResponse = new ErrorResponse(exceptionMessage);
         return new ResponseEntity<>(errorResponse, status);
     }
-
 
 
     // alternative for ArgumentNotValidException

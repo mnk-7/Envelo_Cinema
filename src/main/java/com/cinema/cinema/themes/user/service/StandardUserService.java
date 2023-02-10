@@ -1,136 +1,154 @@
 package com.cinema.cinema.themes.user.service;
 
 import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.user.UserException;
-import com.cinema.cinema.themes.cart.model.Cart;
-import com.cinema.cinema.themes.invoice.model.Invoice;
-import com.cinema.cinema.themes.order.model.Order;
+import com.cinema.cinema.themes.content.model.MovieDtoRead;
 import com.cinema.cinema.themes.user.model.StandardUser;
+import com.cinema.cinema.themes.user.model.StandardUserDtoRead;
+import com.cinema.cinema.themes.user.model.StandardUserDtoWrite;
 import com.cinema.cinema.themes.user.repository.StandardUserRepository;
 import com.cinema.cinema.themes.content.MovieService;
+import com.cinema.cinema.themes.user.validator.StandardUserValidator;
+import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
 @Service
-public class StandardUserService extends UserService<StandardUser> {
+public class StandardUserService extends UserService<StandardUserDtoRead, StandardUserDtoWrite> {
 
     private final StandardUserRepository userRepository;
+    private final StandardUserValidator userValidator;
     private final MovieService movieService;
+    private final DtoMapperService mapperService;
 
-    public List<StandardUser> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public StandardUser getStandardUser(long id) {
-        return getUser(id);
+    @Transactional(readOnly = true)
+    public List<StandardUserDtoRead> getAllUsers() {
+        List<StandardUser> users = userRepository.findAll();
+        return users.stream()
+                .map(mapperService::mapToStandardUserDto)
+                .toList();
     }
 
     @Override
-    protected StandardUser getUser(long id) {
-        Optional<StandardUser> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new UserException("User with given ID not found");
-        }
-        return user.get();
+    @Transactional(readOnly = true)
+    public StandardUserDtoRead getUser(long userId) {
+        StandardUser user = userValidator.validateExists(userId);
+        return mapperService.mapToStandardUserDto(user);
     }
 
-    public void editStandardUser(long id, String firstName, String lastName, String password, String email, int phone) {
-        StandardUser user = editUser(id, firstName, lastName, password, email, phone);
+    @Override
+    @Transactional
+    public void editUser(long id, StandardUserDtoWrite userDto) {
+        StandardUser user = userValidator.validateExists(id);
+        StandardUser userFromDto = mapperService.mapToStandardUser(userDto);
+        userValidator.validateInput(userFromDto);
+        setFields(user, userFromDto);
         userRepository.save(user);
     }
 
-    @Override
-    protected StandardUser editUser(long id, String firstName, String lastName, String password, String email, int phone) {
-        StandardUser user = getStandardUser(id);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setPhone(phone);
-        return user;
-    }
-
-    public void editIsActive(long id, boolean isActive) {
-        StandardUser user = getStandardUser(id);
+    @Transactional
+    public StandardUserDtoRead editIsActive(long userId, boolean isActive) {
+        StandardUser user = userValidator.validateExists(userId);
+        userValidator.validateIsActiveChange(user, isActive);
         user.setActive(isActive);
-        userRepository.save(user);
+        user = userRepository.save(user);
+        return mapperService.mapToStandardUserDto(user);
     }
 
-    public void editPassword(long id, String password) {
-        StandardUser user = getStandardUser(id);
-        user.setPassword(password);
-        userRepository.save(user);
+    @Transactional
+    public String generateNewPassword(long userId) {
+        StandardUser user = userValidator.validateExists(userId);
+        String password = PasswordGenerator.generatePassword(user);
+        editPassword(user, password);
+        return password;
     }
 
-    //TODO - would it be better to pass user instead of id in the methods below and/or above?
-    public Set<Movie> getMoviesToWatch(long id) {
-        StandardUser user = getStandardUser(id);
-        return user.getMoviesToWatch();
+    @Transactional(readOnly = true)
+    public List<MovieDtoRead> getMoviesToWatch(long userId) {
+        StandardUser user = userValidator.validateExists(userId);
+        Set<Movie> moviesToWatch = user.getMoviesToWatch();
+        return moviesToWatch.stream()
+                .map(mapperService::mapToMovieDto)
+                .sorted(Comparator.comparing(MovieDtoRead::getTitle))
+                .toList();
     }
 
-    public void addMovieToWatchlist(long id, Movie movie) {
-        StandardUser user = getStandardUser(id);
+    @Transactional
+    public void addMovieToWatchlist(long userId, Movie movie) {
+        StandardUser user = userValidator.validateExists(userId);
+        userValidator.validateMovieNotInWatchList(user, movie);
         user.getMoviesToWatch().add(movie);
         userRepository.save(user);
     }
 
-    public void removeMovieFromWatchlist(long id, Movie movie) {
-        StandardUser user = getStandardUser(id);
+    @Transactional
+    public void removeMovieFromWatchlist(long userId, Movie movie) {
+        StandardUser user = userValidator.validateExists(userId);
+        userValidator.validateMovieInWatchList(user, movie);
         user.getMoviesToWatch().remove(movie);
         userRepository.save(user);
     }
 
     @Transactional
     public void rateMovie(long userId, Movie movie, int rate) {
-        StandardUser user = getStandardUser(userId);
-        if (user.getRatedMovies().contains(movie)) {
-            throw new UserException("You have already rated this movie");
-        }
+        StandardUser user = userValidator.validateExists(userId);
+        userValidator.validateMovieNotRated(user, movie);
         user.getRatedMovies().add(movie);
-        userRepository.save(user);
         movieService.rateMovie(movie, rate);
-    }
-
-    public Set<Order> getAllOrders(long id) {
-        StandardUser user = getStandardUser(id);
-        return user.getOrders();
-    }
-
-    //TODO - needs to be analyzed
-    public Order getOrder(long id, Order order) {
-        StandardUser user = getStandardUser(id);
-        if (user.getOrders().contains(order)) {
-            return order;
-        }
-        throw new UserException("You don't have such an order");
-    }
-
-    public void addOrder(long id, Order order) {
-        StandardUser user = getStandardUser(id);
-        user.getOrders().add(order);
         userRepository.save(user);
     }
 
-    public void removeOrder(long id, Order order) {
-        StandardUser user = getStandardUser(id);
-        user.getOrders().remove(order);
+
+//    public Set<Order> getAllOrders(long id) {
+//        StandardUser user = getStandardUser(id);
+//        return user.getOrders();
+//    }
+
+//    public Order getOrder(long id, Order order) {
+//        StandardUser user = getStandardUser(id);
+//        if (user.getOrders().contains(order)) {
+//            return order;
+//        }
+//        throw new UserException("You don't have such an order");
+//    }
+
+//    public void addOrder(long id, Order order) {
+//        StandardUser user = getStandardUser(id);
+//        user.getOrders().add(order);
+//        userRepository.save(user);
+//    }
+
+//    public void removeOrder(long id, Order order) {
+//        StandardUser user = getStandardUser(id);
+//        user.getOrders().remove(order);
+//        userRepository.save(user);
+//    }
+
+//    public Cart getCart(long id) {
+//        StandardUser user = getStandardUser(id);
+//        return user.getCart();
+//    }
+
+//    public List<Invoice> getAllInvoices(long id) {
+//        StandardUser user = getStandardUser(id);
+//        return user.getOrders().stream().map(Order::getInvoice).toList();
+//    }
+    private void setFields(StandardUser user, StandardUser userFromDto) {
+        user.setFirstName(userFromDto.getFirstName());
+        user.setLastName(userFromDto.getLastName());
+        user.setEmail(userFromDto.getEmail());
+        user.setPassword(userFromDto.getPassword());
+        user.setPhone(userFromDto.getPhone());
+    }
+
+    private void editPassword(StandardUser user, String password) {
+        user.setPassword(password);
         userRepository.save(user);
-    }
-
-    public Cart getCart(long id) {
-        StandardUser user = getStandardUser(id);
-        return user.getCart();
-    }
-
-    public List<Invoice> getAllInvoices(long id) {
-        StandardUser user = getStandardUser(id);
-        return user.getOrders().stream().map(Order::getInvoice).toList();
     }
 
 }
