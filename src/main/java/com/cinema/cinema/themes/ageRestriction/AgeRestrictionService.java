@@ -29,7 +29,7 @@ public class AgeRestrictionService {
     }
 
     @Transactional(readOnly = true)
-    public AgeRestrictionDtoRead getAgeRestrictionById(long ageRestrictionId) {
+    public AgeRestrictionDtoRead getAgeRestriction(long ageRestrictionId) {
         AgeRestriction ageRestriction = ageRestrictionValidator.validateExists(ageRestrictionId);
         return mapperService.mapToAgeRestrictionDto(ageRestriction);
     }

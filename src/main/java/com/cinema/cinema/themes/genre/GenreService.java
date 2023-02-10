@@ -28,7 +28,7 @@ public class GenreService {
     }
 
     @Transactional(readOnly = true)
-    public GenreDtoRead getGenreById(long genreId) {
+    public GenreDtoRead getGenre(long genreId) {
         Genre genre = genreValidator.validateExists(genreId);
         return mapperService.mapToGenreDto(genre);
     }

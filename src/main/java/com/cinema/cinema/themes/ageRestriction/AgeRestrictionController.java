@@ -40,7 +40,7 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "200", description = "Age restriction returned"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
     public ResponseEntity<AgeRestrictionDtoRead> getAgeRestriction(@PathVariable long ageRestrictionId) {
-        AgeRestrictionDtoRead ageRestriction = ageRestrictionService.getAgeRestrictionById(ageRestrictionId);
+        AgeRestrictionDtoRead ageRestriction = ageRestrictionService.getAgeRestriction(ageRestrictionId);
         return new ResponseEntity<>(ageRestriction, HttpStatus.OK);
     }
 

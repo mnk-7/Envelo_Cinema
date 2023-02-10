@@ -40,7 +40,7 @@ public class GenreController {
             @ApiResponse(responseCode = "200", description = "Genre returned"),
             @ApiResponse(responseCode = "404", description = "Genre not found")})
     public ResponseEntity<GenreDtoRead> getGenre(@PathVariable long genreId) {
-        GenreDtoRead genre = genreService.getGenreById(genreId);
+        GenreDtoRead genre = genreService.getGenre(genreId);
         return new ResponseEntity<>(genre, HttpStatus.OK);
     }
 
