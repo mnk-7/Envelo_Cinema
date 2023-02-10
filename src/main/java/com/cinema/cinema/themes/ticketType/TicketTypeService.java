@@ -58,15 +58,15 @@ public class TicketTypeService {
         ticketTypeValidator.validateInput(ticketTypeFromDto);
         ticketTypeValidator.validateChanged(ticketType, ticketTypeFromDto);
         ticketTypeValidator.validateNotExists(ticketTypeId, ticketTypeDto.getName());
-        setFields(ticketType, ticketTypeDto);
+        setFields(ticketType, ticketTypeFromDto);
         ticketTypeRepository.save(ticketType);
     }
 
-    private void setFields(TicketType ticketType, TicketTypeDtoWrite ticketTypeDto) {
-        ticketType.setName(ticketTypeDto.getName());
-        ticketType.setDescription(ticketTypeDto.getDescription());
-        ticketType.setPrice(ticketTypeDto.getPrice());
-        ticketType.setAvailable(ticketTypeDto.isAvailable());
+    private void setFields(TicketType ticketType, TicketType ticketTypeFromDto) {
+        ticketType.setName(ticketTypeFromDto.getName());
+        ticketType.setDescription(ticketTypeFromDto.getDescription());
+        ticketType.setPrice(ticketTypeFromDto.getPrice());
+        ticketType.setAvailable(ticketTypeFromDto.isAvailable());
     }
 
 }

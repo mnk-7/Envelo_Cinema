@@ -58,7 +58,7 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
         Movie movie = movieValidator.validateExists(movieId);
         Movie movieFromDto = mapperService.mapToMovie(movieDto);
         movieValidator.validateInput(movieFromDto);
-        setFields(movie, movieDto);
+        setFields(movie, movieFromDto);
         movieRepository.save(movie);
     }
 
@@ -69,15 +69,15 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
         movieRepository.save(movie);
     }
 
-    private void setFields(Movie movie, MovieDtoWrite movieDto) {
-        movie.setTitle(movieDto.getTitle());
-        movie.setDurationInMinutes(movieDto.getDurationInMinutes());
-        movie.setAgeRestriction(movieDto.getAgeRestriction());
-        movie.setShortDescription(movieDto.getShortDescription());
-        movie.setLongDescription(movieDto.getLongDescription());
-        movie.setImageUrl(movieDto.getImageUrl());
-        movie.setGenres(movieDto.getGenres());
-        movie.setPremiere(movieDto.isPremiere());
+    private void setFields(Movie movie, Movie movieFromDto) {
+        movie.setTitle(movieFromDto.getTitle());
+        movie.setDurationInMinutes(movieFromDto.getDurationInMinutes());
+        movie.setAgeRestriction(movieFromDto.getAgeRestriction());
+        movie.setShortDescription(movieFromDto.getShortDescription());
+        movie.setLongDescription(movieFromDto.getLongDescription());
+        movie.setImageUrl(movieFromDto.getImageUrl());
+        movie.setGenres(movieFromDto.getGenres());
+        movie.setPremiere(movieFromDto.isPremiere());
     }
 
     private double calculateRating(Movie movie) {
