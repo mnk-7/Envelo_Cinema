@@ -30,6 +30,7 @@ public abstract class Content {
     private String title;
 
     @Min(value = 15, message = "Value cannot be less than {value}")
+    @Column(name = "duration")
     private int durationInMinutes;
 
     @NotNull(message = "Field is mandatory")
@@ -38,10 +39,10 @@ public abstract class Content {
     private AgeRestriction ageRestriction;
 
     @NotNull(message = "Field is mandatory")
-    @Size(min = 10, max = 100, message = "Field must contain between {min} and {max} characters")
+    @Size(min = 10, max = 500, message = "Field must contain between {min} and {max} characters")
     private String shortDescription;
 
-    @Size(max = 350, message = "Field cannot contain more than {max} characters")
+    @Size(max = 2000, message = "Field cannot contain more than {max} characters")
     private String longDescription;
 
     @Size(max = 2048, message = "Field cannot contain more than {max} characters")

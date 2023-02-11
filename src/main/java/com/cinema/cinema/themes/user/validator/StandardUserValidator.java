@@ -25,7 +25,7 @@ public class StandardUserValidator extends ValidatorService<StandardUser> {
     public StandardUser validateExists(long userId) {
         Optional<StandardUser> user = standardUserRepository.findById(userId);
         if (user.isEmpty()) {
-            throw new ElementNotFoundException("Admin user with ID " + userId + " not found");
+            throw new ElementNotFoundException("User user with ID " + userId + " not found");
         }
         return user.get();
     }

@@ -36,7 +36,7 @@ public abstract class User {
 
     @NotNull(message = "Field is mandatory")
     @NotBlank(message = "Field cannot be empty or blank")
-    @Size(max = 30, message = "Field cannot contain more than {max} characters")
+    @Size(min = 5, max = 30, message = "Field must contain between {min} and {max} characters")
     private String password;
 
     @NotNull(message = "Field is mandatory")
@@ -45,9 +45,8 @@ public abstract class User {
     @Email(message = "Wrong email format")
     private String email;
 
-    private Integer phone;
+    private String phone;
 
-    @NotNull(message = "Field is mandatory")
     @Enumerated(EnumType.STRING)
     private Role role;
 

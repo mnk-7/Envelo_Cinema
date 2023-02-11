@@ -64,6 +64,7 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
 
     @Transactional
     public void rateMovie(Movie movie, int rate) {
+        movieValidator.validateRate(rate);
         movie.setRatingCount(movie.getRatingCount() + 1);
         movie.setRatingSum(movie.getRatingSum() + rate);
         movieRepository.save(movie);

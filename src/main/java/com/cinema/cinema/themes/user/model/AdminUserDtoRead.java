@@ -15,6 +15,6 @@ public class AdminUserDtoRead {
     private String firstName;
     private String lastName;
     private String email;
-    private Integer phone;
+    private String phone;
 
 }

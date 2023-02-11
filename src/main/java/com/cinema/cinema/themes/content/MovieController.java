@@ -73,4 +73,40 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("/{movieId}/rate/{userId}")
+    @Operation(summary = "Rate movie")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Movie rated"),
+            @ApiResponse(responseCode = "400", description = "Wrong data"),
+            @ApiResponse(responseCode = "404", description = "Movie or user not found")})
+    public ResponseEntity<Void> rateMovie(@PathVariable long movieId, @PathVariable int userId, @RequestParam int rate) {
+        Movie movie = movieService.getMovie(movieId);
+        userService.rateMovie(userId, movie, rate);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{movieId}/watch-list/{userId}")
+    @Operation(summary = "Add movie to watch list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Movie added to user's watch list"),
+            @ApiResponse(responseCode = "400", description = "Wrong data"),
+            @ApiResponse(responseCode = "404", description = "Movie or user not found")})
+    public ResponseEntity<Void> addMovieToWatchList(@PathVariable long userId, @PathVariable long movieId) {
+        Movie movie = movieService.getMovie(movieId);
+        userService.addMovieToWatchlist(userId, movie);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{movieId}/watch-list/{userId}")
+    @Operation(summary = "Remove movie from watch list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Movie removed from user's watch list"),
+            @ApiResponse(responseCode = "400", description = "Wrong data"),
+            @ApiResponse(responseCode = "404", description = "Movie or user not found")})
+    public ResponseEntity<Void> removeMovieFromWatchList(@PathVariable long userId, @PathVariable long movieId) {
+        Movie movie = movieService.getMovie(movieId);
+        userService.removeMovieFromWatchlist(userId, movie);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

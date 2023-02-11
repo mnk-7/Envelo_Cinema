@@ -15,6 +15,6 @@ public class AdminUserDtoWrite {
     private String lastName;
     private String password;
     private String email;
-    private Integer phone;
+    private String phone;
 
 }

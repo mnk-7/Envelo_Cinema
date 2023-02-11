@@ -18,10 +18,10 @@ public class MovieDtoWrite {
     private String title;
     private int durationInMinutes;
     private AgeRestriction ageRestriction;
+    private Set<Genre> genres;
+    private boolean isPremiere;
     private String shortDescription;
     private String longDescription;
     private String imageUrl;
-    private Set<Genre> genres;
-    private boolean isPremiere;
 
 }

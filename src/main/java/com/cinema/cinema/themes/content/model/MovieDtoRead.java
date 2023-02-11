@@ -19,11 +19,11 @@ public class MovieDtoRead {
     private String title;
     private int durationInMinutes;
     private AgeRestriction ageRestriction;
-    private String shortDescription;
-    private String longDescription;
-    private String imageUrl;
     private Set<Genre> genres;
     private double rating;
     private boolean isPremiere;
+    private String shortDescription;
+    private String longDescription;
+    private String imageUrl;
 
 }
