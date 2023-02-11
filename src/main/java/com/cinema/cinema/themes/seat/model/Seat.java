@@ -2,6 +2,7 @@ package com.cinema.cinema.themes.seat.model;
 
 import com.cinema.cinema.themes.venue.model.Venue;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public abstract class Seat {
 
     @ManyToOne
     @JoinColumn(name = "venue_id")
+    @JsonBackReference
     private Venue venue;
 
 }

@@ -16,6 +16,8 @@ import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.themes.ticketType.model.TicketTypeDtoRead;
 import com.cinema.cinema.themes.ticketType.model.TicketTypeDtoWrite;
 import com.cinema.cinema.themes.user.model.*;
+import com.cinema.cinema.themes.venue.model.Venue;
+import com.cinema.cinema.themes.venue.model.VenueDtoWrite;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -81,5 +83,21 @@ public class DtoMapperService {
     public StandardUserDtoRead mapToStandardUserDto(StandardUser user) {
         return mapper.map(user, StandardUserDtoRead.class);
     }
+
+    public Venue mapToVenue(VenueDtoWrite venueDto) {
+        Venue venue = new Venue();
+        venue.setName(venueDto.getName());
+        venue.setRowsNumber(venueDto.getRowsNumber());
+        venue.setColumnsNumber(venueDto.getColumnsNumber());
+        return venue;
+    }
+
+//    public VenueDtoRead mapToVenueDto(Venue venue) {
+//        return mapper.map(venue, VenueDtoRead.class);
+//    }
+
+//    public SingleSeat mapToSingleSeat(SeatDtoWrite seatDto) {
+//        return mapper.map(seatDto, SingleSeat.class);
+//    }
 
 }

@@ -28,6 +28,7 @@ public class Show {
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
+    //TODO - replacing with content
     @ManyToOne
     @JoinColumn(name = "content_id")
     private Movie movie;

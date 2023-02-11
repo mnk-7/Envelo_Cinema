@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface SingleSeatRepository extends JpaRepository<SingleSeat, Long> {
 
-    List<SingleSeat> findAllByVenue(Venue venue);
+    List<SingleSeat> findByVenueAndRowAndColumn(Venue venue, int row, int column);
 
 }
