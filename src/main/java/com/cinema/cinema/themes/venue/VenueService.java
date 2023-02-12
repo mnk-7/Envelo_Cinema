@@ -3,11 +3,11 @@ package com.cinema.cinema.themes.venue;
 import com.cinema.cinema.themes.seat.SeatService;
 import com.cinema.cinema.themes.seat.model.DoubleSeat;
 import com.cinema.cinema.themes.seat.model.Seat;
-import com.cinema.cinema.themes.seat.model.SeatDtoWrite;
+import com.cinema.cinema.themes.seat.model.SingleSeatInputDto;
 import com.cinema.cinema.themes.seat.model.SingleSeat;
 import com.cinema.cinema.themes.seat.SeatValidator;
 import com.cinema.cinema.themes.venue.model.Venue;
-import com.cinema.cinema.themes.venue.model.VenueDtoWrite;
+import com.cinema.cinema.themes.venue.model.VenueInputDto;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class VenueService {
     }
 
     @Transactional
-    public Venue addVenue(VenueDtoWrite venueDto) {
+    public Venue addVenue(VenueInputDto venueDto) {
         Venue venueFromDto = mapperService.mapToVenue(venueDto);
         venueValidator.validateInput(venueFromDto);
         Venue venue = createVenue(venueFromDto);
@@ -62,23 +62,23 @@ public class VenueService {
         return venue;
     }
 
-    private Set<Seat> createSingleSeats(Seat[][] seatsArray, VenueDtoWrite venueDto) {
-        Set<SeatDtoWrite> vipSeatsDto = venueDto.getVipSeats();
+    private Set<Seat> createSingleSeats(Seat[][] seatsArray, VenueInputDto venueDto) {
+        Set<SingleSeatInputDto> vipSeatsDto = venueDto.getVipSeats();
         if (vipSeatsDto != null && !vipSeatsDto.isEmpty()) {
             updateVipSeats(seatsArray, vipSeatsDto);
         }
         return convertSeatsArray(seatsArray);
     }
 
-    private Set<Seat> createDoubleSeats(Seat[][] seatsArray, VenueDtoWrite venueDto, Venue venue) {
-        Set<List<SeatDtoWrite>> doubleSeatsDto = venueDto.getDoubleSeats();
+    private Set<Seat> createDoubleSeats(Seat[][] seatsArray, VenueInputDto venueDto, Venue venue) {
+        Set<List<SingleSeatInputDto>> doubleSeatsDto = venueDto.getDoubleSeats();
         if (doubleSeatsDto != null && !doubleSeatsDto.isEmpty()) {
             return updateToDoubleSeats(seatsArray, venueDto.getDoubleSeats(), venue);
         }
         return new HashSet<>();
     }
 
-    private Seat[][] createSeatsArray(VenueDtoWrite venueDto) {
+    private Seat[][] createSeatsArray(VenueInputDto venueDto) {
         int rows = venueDto.getRowsNumber() + 1;
         int columns = venueDto.getColumnsNumber() + 1;
         Seat[][] seats = new Seat[rows][columns];
@@ -100,8 +100,8 @@ public class VenueService {
         return seat;
     }
 
-    private void updateVipSeats(Seat[][] seatsArray, Set<SeatDtoWrite> seatsFromDto) {
-        for (SeatDtoWrite seat : seatsFromDto) {
+    private void updateVipSeats(Seat[][] seatsArray, Set<SingleSeatInputDto> seatsFromDto) {
+        for (SingleSeatInputDto seat : seatsFromDto) {
             int tempRow = seat.getRow();
             int tempCol = seat.getColumn();
             venueValidator.validateVipSeatExists(tempRow, tempCol, seatsArray);
@@ -119,13 +119,13 @@ public class VenueService {
         return seats;
     }
 
-    private Set<Seat> updateToDoubleSeats(Seat[][] seatsArray, Set<List<SeatDtoWrite>> seatsToCombine, Venue venue) {
+    private Set<Seat> updateToDoubleSeats(Seat[][] seatsArray, Set<List<SingleSeatInputDto>> seatsToCombine, Venue venue) {
         Set<Seat> newSeats = new HashSet<>();
         Set<Seat> seatsToUpdate = new HashSet<>();
-        for (List<SeatDtoWrite> seatsPair : seatsToCombine) {
+        for (List<SingleSeatInputDto> seatsPair : seatsToCombine) {
             venueValidator.validateSeatsNumberForDouble(seatsPair);
-            SeatDtoWrite firstSeat = seatsPair.get(0);
-            SeatDtoWrite secondSeat = seatsPair.get(1);
+            SingleSeatInputDto firstSeat = seatsPair.get(0);
+            SingleSeatInputDto secondSeat = seatsPair.get(1);
             venueValidator.validateSeatsForDouble(seatsArray, firstSeat, secondSeat);
             SingleSeat first = (SingleSeat) seatService.getByVenueByRowByCol(venue, firstSeat.getRow(), firstSeat.getColumn());
             SingleSeat second = (SingleSeat) seatService.getByVenueByRowByCol(venue, secondSeat.getRow(), secondSeat.getColumn());
@@ -166,7 +166,7 @@ public class VenueService {
     }
 
     @Transactional
-    public void editVenueName(long id, VenueDtoWrite venueDto) {
+    public void editVenueName(long id, VenueInputDto venueDto) {
         Venue venue = getVenue(id);
         venueValidator.validateIsActive(venue);
         Venue venueFromDto = mapperService.mapToVenue(venueDto);
@@ -176,7 +176,7 @@ public class VenueService {
     }
 
     @Transactional
-    public void editVenueStructure(long id, VenueDtoWrite venueDto) {
+    public void editVenueStructure(long id, VenueInputDto venueDto) {
         removeVenue(id);
         //TODO dodać walidację, by nie można było edytować nieaktywnej venue
         addVenue(venueDto);

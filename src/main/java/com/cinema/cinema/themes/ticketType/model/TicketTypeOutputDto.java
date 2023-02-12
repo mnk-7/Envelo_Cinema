@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketTypeDtoRead {
+public class TicketTypeOutputDto {
 
     private Long id;
     private String name;

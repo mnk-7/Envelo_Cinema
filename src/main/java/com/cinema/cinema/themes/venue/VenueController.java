@@ -1,7 +1,7 @@
 package com.cinema.cinema.themes.venue;
 
 import com.cinema.cinema.themes.venue.model.Venue;
-import com.cinema.cinema.themes.venue.model.VenueDtoWrite;
+import com.cinema.cinema.themes.venue.model.VenueInputDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -49,7 +49,7 @@ public class VenueController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Venue created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addVenue(@RequestBody VenueDtoWrite venue) {
+    public ResponseEntity<Void> addVenue(@RequestBody VenueInputDto venue) {
         Venue venueCreated = venueService.addVenue(venue);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -65,7 +65,7 @@ public class VenueController {
             @ApiResponse(responseCode = "200", description = "Venue updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Venue not found")})
-    public ResponseEntity<Void> editVenueStructure(@PathVariable long venueId, @RequestBody VenueDtoWrite venue) {
+    public ResponseEntity<Void> editVenueStructure(@PathVariable long venueId, @RequestBody VenueInputDto venue) {
         venueService.editVenueStructure(venueId, venue);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -76,7 +76,7 @@ public class VenueController {
             @ApiResponse(responseCode = "200", description = "Venue updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Venue not found")})
-    public ResponseEntity<Void> editVenueName(@PathVariable long venueId, @RequestBody VenueDtoWrite venue) {
+    public ResponseEntity<Void> editVenueName(@PathVariable long venueId, @RequestBody VenueInputDto venue) {
         venueService.editVenueName(venueId, venue);
         return new ResponseEntity<>(HttpStatus.OK);
     }

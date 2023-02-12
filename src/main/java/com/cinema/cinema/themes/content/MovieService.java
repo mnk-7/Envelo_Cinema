@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.content;
 
 import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.content.model.MovieDtoRead;
-import com.cinema.cinema.themes.content.model.MovieDtoWrite;
+import com.cinema.cinema.themes.content.model.MovieOutputDto;
+import com.cinema.cinema.themes.content.model.MovieInputDto;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
+public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> {
 
     private final MovieRepository movieRepository;
     private final MovieValidator movieValidator;
@@ -21,7 +21,7 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MovieDtoRead> getAllContents() {
+    public List<MovieOutputDto> getAllContents() {
         List<Movie> movies = movieRepository.findAll(Sort.by("title"));
         return movies.stream()
                 .peek(movie -> movie.setRating(calculateRating(movie)))
@@ -31,7 +31,7 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
 
     @Override
     @Transactional(readOnly = true)
-    public MovieDtoRead getContent(long movieId) {
+    public MovieOutputDto getContent(long movieId) {
         Movie movie = getMovie(movieId);
         return mapperService.mapToMovieDto(movie);
     }
@@ -45,7 +45,7 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
 
     @Override
     @Transactional
-    public MovieDtoRead addContent(MovieDtoWrite movieDto) {
+    public MovieOutputDto addContent(MovieInputDto movieDto) {
         Movie movie = mapperService.mapToMovie(movieDto);
         movieValidator.validateInput(movie);
         movie = movieRepository.save(movie);
@@ -54,7 +54,7 @@ public class MovieService extends ContentService<MovieDtoRead, MovieDtoWrite> {
 
     @Override
     @Transactional
-    public void editContent(long movieId, MovieDtoWrite movieDto) {
+    public void editContent(long movieId, MovieInputDto movieDto) {
         Movie movie = movieValidator.validateExists(movieId);
         Movie movieFromDto = mapperService.mapToMovie(movieDto);
         movieValidator.validateInput(movieFromDto);

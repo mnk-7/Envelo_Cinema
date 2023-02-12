@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AgeRestrictionDtoWrite {
+public class AgeRestrictionInputDto {
 
     private String minAge;
 

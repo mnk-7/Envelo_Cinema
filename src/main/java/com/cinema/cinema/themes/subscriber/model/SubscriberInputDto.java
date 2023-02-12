@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubscriberDtoWrite {
+public class SubscriberInputDto {
 
     private String email;
 

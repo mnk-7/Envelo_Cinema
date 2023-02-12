@@ -1,10 +1,10 @@
 package com.cinema.cinema.themes.user.service;
 
 import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.content.model.MovieDtoRead;
+import com.cinema.cinema.themes.content.model.MovieOutputDto;
 import com.cinema.cinema.themes.user.model.StandardUser;
-import com.cinema.cinema.themes.user.model.StandardUserDtoRead;
-import com.cinema.cinema.themes.user.model.StandardUserDtoWrite;
+import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
+import com.cinema.cinema.themes.user.model.StandardUserInputDto;
 import com.cinema.cinema.themes.user.repository.StandardUserRepository;
 import com.cinema.cinema.themes.content.MovieService;
 import com.cinema.cinema.themes.user.validator.StandardUserValidator;
@@ -19,7 +19,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 @Service
-public class StandardUserService extends UserService<StandardUserDtoRead, StandardUserDtoWrite> {
+public class StandardUserService extends UserService<StandardUserOutputDto, StandardUserInputDto> {
 
     private final StandardUserRepository userRepository;
     private final StandardUserValidator userValidator;
@@ -27,7 +27,7 @@ public class StandardUserService extends UserService<StandardUserDtoRead, Standa
     private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public List<StandardUserDtoRead> getAllUsers() {
+    public List<StandardUserOutputDto> getAllUsers() {
         List<StandardUser> users = userRepository.findAll();
         return users.stream()
                 .map(mapperService::mapToStandardUserDto)
@@ -36,14 +36,14 @@ public class StandardUserService extends UserService<StandardUserDtoRead, Standa
 
     @Override
     @Transactional(readOnly = true)
-    public StandardUserDtoRead getUser(long userId) {
+    public StandardUserOutputDto getUser(long userId) {
         StandardUser user = userValidator.validateExists(userId);
         return mapperService.mapToStandardUserDto(user);
     }
 
     @Override
     @Transactional
-    public void editUser(long id, StandardUserDtoWrite userDto) {
+    public void editUser(long id, StandardUserInputDto userDto) {
         StandardUser user = userValidator.validateExists(id);
         StandardUser userFromDto = mapperService.mapToStandardUser(userDto);
         userValidator.validateInput(userFromDto);
@@ -52,7 +52,7 @@ public class StandardUserService extends UserService<StandardUserDtoRead, Standa
     }
 
     @Transactional
-    public StandardUserDtoRead editIsActive(long userId, boolean isActive) {
+    public StandardUserOutputDto editIsActive(long userId, boolean isActive) {
         StandardUser user = userValidator.validateExists(userId);
         userValidator.validateIsActiveChange(user, isActive);
         user.setActive(isActive);
@@ -69,12 +69,12 @@ public class StandardUserService extends UserService<StandardUserDtoRead, Standa
     }
 
     @Transactional(readOnly = true)
-    public List<MovieDtoRead> getMoviesToWatch(long userId) {
+    public List<MovieOutputDto> getMoviesToWatch(long userId) {
         StandardUser user = userValidator.validateExists(userId);
         Set<Movie> moviesToWatch = user.getMoviesToWatch();
         return moviesToWatch.stream()
                 .map(mapperService::mapToMovieDto)
-                .sorted(Comparator.comparing(MovieDtoRead::getTitle))
+                .sorted(Comparator.comparing(MovieOutputDto::getTitle))
                 .toList();
     }
 

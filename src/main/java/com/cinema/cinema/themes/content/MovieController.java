@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.content;
 
 import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.content.model.MovieDtoRead;
-import com.cinema.cinema.themes.content.model.MovieDtoWrite;
+import com.cinema.cinema.themes.content.model.MovieOutputDto;
+import com.cinema.cinema.themes.content.model.MovieInputDto;
 import com.cinema.cinema.themes.user.service.StandardUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,8 +31,8 @@ public class MovieController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List with movies returned"),
             @ApiResponse(responseCode = "204", description = "No movie found")})
-    public ResponseEntity<List<MovieDtoRead>> getAllMovies() {
-        List<MovieDtoRead> movies = movieService.getAllContents();
+    public ResponseEntity<List<MovieOutputDto>> getAllMovies() {
+        List<MovieOutputDto> movies = movieService.getAllContents();
         HttpStatus status = movies.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(movies, status);
     }
@@ -42,8 +42,8 @@ public class MovieController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Movie returned"),
             @ApiResponse(responseCode = "404", description = "Movie not found")})
-    public ResponseEntity<MovieDtoRead> getMovie(@PathVariable long movieId) {
-        MovieDtoRead movie = movieService.getContent(movieId);
+    public ResponseEntity<MovieOutputDto> getMovie(@PathVariable long movieId) {
+        MovieOutputDto movie = movieService.getContent(movieId);
         return new ResponseEntity<>(movie, HttpStatus.OK);
     }
 
@@ -52,8 +52,8 @@ public class MovieController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Movie created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addMovie(@RequestBody MovieDtoWrite movie) {
-        MovieDtoRead movieCreated = movieService.addContent(movie);
+    public ResponseEntity<Void> addMovie(@RequestBody MovieInputDto movie) {
+        MovieOutputDto movieCreated = movieService.addContent(movie);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{movieId}")
@@ -68,7 +68,7 @@ public class MovieController {
             @ApiResponse(responseCode = "200", description = "Movie updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Movie not found")})
-    public ResponseEntity<Void> editMovie(long movieId, @RequestBody MovieDtoWrite movie) {
+    public ResponseEntity<Void> editMovie(long movieId, @RequestBody MovieInputDto movie) {
         movieService.editContent(movieId, movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.user.controller;
 
-import com.cinema.cinema.themes.user.model.AdminUserDtoRead;
-import com.cinema.cinema.themes.user.model.AdminUserDtoWrite;
-import com.cinema.cinema.themes.user.model.StandardUserDtoRead;
+import com.cinema.cinema.themes.user.model.AdminUserOutputDto;
+import com.cinema.cinema.themes.user.model.AdminUserInputDto;
+import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
 import com.cinema.cinema.themes.user.service.AdminUserService;
 import com.cinema.cinema.themes.user.service.StandardUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,8 +28,8 @@ public class AdminUserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Admin returned"),
             @ApiResponse(responseCode = "404", description = "Admin not found")})
-    public ResponseEntity<AdminUserDtoRead> getAdmin(@PathVariable long adminId) {
-        AdminUserDtoRead admin = adminService.getUser(adminId);
+    public ResponseEntity<AdminUserOutputDto> getAdmin(@PathVariable long adminId) {
+        AdminUserOutputDto admin = adminService.getUser(adminId);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
@@ -39,7 +39,7 @@ public class AdminUserController {
             @ApiResponse(responseCode = "200", description = "Admin updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Admin not found")})
-    public ResponseEntity<Void> editAdmin(@PathVariable long adminId, @RequestBody AdminUserDtoWrite admin) {
+    public ResponseEntity<Void> editAdmin(@PathVariable long adminId, @RequestBody AdminUserInputDto admin) {
         adminService.editUser(adminId, admin);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -50,8 +50,8 @@ public class AdminUserController {
             @ApiResponse(responseCode = "200", description = "User activated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    public ResponseEntity<StandardUserDtoRead> activateUser(@PathVariable long userId) {
-        StandardUserDtoRead user = userService.editIsActive(userId, true);
+    public ResponseEntity<StandardUserOutputDto> activateUser(@PathVariable long userId) {
+        StandardUserOutputDto user = userService.editIsActive(userId, true);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -61,8 +61,8 @@ public class AdminUserController {
             @ApiResponse(responseCode = "200", description = "User deactivated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    public ResponseEntity<StandardUserDtoRead> deactivateUser(@PathVariable long userId) {
-        StandardUserDtoRead user = userService.editIsActive(userId, false);
+    public ResponseEntity<StandardUserOutputDto> deactivateUser(@PathVariable long userId) {
+        StandardUserOutputDto user = userService.editIsActive(userId, false);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

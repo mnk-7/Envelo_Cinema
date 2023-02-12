@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketTypeDtoWrite {
+public class TicketTypeInputDto {
 
     private String name;
     private String description;

@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.genre;
 
 import com.cinema.cinema.themes.genre.model.Genre;
-import com.cinema.cinema.themes.genre.model.GenreDtoRead;
-import com.cinema.cinema.themes.genre.model.GenreDtoWrite;
+import com.cinema.cinema.themes.genre.model.GenreOutputDto;
+import com.cinema.cinema.themes.genre.model.GenreInputDto;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -20,7 +20,7 @@ public class GenreService {
     private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public List<GenreDtoRead> getAllGenres() {
+    public List<GenreOutputDto> getAllGenres() {
         List<Genre> genres = genreRepository.findAll(Sort.by("name"));
         return genres.stream()
                 .map(mapperService::mapToGenreDto)
@@ -28,13 +28,13 @@ public class GenreService {
     }
 
     @Transactional(readOnly = true)
-    public GenreDtoRead getGenre(long genreId) {
+    public GenreOutputDto getGenre(long genreId) {
         Genre genre = genreValidator.validateExists(genreId);
         return mapperService.mapToGenreDto(genre);
     }
 
     @Transactional
-    public GenreDtoRead addGenre(GenreDtoWrite genreDto) {
+    public GenreOutputDto addGenre(GenreInputDto genreDto) {
         Genre genre = mapperService.mapToGenre(genreDto);
         genreValidator.validateNotExists(genre);
         genreValidator.validateInput(genre);
@@ -43,7 +43,7 @@ public class GenreService {
     }
 
     @Transactional
-    public void editGenre(long genreId, GenreDtoWrite genreDto) {
+    public void editGenre(long genreId, GenreInputDto genreDto) {
         Genre genre = genreValidator.validateExists(genreId);
         Genre genreFromDto = mapperService.mapToGenre(genreDto);
         genreValidator.validateInput(genreFromDto);

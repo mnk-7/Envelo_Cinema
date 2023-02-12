@@ -1,10 +1,9 @@
 package com.cinema.cinema.themes.user.controller;
 
 import com.cinema.cinema.themes.content.MovieService;
-import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.content.model.MovieDtoRead;
-import com.cinema.cinema.themes.user.model.StandardUserDtoRead;
-import com.cinema.cinema.themes.user.model.StandardUserDtoWrite;
+import com.cinema.cinema.themes.content.model.MovieOutputDto;
+import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
+import com.cinema.cinema.themes.user.model.StandardUserInputDto;
 import com.cinema.cinema.themes.user.service.StandardUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,8 +30,8 @@ public class StandardUserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List with users returned"),
             @ApiResponse(responseCode = "204", description = "No user found")})
-    public ResponseEntity<List<StandardUserDtoRead>> getAllUsers() {
-        List<StandardUserDtoRead> users = userService.getAllUsers();
+    public ResponseEntity<List<StandardUserOutputDto>> getAllUsers() {
+        List<StandardUserOutputDto> users = userService.getAllUsers();
         HttpStatus status = users.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(users, status);
     }
@@ -42,8 +41,8 @@ public class StandardUserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User returned"),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    public ResponseEntity<StandardUserDtoRead> getUser(@PathVariable long userId) {
-        StandardUserDtoRead user = userService.getUser(userId);
+    public ResponseEntity<StandardUserOutputDto> getUser(@PathVariable long userId) {
+        StandardUserOutputDto user = userService.getUser(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -53,7 +52,7 @@ public class StandardUserController {
             @ApiResponse(responseCode = "200", description = "User updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    public ResponseEntity<Void> editAdmin(@PathVariable long userId, @RequestBody StandardUserDtoWrite user) {
+    public ResponseEntity<Void> editAdmin(@PathVariable long userId, @RequestBody StandardUserInputDto user) {
         userService.editUser(userId, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -63,8 +62,8 @@ public class StandardUserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List with movies to watch returned"),
             @ApiResponse(responseCode = "204", description = "No movie to watch found")})
-    public ResponseEntity<List<MovieDtoRead>> getMoviesToWatch(@PathVariable long userId) {
-        List<MovieDtoRead> moviesToWatch = userService.getMoviesToWatch(userId);
+    public ResponseEntity<List<MovieOutputDto>> getMoviesToWatch(@PathVariable long userId) {
+        List<MovieOutputDto> moviesToWatch = userService.getMoviesToWatch(userId);
         HttpStatus status = moviesToWatch.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(moviesToWatch, status);
     }

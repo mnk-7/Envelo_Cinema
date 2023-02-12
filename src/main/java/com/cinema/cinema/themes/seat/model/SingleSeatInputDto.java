@@ -1,4 +1,4 @@
-package com.cinema.cinema.themes.genre.model;
+package com.cinema.cinema.themes.seat.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenreDtoWrite {
+public class SingleSeatInputDto {
 
-    private String name;
+    private Integer row;
+    private Integer column;
+    private boolean isVip;
 
 }

@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.subscriber;
 
 import com.cinema.cinema.themes.subscriber.model.Subscriber;
-import com.cinema.cinema.themes.subscriber.model.SubscriberDtoRead;
-import com.cinema.cinema.themes.subscriber.model.SubscriberDtoWrite;
+import com.cinema.cinema.themes.subscriber.model.SubscriberOutputDto;
+import com.cinema.cinema.themes.subscriber.model.SubscriberInputDto;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class SubscriberService {
     }
 
     @Transactional
-    public SubscriberDtoRead addSubscriber(SubscriberDtoWrite subscriberDto) {
+    public SubscriberOutputDto addSubscriber(SubscriberInputDto subscriberDto) {
         Subscriber subscriber = mapperService.mapToSubscriber(subscriberDto);
         subscriberValidator.validateNotExists(subscriber);
         subscriberValidator.validateInput(subscriber);
@@ -38,7 +38,7 @@ public class SubscriberService {
     }
 
     @Transactional
-    public void removeSubscriber(SubscriberDtoWrite subscriberDto) {
+    public void removeSubscriber(SubscriberInputDto subscriberDto) {
         Subscriber subscriber = subscriberValidator.validateExists(subscriberDto.getEmail());
         subscriberRepository.deleteById(subscriber.getId());
     }

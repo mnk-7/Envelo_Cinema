@@ -1,4 +1,4 @@
-package com.cinema.cinema.themes.subscriber.model;
+package com.cinema.cinema.themes.genre.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubscriberDtoRead {
+public class GenreInputDto {
 
-    private Long id;
-    private String email;
+    private String name;
 
 }

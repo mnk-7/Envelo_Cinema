@@ -1,4 +1,4 @@
-package com.cinema.cinema.themes.ageRestriction.model;
+package com.cinema.cinema.themes.subscriber.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AgeRestrictionDtoRead {
+public class SubscriberOutputDto {
 
     private Long id;
-    private String minAge;
+    private String email;
 
 }

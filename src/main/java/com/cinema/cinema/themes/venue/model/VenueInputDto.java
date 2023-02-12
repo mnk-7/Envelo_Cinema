@@ -1,6 +1,6 @@
 package com.cinema.cinema.themes.venue.model;
 
-import com.cinema.cinema.themes.seat.model.SeatDtoWrite;
+import com.cinema.cinema.themes.seat.model.SingleSeatInputDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,12 +13,12 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VenueDtoWrite {
+public class VenueInputDto {
 
     private String name;
     private Integer rowsNumber;
     private Integer columnsNumber;
-    Set<SeatDtoWrite> vipSeats;
-    Set<List<SeatDtoWrite>> doubleSeats;
+    Set<SingleSeatInputDto> vipSeats;
+    Set<List<SingleSeatInputDto>> doubleSeats;
 
 }

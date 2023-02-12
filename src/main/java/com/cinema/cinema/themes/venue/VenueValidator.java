@@ -4,7 +4,7 @@ import com.cinema.cinema.exceptions.ArgumentNotValidException;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ProcessingException;
 import com.cinema.cinema.themes.seat.model.Seat;
-import com.cinema.cinema.themes.seat.model.SeatDtoWrite;
+import com.cinema.cinema.themes.seat.model.SingleSeatInputDto;
 import com.cinema.cinema.themes.seat.model.SingleSeat;
 import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.utils.ValidatorService;
@@ -46,13 +46,13 @@ public class VenueValidator extends ValidatorService<Venue> {
         validateSeatExists(row, column, seatsArray, message);
     }
 
-    public void validateSeatsNumberForDouble(List<SeatDtoWrite> seatsPair) {
+    public void validateSeatsNumberForDouble(List<SingleSeatInputDto> seatsPair) {
         if (seatsPair.size() != 2) {
             throw new ArgumentNotValidException("You can combine together only two adjacent seats");
         }
     }
 
-    public void validateSeatsForDouble(Seat[][] seatsArray, SeatDtoWrite firstSeat, SeatDtoWrite secondSeat) {
+    public void validateSeatsForDouble(Seat[][] seatsArray, SingleSeatInputDto firstSeat, SingleSeatInputDto secondSeat) {
         validateSeatForDoubleExists(firstSeat.getRow(), firstSeat.getColumn(), seatsArray);
         validateSeatForDoubleExists(secondSeat.getRow(), secondSeat.getColumn(), seatsArray);
         validateSeatsForDoubleAreDifferent(firstSeat, secondSeat);
@@ -71,19 +71,19 @@ public class VenueValidator extends ValidatorService<Venue> {
         }
     }
 
-    private void validateSeatsForDoubleAreDifferent(SeatDtoWrite firstSeat, SeatDtoWrite secondSeat) {
+    private void validateSeatsForDoubleAreDifferent(SingleSeatInputDto firstSeat, SingleSeatInputDto secondSeat) {
         if (firstSeat.getRow().intValue() == secondSeat.getRow().intValue() && firstSeat.getColumn().intValue() == secondSeat.getColumn().intValue()) {
             throw new ArgumentNotValidException("You cannot combine together one seat");
         }
     }
 
-    private void validateSeatsForDoubleInSameRow(SeatDtoWrite firstSeat, SeatDtoWrite secondSeat) {
+    private void validateSeatsForDoubleInSameRow(SingleSeatInputDto firstSeat, SingleSeatInputDto secondSeat) {
         if (firstSeat.getRow().intValue() != secondSeat.getRow().intValue()) {
             throw new ArgumentNotValidException("You cannot combine together seats from different rows");
         }
     }
 
-    private void validateSeatsForDoubleAdjacent(SeatDtoWrite firstSeat, SeatDtoWrite secondSeat) {
+    private void validateSeatsForDoubleAdjacent(SingleSeatInputDto firstSeat, SingleSeatInputDto secondSeat) {
         if (Math.abs(firstSeat.getColumn() - secondSeat.getColumn()) != 1) {
             throw new ArgumentNotValidException("You cannot combine together two not adjacent seats");
         }

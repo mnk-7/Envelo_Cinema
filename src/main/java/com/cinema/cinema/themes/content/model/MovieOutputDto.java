@@ -13,12 +13,14 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieDtoWrite {
+public class MovieOutputDto {
 
+    private Long id;
     private String title;
     private int durationInMinutes;
     private AgeRestriction ageRestriction;
     private Set<Genre> genres;
+    private double rating;
     private boolean isPremiere;
     private String shortDescription;
     private String longDescription;

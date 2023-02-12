@@ -1,7 +1,7 @@
 package com.cinema.cinema.themes.subscriber;
 
-import com.cinema.cinema.themes.subscriber.model.SubscriberDtoRead;
-import com.cinema.cinema.themes.subscriber.model.SubscriberDtoWrite;
+import com.cinema.cinema.themes.subscriber.model.SubscriberOutputDto;
+import com.cinema.cinema.themes.subscriber.model.SubscriberInputDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -38,8 +38,8 @@ public class SubscriberController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Subscriber created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addSubscriber(@RequestBody SubscriberDtoWrite subscriber) {
-        SubscriberDtoRead subscriberCreated = subscriberService.addSubscriber(subscriber);
+    public ResponseEntity<Void> addSubscriber(@RequestBody SubscriberInputDto subscriber) {
+        SubscriberOutputDto subscriberCreated = subscriberService.addSubscriber(subscriber);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{subscriberId}")
@@ -53,7 +53,7 @@ public class SubscriberController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Subscriber deleted"),
             @ApiResponse(responseCode = "404", description = "Subscriber not found")})
-    public ResponseEntity<Void> removeSubscriber(@RequestBody SubscriberDtoWrite subscriber) {
+    public ResponseEntity<Void> removeSubscriber(@RequestBody SubscriberInputDto subscriber) {
         subscriberService.removeSubscriber(subscriber);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

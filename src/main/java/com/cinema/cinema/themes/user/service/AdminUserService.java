@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.user.service;
 
 import com.cinema.cinema.themes.user.model.AdminUser;
-import com.cinema.cinema.themes.user.model.AdminUserDtoRead;
-import com.cinema.cinema.themes.user.model.AdminUserDtoWrite;
+import com.cinema.cinema.themes.user.model.AdminUserOutputDto;
+import com.cinema.cinema.themes.user.model.AdminUserInputDto;
 import com.cinema.cinema.themes.user.repository.AdminUserRepository;
 import com.cinema.cinema.themes.user.validator.AdminUserValidator;
 import com.cinema.cinema.utils.DtoMapperService;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
-public class AdminUserService extends UserService<AdminUserDtoRead, AdminUserDtoWrite> {
+public class AdminUserService extends UserService<AdminUserOutputDto, AdminUserInputDto> {
 
     private final AdminUserRepository adminRepository;
     private final AdminUserValidator adminValidator;
@@ -20,14 +20,14 @@ public class AdminUserService extends UserService<AdminUserDtoRead, AdminUserDto
 
     @Override
     @Transactional(readOnly = true)
-    public AdminUserDtoRead getUser(long adminId) {
+    public AdminUserOutputDto getUser(long adminId) {
         AdminUser adminUser = adminValidator.validateExists(adminId);
         return mapperService.mapToAdminUserDto(adminUser);
     }
 
     @Override
     @Transactional
-    public void editUser(long id, AdminUserDtoWrite adminUserDto) {
+    public void editUser(long id, AdminUserInputDto adminUserDto) {
         AdminUser admin = adminValidator.validateExists(id);
         AdminUser adminFromDto = mapperService.mapToAdminUser(adminUserDto);
         adminValidator.validateInput(adminFromDto);

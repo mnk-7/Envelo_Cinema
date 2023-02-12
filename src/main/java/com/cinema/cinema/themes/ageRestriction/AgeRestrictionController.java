@@ -1,7 +1,7 @@
 package com.cinema.cinema.themes.ageRestriction;
 
-import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionDtoRead;
-import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionDtoWrite;
+import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionOutputDto;
+import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionInputDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,8 +28,8 @@ public class AgeRestrictionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List with age restrictions returned"),
             @ApiResponse(responseCode = "204", description = "No age restriction found")})
-    public ResponseEntity<List<AgeRestrictionDtoRead>> getAllAgeRestrictions() {
-        List<AgeRestrictionDtoRead> ageRestrictions = ageRestrictionService.getAllAgeRestrictions();
+    public ResponseEntity<List<AgeRestrictionOutputDto>> getAllAgeRestrictions() {
+        List<AgeRestrictionOutputDto> ageRestrictions = ageRestrictionService.getAllAgeRestrictions();
         HttpStatus status = ageRestrictions.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(ageRestrictions, status);
     }
@@ -39,8 +39,8 @@ public class AgeRestrictionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Age restriction returned"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
-    public ResponseEntity<AgeRestrictionDtoRead> getAgeRestriction(@PathVariable long ageRestrictionId) {
-        AgeRestrictionDtoRead ageRestriction = ageRestrictionService.getAgeRestriction(ageRestrictionId);
+    public ResponseEntity<AgeRestrictionOutputDto> getAgeRestriction(@PathVariable long ageRestrictionId) {
+        AgeRestrictionOutputDto ageRestriction = ageRestrictionService.getAgeRestriction(ageRestrictionId);
         return new ResponseEntity<>(ageRestriction, HttpStatus.OK);
     }
 
@@ -49,8 +49,8 @@ public class AgeRestrictionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Age restriction created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addAgeRestriction(@RequestBody AgeRestrictionDtoWrite ageRestriction) {
-        AgeRestrictionDtoRead ageRestrictionCreated = ageRestrictionService.addAgeRestriction(ageRestriction);
+    public ResponseEntity<Void> addAgeRestriction(@RequestBody AgeRestrictionInputDto ageRestriction) {
+        AgeRestrictionOutputDto ageRestrictionCreated = ageRestrictionService.addAgeRestriction(ageRestriction);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{ageRestrictionId}")
@@ -65,7 +65,7 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "200", description = "Age restriction updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
-    public ResponseEntity<Void> editAgeRestriction(@PathVariable long ageRestrictionId, @RequestBody AgeRestrictionDtoWrite ageRestriction) {
+    public ResponseEntity<Void> editAgeRestriction(@PathVariable long ageRestrictionId, @RequestBody AgeRestrictionInputDto ageRestriction) {
         ageRestrictionService.editAgeRestriction(ageRestrictionId, ageRestriction);
         return new ResponseEntity<>(HttpStatus.OK);
     }

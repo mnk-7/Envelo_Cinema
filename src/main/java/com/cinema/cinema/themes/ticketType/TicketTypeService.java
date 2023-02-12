@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.ticketType;
 
 import com.cinema.cinema.themes.ticketType.model.TicketType;
-import com.cinema.cinema.themes.ticketType.model.TicketTypeDtoRead;
-import com.cinema.cinema.themes.ticketType.model.TicketTypeDtoWrite;
+import com.cinema.cinema.themes.ticketType.model.TicketTypeOutputDto;
+import com.cinema.cinema.themes.ticketType.model.TicketTypeInputDto;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -21,7 +21,7 @@ public class TicketTypeService {
 
 
     @Transactional(readOnly = true)
-    public List<TicketTypeDtoRead> getAllTicketTypes() {
+    public List<TicketTypeOutputDto> getAllTicketTypes() {
         List<TicketType> ticketTypes = ticketTypeRepository.findAll(Sort.by("name"));
         return ticketTypes.stream()
                 .map(mapperService::mapToTicketTypeDto)
@@ -29,7 +29,7 @@ public class TicketTypeService {
     }
 
     @Transactional(readOnly = true)
-    public List<TicketTypeDtoRead> getAllActiveTicketTypes() {
+    public List<TicketTypeOutputDto> getAllActiveTicketTypes() {
         List<TicketType> ticketTypes = ticketTypeRepository.findAllByIsAvailableTrue(Sort.by("name"));
         return ticketTypes.stream()
                 .map(mapperService::mapToTicketTypeDto)
@@ -37,13 +37,13 @@ public class TicketTypeService {
     }
 
     @Transactional(readOnly = true)
-    public TicketTypeDtoRead getTicketType(long ticketTypeId) {
+    public TicketTypeOutputDto getTicketType(long ticketTypeId) {
         TicketType ticketType = ticketTypeValidator.validateExists(ticketTypeId);
         return mapperService.mapToTicketTypeDto(ticketType);
     }
 
     @Transactional
-    public TicketTypeDtoRead addTicketType(TicketTypeDtoWrite ticketTypeDto) {
+    public TicketTypeOutputDto addTicketType(TicketTypeInputDto ticketTypeDto) {
         TicketType ticketType = mapperService.mapToTicketType(ticketTypeDto);
         ticketTypeValidator.validateNotExists(ticketType);
         ticketTypeValidator.validateInput(ticketType);
@@ -52,7 +52,7 @@ public class TicketTypeService {
     }
 
     @Transactional
-    public void editTicketType(long ticketTypeId, TicketTypeDtoWrite ticketTypeDto) {
+    public void editTicketType(long ticketTypeId, TicketTypeInputDto ticketTypeDto) {
         TicketType ticketType = ticketTypeValidator.validateExists(ticketTypeId);
         TicketType ticketTypeFromDto = mapperService.mapToTicketType(ticketTypeDto);
         ticketTypeValidator.validateInput(ticketTypeFromDto);

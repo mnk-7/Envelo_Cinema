@@ -1,4 +1,4 @@
-package com.cinema.cinema.themes.user.model;
+package com.cinema.cinema.themes.ageRestriction.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminUserDtoRead {
+public class AgeRestrictionOutputDto {
 
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
+    private String minAge;
 
 }
