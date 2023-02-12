@@ -2,6 +2,7 @@ package com.cinema.cinema.themes.venue;
 
 import com.cinema.cinema.exceptions.ArgumentNotValidException;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
+import com.cinema.cinema.exceptions.ProcessingException;
 import com.cinema.cinema.themes.seat.model.Seat;
 import com.cinema.cinema.themes.seat.model.SeatDtoWrite;
 import com.cinema.cinema.themes.seat.model.SingleSeat;
@@ -31,6 +32,13 @@ public class VenueValidator extends ValidatorService<Venue> {
             throw new ElementNotFoundException("Venue with ID " + venueId + " not found");
         }
         return venue.get();
+    }
+
+    public void validateIsActive(Venue venue) {
+        if (!venue.isActive()) {
+            throw new ProcessingException("You cannot modify or remove an inactive venue");
+        }
+
     }
 
     public void validateVipSeatExists(int row, int column, Seat[][] seatsArray) {

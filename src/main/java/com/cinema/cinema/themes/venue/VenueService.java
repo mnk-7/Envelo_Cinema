@@ -168,7 +168,7 @@ public class VenueService {
     @Transactional
     public void editVenueName(long id, VenueDtoWrite venueDto) {
         Venue venue = getVenue(id);
-        //TODO dodać walidację, by nie można było edytować nieaktywnej venue
+        venueValidator.validateIsActive(venue);
         Venue venueFromDto = mapperService.mapToVenue(venueDto);
         venueValidator.validateInput(venueFromDto);
         venue.setName(venueDto.getName());
@@ -185,6 +185,7 @@ public class VenueService {
     @Transactional
     public void removeVenue(long id) {
         Venue venue = getVenue(id);
+        venueValidator.validateIsActive(venue);
         venue.setActive(false);
         venueRepository.save(venue);
     }

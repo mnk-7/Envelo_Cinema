@@ -87,7 +87,7 @@ public class VenueController {
             @ApiResponse(responseCode = "200", description = "Venue deactivated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Venue not found")})
-    public ResponseEntity<Void> removeMovieFromWatchList(@PathVariable long venueId) {
+    public ResponseEntity<Void> removeVenue(@PathVariable long venueId) {
         venueService.removeVenue(venueId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
