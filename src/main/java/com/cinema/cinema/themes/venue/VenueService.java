@@ -47,11 +47,11 @@ public class VenueService {
         Venue venueFromDto = mapperService.mapToVenue(venueDto);
         venueValidator.validateInput(venueFromDto);
         Venue venue = createVenue(venueFromDto);
-        Seat[][] seatsArray = createSeatsArray(venueDto);
-        Set<Seat> singleSeats = createSingleSeats(seatsArray, venueDto);
+        Seat[][] seatsGrid = createSeatsGrid(venueDto);
+        Set<Seat> singleSeats = createSingleSeats(seatsGrid, venueDto);
         venue = venueRepository.save(venue);
         seatService.addSeats(venue, singleSeats);
-        Set<Seat> doubleSeats = createDoubleSeats(seatsArray, venueDto, venue);
+        Set<Seat> doubleSeats = createDoubleSeats(seatsGrid, venueDto, venue);
         seatService.addSeats(venue, doubleSeats);
         venue.getSeats().addAll(singleSeats);
         venue.getSeats().addAll(doubleSeats);
@@ -67,23 +67,23 @@ public class VenueService {
         return venue;
     }
 
-    private Set<Seat> createSingleSeats(Seat[][] seatsArray, VenueInputDto venueDto) {
+    private Set<Seat> createSingleSeats(Seat[][] seatsGrid, VenueInputDto venueDto) {
         Set<SingleSeatInputDto> vipSeatsDto = venueDto.getVipSeats();
         if (vipSeatsDto != null && !vipSeatsDto.isEmpty()) {
-            updateVipSeats(seatsArray, vipSeatsDto);
+            updateVipSeats(seatsGrid, vipSeatsDto);
         }
-        return convertSeatsArray(seatsArray);
+        return convertSeatsGrid(seatsGrid);
     }
 
-    private Set<Seat> createDoubleSeats(Seat[][] seatsArray, VenueInputDto venueDto, Venue venue) {
+    private Set<Seat> createDoubleSeats(Seat[][] seatsGrid, VenueInputDto venueDto, Venue venue) {
         Set<List<SingleSeatInputDto>> doubleSeatsDto = venueDto.getDoubleSeats();
         if (doubleSeatsDto != null && !doubleSeatsDto.isEmpty()) {
-            return updateToDoubleSeats(seatsArray, venueDto.getDoubleSeats(), venue);
+            return updateSeatsForDoubleSeats(seatsGrid, venueDto.getDoubleSeats(), venue);
         }
         return new HashSet<>();
     }
 
-    private Seat[][] createSeatsArray(VenueInputDto venueDto) {
+    private Seat[][] createSeatsGrid(VenueInputDto venueDto) {
         int rows = venueDto.getRowsNumber() + 1;
         int columns = venueDto.getColumnsNumber() + 1;
         Seat[][] seats = new Seat[rows][columns];
@@ -114,7 +114,7 @@ public class VenueService {
         }
     }
 
-    private Set<Seat> convertSeatsArray(Seat[][] seatsArray) {
+    private Set<Seat> convertSeatsGrid(Seat[][] seatsArray) {
         Set<Seat> seats = new HashSet<>();
         for (int i = 1; i < seatsArray.length; i++) {
             for (int j = 1; j < seatsArray[0].length; j++) {
@@ -124,24 +124,28 @@ public class VenueService {
         return seats;
     }
 
-    private Set<Seat> updateToDoubleSeats(Seat[][] seatsArray, Set<List<SingleSeatInputDto>> seatsToCombine, Venue venue) {
-        Set<Seat> newSeats = new HashSet<>();
-        Set<Seat> seatsToUpdate = new HashSet<>();
+    private Set<Seat> updateSeatsForDoubleSeats(Seat[][] seatsArray, Set<List<SingleSeatInputDto>> seatsToCombine, Venue venue) {
+        Set<Seat> newDoubleSeats = new HashSet<>();
+        Set<Seat> singleSeatsToUpdate = new HashSet<>();
+
         for (List<SingleSeatInputDto> seatsPair : seatsToCombine) {
             venueValidator.validateSeatsNumberForDouble(seatsPair);
             SingleSeatInputDto firstSeat = seatsPair.get(0);
             SingleSeatInputDto secondSeat = seatsPair.get(1);
             venueValidator.validateSeatsForDouble(seatsArray, firstSeat, secondSeat);
+
             SingleSeat first = (SingleSeat) seatService.getByVenueByRowByCol(venue, firstSeat.getRow(), firstSeat.getColumn());
             SingleSeat second = (SingleSeat) seatService.getByVenueByRowByCol(venue, secondSeat.getRow(), secondSeat.getColumn());
-            venueValidator.validateSeatsNotPartOfAnotherDouble(first, second, seatsToUpdate);
+            venueValidator.validateSeatsNotPartOfAnotherDouble(first, second, singleSeatsToUpdate);
+
             Seat doubleSeat = createDoubleSeat(first, second);
-            newSeats.add(doubleSeat);
-            seatsToUpdate.add(first);
-            seatsToUpdate.add(second);
+            newDoubleSeats.add(doubleSeat);
+            singleSeatsToUpdate.add(first);
+            singleSeatsToUpdate.add(second);
         }
-        newSeats.addAll(seatsToUpdate);
-        return newSeats;
+
+        newDoubleSeats.addAll(singleSeatsToUpdate);
+        return newDoubleSeats;
     }
 
     private Seat createDoubleSeat(SingleSeat firstSeat, SingleSeat secondSeat) {
