@@ -9,6 +9,7 @@ import com.cinema.cinema.themes.content.model.MovieInputDto;
 import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreOutputDto;
 import com.cinema.cinema.themes.genre.model.GenreInputDto;
+import com.cinema.cinema.themes.seat.model.*;
 import com.cinema.cinema.themes.subscriber.model.Subscriber;
 import com.cinema.cinema.themes.subscriber.model.SubscriberOutputDto;
 import com.cinema.cinema.themes.subscriber.model.SubscriberInputDto;
@@ -18,9 +19,13 @@ import com.cinema.cinema.themes.ticketType.model.TicketTypeInputDto;
 import com.cinema.cinema.themes.user.model.*;
 import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.themes.venue.model.VenueInputDto;
+import com.cinema.cinema.themes.venue.model.VenueOutputDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -92,12 +97,43 @@ public class DtoMapperService {
         return venue;
     }
 
-//    public VenueDtoRead mapToVenueDto(Venue venue) {
-//        return mapper.map(venue, VenueDtoRead.class);
-//    }
+    public VenueOutputDto mapToVenueDto(Venue venue) {
+        VenueOutputDto venueDto = new VenueOutputDto();
+        venueDto.setId(venue.getId());
+        venueDto.setRowsNumber(venue.getRowsNumber());
+        venueDto.setColumnsNumber(venue.getColumnsNumber());
+        setVenueOutputDtoSeats(venueDto, venue);
+        return venueDto;
+    }
 
-//    public SingleSeat mapToSingleSeat(SeatDtoWrite seatDto) {
-//        return mapper.map(seatDto, SingleSeat.class);
-//    }
+    private void setVenueOutputDtoSeats(VenueOutputDto venueDto, Venue venue) {
+        Set<SingleSeatOutputDto> vipSingleSeats = new HashSet<>();
+        Set<DoubleSeatOutputDto> doubleSeats = new HashSet<>();
+        for (Seat seat : venue.getSeats()) {
+            if (seat instanceof SingleSeat) {
+                if (seat.isVip() && !((SingleSeat) seat).isPartOfCombinedSeat()) {
+                    vipSingleSeats.add(mapToSingleSeatDto((SingleSeat) seat));
+                }
+            } else if (seat instanceof DoubleSeat) {
+                doubleSeats.add(mapToDoubleSeatDto((DoubleSeat) seat));
+            }
+
+        }
+        venueDto.setVipSeats(vipSingleSeats);
+        venueDto.setDoubleSeats(doubleSeats);
+    }
+
+    public SingleSeatOutputDto mapToSingleSeatDto(SingleSeat seat) {
+        return mapper.map(seat, SingleSeatOutputDto.class);
+    }
+
+    public DoubleSeatOutputDto mapToDoubleSeatDto(DoubleSeat doubleSeat) {
+        DoubleSeatOutputDto doubleSeatDto = new DoubleSeatOutputDto();
+        doubleSeatDto.setId(doubleSeat.getId());
+        doubleSeatDto.setVip(doubleSeat.isVip());
+        doubleSeatDto.setLeft(mapToSingleSeatDto(doubleSeat.getLeft()));
+        doubleSeatDto.setRight(mapToSingleSeatDto(doubleSeat.getRight()));
+        return doubleSeatDto;
+    }
 
 }

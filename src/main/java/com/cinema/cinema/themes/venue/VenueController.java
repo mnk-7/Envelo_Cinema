@@ -2,6 +2,7 @@ package com.cinema.cinema.themes.venue;
 
 import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.themes.venue.model.VenueInputDto;
+import com.cinema.cinema.themes.venue.model.VenueOutputDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,14 +25,14 @@ public class VenueController {
     private final VenueService venueService;
 
     @GetMapping
-    @Operation(summary = "Get all venues")
+    @Operation(summary = "Get all active venues")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List with venues returned"),
             @ApiResponse(responseCode = "204", description = "No venue found")})
-    public ResponseEntity<List<Venue>> getAllVenues() {
-        List<Venue> genres = venueService.getAllVenues();
-        HttpStatus status = genres.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(genres, status);
+    public ResponseEntity<List<VenueOutputDto>> getAllVenues() {
+        List<VenueOutputDto> venues = venueService.getAllVenues();
+        HttpStatus status = venues.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(venues, status);
     }
 
     @GetMapping("/{venueId}")
@@ -39,8 +40,8 @@ public class VenueController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Venue returned"),
             @ApiResponse(responseCode = "404", description = "Venue not found")})
-    public ResponseEntity<Venue> getVenue(@PathVariable long venueId) {
-        Venue venue = venueService.getVenue(venueId);
+    public ResponseEntity<VenueOutputDto> getVenue(@PathVariable long venueId) {
+        VenueOutputDto venue = venueService.getVenue(venueId);
         return new ResponseEntity<>(venue, HttpStatus.OK);
     }
 
@@ -50,7 +51,7 @@ public class VenueController {
             @ApiResponse(responseCode = "201", description = "Venue created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
     public ResponseEntity<Void> addVenue(@RequestBody VenueInputDto venue) {
-        Venue venueCreated = venueService.addVenue(venue);
+        VenueOutputDto venueCreated = venueService.addVenue(venue);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{venueId}")

@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "venues")
-public class Venue { //created for each new screening hall configuration
+public class Venue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

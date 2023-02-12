@@ -8,6 +8,7 @@ import com.cinema.cinema.themes.seat.model.SingleSeat;
 import com.cinema.cinema.themes.seat.SeatValidator;
 import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.themes.venue.model.VenueInputDto;
+import com.cinema.cinema.themes.venue.model.VenueOutputDto;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,17 +29,21 @@ public class VenueService {
     private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public Venue getVenue(long venueId) {
-        return venueValidator.validateExists(venueId);
+    public VenueOutputDto getVenue(long venueId) {
+        Venue venue = venueValidator.validateExists(venueId);
+        return mapperService.mapToVenueDto(venue);
     }
 
     @Transactional(readOnly = true)
-    public List<Venue> getAllVenues() {
-        return venueRepository.findAllByIsActiveTrue();
+    public List<VenueOutputDto> getAllVenues() {
+        List<Venue> venues = venueRepository.findAllByIsActiveTrue();
+        return venues.stream()
+                .map(mapperService::mapToVenueDto)
+                .toList();
     }
 
     @Transactional
-    public Venue addVenue(VenueInputDto venueDto) {
+    public VenueOutputDto addVenue(VenueInputDto venueDto) {
         Venue venueFromDto = mapperService.mapToVenue(venueDto);
         venueValidator.validateInput(venueFromDto);
         Venue venue = createVenue(venueFromDto);
@@ -50,7 +55,7 @@ public class VenueService {
         seatService.addSeats(venue, doubleSeats);
         venue.getSeats().addAll(singleSeats);
         venue.getSeats().addAll(doubleSeats);
-        return venue;
+        return mapperService.mapToVenueDto(venue);
     }
 
     private Venue createVenue(Venue venueFromDto) {
@@ -166,8 +171,8 @@ public class VenueService {
     }
 
     @Transactional
-    public void editVenueName(long id, VenueInputDto venueDto) {
-        Venue venue = getVenue(id);
+    public void editVenueName(long venueId, VenueInputDto venueDto) {
+        Venue venue = venueValidator.validateExists(venueId);
         venueValidator.validateIsActive(venue);
         Venue venueFromDto = mapperService.mapToVenue(venueDto);
         venueValidator.validateInput(venueFromDto);
@@ -176,15 +181,14 @@ public class VenueService {
     }
 
     @Transactional
-    public void editVenueStructure(long id, VenueInputDto venueDto) {
-        removeVenue(id);
-        //TODO dodać walidację, by nie można było edytować nieaktywnej venue
+    public void editVenueStructure(long venueId, VenueInputDto venueDto) {
+        removeVenue(venueId);
         addVenue(venueDto);
     }
 
     @Transactional
-    public void removeVenue(long id) {
-        Venue venue = getVenue(id);
+    public void removeVenue(long venueId) {
+        Venue venue = venueValidator.validateExists(venueId);
         venueValidator.validateIsActive(venue);
         venue.setActive(false);
         venueRepository.save(venue);
