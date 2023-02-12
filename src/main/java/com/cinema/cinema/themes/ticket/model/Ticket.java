@@ -30,7 +30,7 @@ public class Ticket {
     @JoinColumn(name = "show_id")
     private Show show;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "seat_id")
     private Seat seat;
 

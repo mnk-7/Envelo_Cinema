@@ -37,7 +37,7 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public void addOrder(StandardUser user, String firstName, String lastName, String email, int phone, Set<Ticket> tickets, CouponCode couponCode) {
+    public void addOrder(StandardUser user, String firstName, String lastName, String email, String phone, Set<Ticket> tickets, CouponCode couponCode) {
         Order order = new Order();
         order.setUser(user);
         order.setFirstName(firstName);

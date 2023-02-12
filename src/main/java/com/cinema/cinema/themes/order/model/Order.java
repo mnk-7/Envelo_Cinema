@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -33,10 +34,10 @@ public class Order {
     private String firstName;
     private String lastName;
     private String email;
-    private int phone;
+    private String phone;
 
     @OneToMany(mappedBy = "order")
-    private Set<Ticket> tickets;
+    private Set<Ticket> tickets = new HashSet<>();
 
     @OneToOne(mappedBy = "order")
     private CouponCode couponCode;

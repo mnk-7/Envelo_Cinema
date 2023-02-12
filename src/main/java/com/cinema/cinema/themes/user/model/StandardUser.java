@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -30,18 +31,18 @@ public class StandardUser extends User {
     private Cart cart;
 
     @OneToMany(mappedBy = "user")
-    private Set<Order> orders;
+    private Set<Order> orders = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "movies_to_watch_by_users",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
-    private Set<Movie> moviesToWatch;
+    private Set<Movie> moviesToWatch = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "movies_rated_by_users",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
-    private Set<Movie> ratedMovies;
+    private Set<Movie> ratedMovies = new HashSet<>();
 
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,6 @@ public class VenueInputDto {
     private Integer rowsNumber;
     private Integer columnsNumber;
     Set<SingleSeatInputDto> vipSeats;
-    Set<List<SingleSeatInputDto>> doubleSeats;
+    Set<List<SingleSeatInputDto>> doubleSeats = new HashSet<>();
 
 }

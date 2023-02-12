@@ -10,6 +10,7 @@ import lombok.Setter;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -41,6 +42,6 @@ public class Show {
     private int breakAfterInMinutes;
 
     @OneToMany(mappedBy = "show")
-    private Set<Ticket> tickets;
+    private Set<Ticket> tickets = new HashSet<>();
 
 }
