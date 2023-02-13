@@ -59,9 +59,6 @@ public class ShowValidator extends ValidatorService<Show> {
 
     private void validateNotInNearFuture(Show show, LocalDateTime currentDateTime) {
         if (Period.between(LocalDate.now(), show.getStartDateTime().toLocalDate()).getDays() <= 1) {
-            System.out.println(show.getStartDateTime().toLocalDate());
-            System.out.println(LocalDate.now());
-            System.out.println(Period.between(show.getStartDateTime().toLocalDate(), LocalDate.now()).getDays());
             throw new ProcessingException("The show starts soon. It cannot be cancelled anymore");
         }
     }
