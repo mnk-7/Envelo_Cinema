@@ -37,7 +37,7 @@ public class TicketService {
         ticket.setType(ticketType);
         ticket.setPaid(false);
         ticketRepository.save(ticket);
-        showService.addTicket(show.getId(), ticket);
+      //  showService.addTicket(show.getId(), ticket);
         if (user != null) {
             cartService.addTicket(user.getId(), ticket);
         }
@@ -64,7 +64,7 @@ public class TicketService {
         if (user != null) {
             cartService.removeTicket(user.getId(), ticket);
         }
-        showService.removeTicket(ticket.getShow().getId(), ticket);
+      //  showService.removeTicket(ticket.getShow().getId(), ticket);
         ticketRepository.deleteById(id);
     }
 

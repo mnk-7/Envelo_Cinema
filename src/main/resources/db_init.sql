@@ -34,10 +34,13 @@ INSERT INTO users (email, first_name, last_name, password, phone, role, is_activ
 INSERT INTO users (email, first_name, last_name, password, phone, role, is_active) VALUES ('luc-la@mail.com', 'Lucjan', 'Lawenda', 'user5', '789456324', 'ROLE_USER', false);
 
 
-//movies
-INSERT INTO movies (title, duration, age_restr_id, is_premiere, rating_count, rating_sum, short_description) VALUES ('The Conjuring', '112', 4, false, 0, 0, 'Paranormal investigators Ed and Lorraine Warren work to help a family terrorized by a dark presence in their farmhouse.');
-INSERT INTO movies (title, duration, age_restr_id, is_premiere, rating_count, rating_sum, short_description) VALUES ('Scream', '106', 4, false, 5, 23, 'A year after the murder of her mother, a teenage girl is terrorized by a new killer, who targets the girl and her friends by using horror films as part of a deadly game.');
-INSERT INTO movies (title, duration, age_restr_id, is_premiere, rating_count, rating_sum, short_description) VALUES ('Pretty Woman', '119', 3, false, 12, 60, 'A man in a legal but hurtful business needs an escort for some social events, and hires a beautiful prostitute he meets... only to fall in love.');
+//contents & movies
+INSERT INTO contents (title, duration, age_restr_id, short_description) VALUES ('The Conjuring', '112', 4, 'Paranormal investigators Ed and Lorraine Warren work to help a family terrorized by a dark presence in their farmhouse.');
+INSERT INTO movies (id, is_premiere, rating_count, rating_sum) VALUES (1, false, 0, 0);
+INSERT INTO contents (title, duration, age_restr_id, short_description) VALUES ('Scream', '106', 4, 'A year after the murder of her mother, a teenage girl is terrorized by a new killer, who targets the girl and her friends by using horror films as part of a deadly game.');
+INSERT INTO movies (id, is_premiere, rating_count, rating_sum) VALUES (2, false, 5, 23);
+INSERT INTO contents (title, duration, age_restr_id, short_description) VALUES ('Pretty Woman', '119', 3, 'A man in a legal but hurtful business needs an escort for some social events, and hires a beautiful prostitute he meets... only to fall in love.');
+INSERT INTO movies (id, is_premiere, rating_count, rating_sum) VALUES (3, false, 12, 60);
 
 
 //genres in movies

@@ -1,8 +1,11 @@
 package com.cinema.cinema.themes.show.model;
 
-import com.cinema.cinema.themes.content.model.Movie;
+import com.cinema.cinema.themes.content.model.Content;
 import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.venue.model.Venue;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,21 +28,26 @@ public class Show {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Field is mandatory")
     @ManyToOne
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
-    //TODO - replacing with content
+    @NotNull(message = "Field is mandatory")
     @ManyToOne
     @JoinColumn(name = "content_id")
-    private Movie movie;
-//    @JoinTable(name = "content_in_shows",
-//            joinColumns = @JoinColumn(name = "show_id"),
-//            inverseJoinColumns = @JoinColumn(name = "content_id"))
-    //private Content content;
+    private Content content;
 
+    @NotNull(message = "Field is mandatory")
+    @Future(message = "Field needs to be in the future")
     private LocalDateTime startDateTime;
-    private int breakAfterInMinutes;
+
+    @Transient
+    private LocalDateTime endDateTime;
+
+    @NotNull(message = "Field is mandatory")
+    @Min(value = 15, message = "Value cannot be less than {value}")
+    private Integer breakAfterInMinutes;
 
     @OneToMany(mappedBy = "show")
     private Set<Ticket> tickets = new HashSet<>();

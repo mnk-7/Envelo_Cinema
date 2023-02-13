@@ -17,7 +17,9 @@ import jakarta.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass
+@Entity
+@Table(name = "contents")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Content {
 
     @Id
@@ -29,9 +31,10 @@ public abstract class Content {
     @Size(min = 3, max = 50, message = "Field must contain between {min} and {max} characters")
     private String title;
 
+    @NotNull(message = "Field is mandatory")
     @Min(value = 15, message = "Value cannot be less than {value}")
     @Column(name = "duration")
-    private int durationInMinutes;
+    private Integer durationInMinutes;
 
     @NotNull(message = "Field is mandatory")
     @ManyToOne
