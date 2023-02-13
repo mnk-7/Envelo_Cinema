@@ -17,6 +17,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "seats")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "seat_type")
 public abstract class Seat {
 
     @Id

@@ -13,6 +13,7 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@DiscriminatorValue("double")
 public class DoubleSeat extends Seat {
 
     @NotNull(message = "Field is mandatory")
