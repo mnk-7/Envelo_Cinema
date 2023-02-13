@@ -1,8 +1,8 @@
 package com.cinema.cinema.themes.genre;
 
 import com.cinema.cinema.themes.genre.model.Genre;
-import com.cinema.cinema.themes.genre.model.GenreOutputDto;
 import com.cinema.cinema.themes.genre.model.GenreInputDto;
+import com.cinema.cinema.themes.genre.model.GenreOutputDto;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;

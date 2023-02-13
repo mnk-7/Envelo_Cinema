@@ -1,8 +1,11 @@
 package com.cinema.cinema.themes.content;
 
+import com.cinema.cinema.themes.ageRestriction.AgeRestrictionValidator;
 import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.themes.content.model.MovieOutputDto;
 import com.cinema.cinema.themes.content.model.MovieInputDto;
+import com.cinema.cinema.themes.genre.GenreValidator;
+import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -17,6 +20,8 @@ public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> 
 
     private final MovieRepository movieRepository;
     private final MovieValidator movieValidator;
+    private final GenreValidator genreValidator;
+    private final AgeRestrictionValidator ageRestrictionValidator;
     private final DtoMapperService mapperService;
 
     @Override
@@ -48,6 +53,10 @@ public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> 
     public MovieOutputDto addContent(MovieInputDto movieDto) {
         Movie movie = mapperService.mapToMovie(movieDto);
         movieValidator.validateInput(movie);
+        ageRestrictionValidator.validateExists(movie.getAgeRestriction().getId());
+        for (Genre genre : movie.getGenres()) {
+            genreValidator.validateExists(genre.getId());
+        }
         movie = movieRepository.save(movie);
         return mapperService.mapToMovieDto(movie);
     }
@@ -58,6 +67,10 @@ public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> 
         Movie movie = movieValidator.validateExists(movieId);
         Movie movieFromDto = mapperService.mapToMovie(movieDto);
         movieValidator.validateInput(movieFromDto);
+        ageRestrictionValidator.validateExists(movie.getAgeRestriction().getId());
+        for (Genre genre : movie.getGenres()) {
+            genreValidator.validateExists(genre.getId());
+        }
         setFields(movie, movieFromDto);
         movieRepository.save(movie);
     }
