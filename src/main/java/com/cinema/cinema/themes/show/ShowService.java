@@ -1,6 +1,6 @@
 package com.cinema.cinema.themes.show;
 
-import com.cinema.cinema.themes.content.MovieValidator;
+import com.cinema.cinema.themes.content.validator.ContentValidator;
 import com.cinema.cinema.themes.content.model.Content;
 import com.cinema.cinema.themes.show.model.Show;
 import com.cinema.cinema.themes.show.model.ShowInputDto;
@@ -21,7 +21,7 @@ public class ShowService {
 
     private final ShowRepository showRepository;
     private final ShowValidator showValidator;
-    private final MovieValidator movieValidator;
+    private final ContentValidator contentValidator;
     private final VenueValidator venueValidator;
     private DtoMapperService mapperService;
 
@@ -36,7 +36,7 @@ public class ShowService {
     public List<ShowOutputShortDto> getAllShows() {
         List<Show> shows = showRepository.findAllByStartDateTimeAfter(LocalDateTime.now());
         return shows.stream()
-                .peek(show -> show.setEndDateTime(calculateEndDateTime(show)))
+                //.peek(show -> show.setEndDateTime(calculateEndDateTime(show)))
                 .map(mapperService::mapToShowShortDto)
                 .toList();
     }
@@ -47,7 +47,7 @@ public class ShowService {
         LocalDateTime dateTimeTo = setDateTimeTo(dateTimeFrom);
         List<Show> shows = showRepository.findAllByStartDateTimeBetween(dateTimeFrom, dateTimeTo);
         return shows.stream()
-                .peek(show -> show.setEndDateTime(calculateEndDateTime(show)))
+                //.peek(show -> show.setEndDateTime(calculateEndDateTime(show)))
                 .map(mapperService::mapToShowShortDto)
                 .toList();
     }
@@ -57,6 +57,7 @@ public class ShowService {
         Show showFromDto = mapperService.mapToShow(showDto);
         showValidator.validateInput(showFromDto);
         Show show = createShow(showFromDto);
+        showValidator.validateVenueAndDateTime(show);
         showRepository.save(show);
         return mapperService.mapToShowShortDto(show);
     }
@@ -76,8 +77,7 @@ public class ShowService {
         Show show = showValidator.validateExists(showId);
         LocalDateTime currentDateTime = LocalDateTime.now();
         showValidator.validateCancellation(show, currentDateTime);
-        //TODO sprawdzić, czy trzeba zerować venue i content - nie
-        //delete all tickets -> przy czym usunąć show można jedynie, jeśli nie ma żadnego
+        //TODO sprawdzić, czy trzeba zerować venue i content + delete all tickets (przy czym usunąć show można jedynie, jeśli nie ma żadnego)
         showRepository.deleteById(showId);
     }
 
@@ -96,11 +96,6 @@ public class ShowService {
 //    public Set<Ticket> getAllTickets(long showId) {
 //        Show show = showValidator.validateExists(showId);
 //        return show.getTickets();
-//    }
-//
-//    public Set<Seat> getAllSeats(long showId) {
-//        Show show = showValidator.validateExists(showId);
-//        return show.getVenue().getSeats();
 //    }
 //
 //    @Transactional(readOnly = true)
@@ -124,8 +119,7 @@ public class ShowService {
 
     private Show createShow(Show showFromDto) {
         Show show = new Show();
-        //TODO - stworzyć contentValidator
-        Content content = movieValidator.validateExists(showFromDto.getContent().getId());
+        Content content = contentValidator.validateExists(showFromDto.getContent().getId());
         show.setContent(content);
         setFields(show, showFromDto);
         return show;
@@ -138,7 +132,6 @@ public class ShowService {
         show.setStartDateTime(showFromDto.getStartDateTime());
         show.setBreakAfterInMinutes(showFromDto.getBreakAfterInMinutes());
         show.setEndDateTime(calculateEndDateTime(show));
-        System.out.println(show.getEndDateTime());
     }
 
 }

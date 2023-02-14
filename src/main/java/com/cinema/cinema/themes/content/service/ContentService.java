@@ -1,4 +1,4 @@
-package com.cinema.cinema.themes.content;
+package com.cinema.cinema.themes.content.service;
 
 import java.util.List;
 

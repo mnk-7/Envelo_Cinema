@@ -1,9 +1,11 @@
-package com.cinema.cinema.themes.content;
+package com.cinema.cinema.themes.content.service;
 
 import com.cinema.cinema.themes.ageRestriction.AgeRestrictionValidator;
+import com.cinema.cinema.themes.content.validator.MovieValidator;
 import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.themes.content.model.MovieOutputDto;
 import com.cinema.cinema.themes.content.model.MovieInputDto;
+import com.cinema.cinema.themes.content.repository.MovieRepository;
 import com.cinema.cinema.themes.genre.GenreValidator;
 import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.utils.DtoMapperService;

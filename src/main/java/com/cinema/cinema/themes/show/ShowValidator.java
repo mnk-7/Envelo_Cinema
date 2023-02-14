@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,8 +34,8 @@ public class ShowValidator extends ValidatorService<Show> {
     }
 
     public void validateVenueAndDateTime(Show show) {
-        //TODO sprawdź, czy na dany dzień dana sala jest wolna w danym przedziale czasowym
-        if (1 == 0) {
+        List<Show> shows = showRepository.findAllByVenueAndDates(show.getVenue(), show.getStartDateTime(), show.getEndDateTime());
+        if (!shows.isEmpty()) {
             throw new ArgumentNotValidException("Venue " + show.getVenue().getName() + " is not available between " + show.getStartDateTime() + " and " + show.getEndDateTime());
         }
     }

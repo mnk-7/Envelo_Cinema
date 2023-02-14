@@ -3,6 +3,7 @@ package com.cinema.cinema.themes.content;
 import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.themes.content.model.MovieOutputDto;
 import com.cinema.cinema.themes.content.model.MovieInputDto;
+import com.cinema.cinema.themes.content.service.MovieService;
 import com.cinema.cinema.themes.user.service.StandardUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

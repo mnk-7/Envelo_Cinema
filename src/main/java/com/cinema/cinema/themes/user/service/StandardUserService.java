@@ -6,7 +6,7 @@ import com.cinema.cinema.themes.user.model.StandardUser;
 import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
 import com.cinema.cinema.themes.user.model.StandardUserInputDto;
 import com.cinema.cinema.themes.user.repository.StandardUserRepository;
-import com.cinema.cinema.themes.content.MovieService;
+import com.cinema.cinema.themes.content.service.MovieService;
 import com.cinema.cinema.themes.user.validator.StandardUserValidator;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;

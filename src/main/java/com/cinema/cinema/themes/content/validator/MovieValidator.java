@@ -1,8 +1,9 @@
-package com.cinema.cinema.themes.content;
+package com.cinema.cinema.themes.content.validator;
 
 import com.cinema.cinema.exceptions.ArgumentNotValidException;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.themes.content.model.Movie;
+import com.cinema.cinema.themes.content.repository.MovieRepository;
 import com.cinema.cinema.utils.ValidatorService;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;

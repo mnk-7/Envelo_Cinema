@@ -1,4 +1,4 @@
-package com.cinema.cinema.themes.content;
+package com.cinema.cinema.themes.content.repository;
 
 import com.cinema.cinema.themes.content.model.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;

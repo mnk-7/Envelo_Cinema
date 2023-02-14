@@ -1,6 +1,6 @@
 package com.cinema.cinema.themes.user.controller;
 
-import com.cinema.cinema.themes.content.MovieService;
+import com.cinema.cinema.themes.content.service.MovieService;
 import com.cinema.cinema.themes.content.model.MovieOutputDto;
 import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
 import com.cinema.cinema.themes.user.model.StandardUserInputDto;

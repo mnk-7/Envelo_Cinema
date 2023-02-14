@@ -42,7 +42,6 @@ public class Show {
     @Future(message = "Field needs to be in the future")
     private LocalDateTime startDateTime;
 
-    @Transient
     private LocalDateTime endDateTime;
 
     @NotNull(message = "Field is mandatory")
