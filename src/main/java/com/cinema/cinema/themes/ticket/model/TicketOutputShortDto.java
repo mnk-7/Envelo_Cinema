@@ -1,24 +1,23 @@
-package com.cinema.cinema.themes.venue.model;
+package com.cinema.cinema.themes.ticket.model;
 
 import com.cinema.cinema.themes.seat.model.DoubleSeatOutputDto;
 import com.cinema.cinema.themes.seat.model.SingleSeatOutputDto;
+import com.cinema.cinema.themes.ticketType.model.TicketTypeOutputDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VenueOutputDto {
+public class TicketOutputShortDto {
 
     private Long id;
-    private String name;
-    Set<SingleSeatOutputDto> singleSeats = new HashSet<>();
-    Set<DoubleSeatOutputDto> doubleSeats = new HashSet<>();
+    private SingleSeatOutputDto singleSeat;
+    private DoubleSeatOutputDto doubleSeat;
+    private TicketTypeOutputDto ticketType;
+    private boolean isPaid;
 
 }

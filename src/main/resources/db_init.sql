@@ -22,6 +22,12 @@ INSERT INTO age_restrictions (min_age) VALUES ('15');
 INSERT INTO age_restrictions (min_age) VALUES ('18');
 
 
+//ticket types
+INSERT INTO ticket_types (name, description, is_available, price) VALUES ('normal', 'normal ticket', true, 20.50);
+INSERT INTO ticket_types (name, description, is_available, price) VALUES ('students', 'ticket with students discount', true, 10);
+INSERT INTO ticket_types (name, description, is_available, price) VALUES ('exclusive', 'exclusive ticket', false, 100);
+
+
 //admins
 INSERT INTO admins (email, first_name, last_name, password, phone, role) VALUES ('admin@mail.com', 'Jan', 'Jakubowski', 'admin', '789456123', 'ROLE_ADMIN');
 

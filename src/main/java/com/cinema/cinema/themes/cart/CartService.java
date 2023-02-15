@@ -2,6 +2,7 @@ package com.cinema.cinema.themes.cart;
 
 import com.cinema.cinema.themes.cart.model.Cart;
 import com.cinema.cinema.themes.ticket.model.Ticket;
+import com.cinema.cinema.themes.user.model.StandardUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +25,20 @@ public class CartService {
     }
 
     //TODO - moving the methods below to the user? Using user as a parameter instead of cart id?
-    public void addTicket(long id, Ticket ticket) {
-        Cart cart = getCart(id);
-        cart.getTickets().add(ticket);
-        cart.setLastUpdate(LocalDateTime.now());
-        cartRepository.save(cart);
+    public void addTicket(StandardUser user, Ticket ticket) {
+    //public void addTicket(long id, Ticket ticket) {
+//        Cart cart = getCart(id);
+//        cart.getTickets().add(ticket);
+//        cart.setLastUpdate(LocalDateTime.now());
+//        cartRepository.save(cart);
     }
 
-    public void removeTicket(long id, Ticket ticket) {
-        Cart cart = getCart(id);
-        cart.getTickets().remove(ticket);
-        cart.setLastUpdate(LocalDateTime.now());
-        cartRepository.save(cart);
+    public void removeTicket(StandardUser user, Ticket ticket) {
+    //public void removeTicket(long id, Ticket ticket) {
+//        Cart cart = getCart(id);
+//        cart.getTickets().remove(ticket);
+//        cart.setLastUpdate(LocalDateTime.now());
+//        cartRepository.save(cart);
     }
 
     public void clearCart(long id) {

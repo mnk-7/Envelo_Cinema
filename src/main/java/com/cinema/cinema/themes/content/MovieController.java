@@ -81,7 +81,7 @@ public class MovieController {
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Movie or user not found")})
     public ResponseEntity<Void> rateMovie(@PathVariable long movieId, @PathVariable int userId, @RequestParam int rate) {
-        Movie movie = movieService.getMovie(movieId);
+        Movie movie = movieService.getContentNotDto(movieId);
         userService.rateMovie(userId, movie, rate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -93,7 +93,7 @@ public class MovieController {
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Movie or user not found")})
     public ResponseEntity<Void> addMovieToWatchList(@PathVariable long userId, @PathVariable long movieId) {
-        Movie movie = movieService.getMovie(movieId);
+        Movie movie = movieService.getContentNotDto(movieId);
         userService.addMovieToWatchlist(userId, movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -105,7 +105,7 @@ public class MovieController {
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Movie or user not found")})
     public ResponseEntity<Void> removeMovieFromWatchList(@PathVariable long userId, @PathVariable long movieId) {
-        Movie movie = movieService.getMovie(movieId);
+        Movie movie = movieService.getContentNotDto(movieId);
         userService.removeMovieFromWatchlist(userId, movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -13,10 +13,15 @@ import com.cinema.cinema.themes.genre.model.GenreInputDto;
 import com.cinema.cinema.themes.seat.model.*;
 import com.cinema.cinema.themes.show.model.Show;
 import com.cinema.cinema.themes.show.model.ShowInputDto;
+import com.cinema.cinema.themes.show.model.ShowOutputDto;
 import com.cinema.cinema.themes.show.model.ShowOutputShortDto;
 import com.cinema.cinema.themes.subscriber.model.Subscriber;
 import com.cinema.cinema.themes.subscriber.model.SubscriberOutputDto;
 import com.cinema.cinema.themes.subscriber.model.SubscriberInputDto;
+import com.cinema.cinema.themes.ticket.model.Ticket;
+import com.cinema.cinema.themes.ticket.model.TicketInputDto;
+import com.cinema.cinema.themes.ticket.model.TicketOutputDto;
+import com.cinema.cinema.themes.ticket.model.TicketOutputShortDto;
 import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.themes.ticketType.model.TicketTypeOutputDto;
 import com.cinema.cinema.themes.ticketType.model.TicketTypeInputDto;
@@ -30,6 +35,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -80,6 +86,12 @@ public class DtoMapperService {
 
     public TicketTypeOutputDto mapToTicketTypeDto(TicketType ticketType) {
         return mapper.map(ticketType, TicketTypeOutputDto.class);
+    }
+
+    public TicketType mapToTicketType(long id) {
+        TicketType ticketType = new TicketType();
+        ticketType.setId(id);
+        return ticketType;
     }
 
     public Movie mapToMovie(MovieInputDto movieDto) {
@@ -143,8 +155,6 @@ public class DtoMapperService {
     public VenueOutputDto mapToVenueDto(Venue venue) {
         VenueOutputDto venueDto = new VenueOutputDto();
         venueDto.setId(venue.getId());
-        venueDto.setRowsNumber(venue.getRowsNumber());
-        venueDto.setColumnsNumber(venue.getColumnsNumber());
         setVenueOutputDtoSeats(venueDto, venue);
         return venueDto;
     }
@@ -154,19 +164,18 @@ public class DtoMapperService {
     }
 
     private void setVenueOutputDtoSeats(VenueOutputDto venueDto, Venue venue) {
-        Set<SingleSeatOutputDto> vipSingleSeats = new HashSet<>();
+        Set<SingleSeatOutputDto> singleSeats = new HashSet<>();
         Set<DoubleSeatOutputDto> doubleSeats = new HashSet<>();
         for (Seat seat : venue.getSeats()) {
             if (seat instanceof SingleSeat) {
-                if (seat.isVip() && !((SingleSeat) seat).isPartOfCombinedSeat()) {
-                    vipSingleSeats.add(mapToSingleSeatDto((SingleSeat) seat));
+                if (!((SingleSeat) seat).isPartOfCombinedSeat()) {
+                    singleSeats.add(mapToSingleSeatDto((SingleSeat) seat));
                 }
             } else if (seat instanceof DoubleSeat) {
                 doubleSeats.add(mapToDoubleSeatDto((DoubleSeat) seat));
             }
-
         }
-        venueDto.setVipSeats(vipSingleSeats);
+        venueDto.setSingleSeats(singleSeats);
         venueDto.setDoubleSeats(doubleSeats);
     }
 
@@ -181,6 +190,13 @@ public class DtoMapperService {
         doubleSeatDto.setLeft(mapToSingleSeatDto(doubleSeat.getLeft()));
         doubleSeatDto.setRight(mapToSingleSeatDto(doubleSeat.getRight()));
         return doubleSeatDto;
+    }
+
+    public Seat mapToSeat(long id) {
+        Seat seat;
+        seat = new SingleSeat();
+        seat.setId(id);
+        return seat;
     }
 
     public Show mapToShow(ShowInputDto showDto) {
@@ -207,17 +223,67 @@ public class DtoMapperService {
         return showDto;
     }
 
-//    //TODO - tickets
-//    public ShowOutputDto mapToShowDto(Show show) {
-//        ShowOutputDto showDto = new ShowOutputDto();
-//        showDto.setId(show.getId());
-//        showDto.setStartDateTime(show.getStartDateTime());
-//        showDto.setBreakAfterInMinutes(show.getBreakAfterInMinutes());
-//        showDto.setVenue(mapToVenueDto(show.getVenue()));
-//        if (show.getContent() instanceof Movie) {
-//            showDto.setMovieContent(mapToMovieDto((Movie) show.getContent()));
-//        }
-//        return showDto;
-//    }
+    public Show mapToShow(long id) {
+        Show show = new Show();
+        show.setId(id);
+        return show;
+    }
+
+    public Ticket mapToTicket(TicketInputDto ticketDto) {
+        Ticket ticket = new Ticket();
+        if (ticketDto.getShowId() != null) {
+            ticket.setShow(mapToShow(ticketDto.getShowId()));
+        }
+        if (ticketDto.getSeatId() != null) {
+            ticket.setSeat(mapToSeat(ticketDto.getSeatId()));
+            //ticket.setSeat(mapToSeat(ticketDto.getSeatId(), ticketDto.isSeatSingle()));
+        }
+        if (ticketDto.getTicketTypeId() != null) {
+            ticket.setType(mapToTicketType(ticketDto.getTicketTypeId()));
+        }
+        return ticket;
+    }
+
+    public TicketOutputDto mapToTicketDto(Ticket ticket) {
+        TicketOutputDto ticketDto = new TicketOutputDto();
+        ticketDto.setId(ticket.getId());
+        ticketDto.setPaid(ticket.isPaid());
+        ticketDto.setShow(mapToShowShortDto(ticket.getShow()));
+        ticketDto.setTicketType(mapToTicketTypeDto(ticket.getType()));
+        if (ticket.getSeat() instanceof SingleSeat) {
+            ticketDto.setSingleSeat(mapToSingleSeatDto((SingleSeat) ticket.getSeat()));
+        } else if (ticket.getSeat() instanceof DoubleSeat) {
+            ticketDto.setDoubleSeat(mapToDoubleSeatDto((DoubleSeat) ticket.getSeat()));
+        }
+        return ticketDto;
+    }
+
+    public TicketOutputShortDto mapToTicketShortDto(Ticket ticket) {
+        TicketOutputShortDto ticketDto = new TicketOutputShortDto();
+        ticketDto.setId(ticket.getId());
+        ticketDto.setPaid(ticket.isPaid());
+        ticketDto.setTicketType(mapToTicketTypeDto(ticket.getType()));
+        if (ticket.getSeat() instanceof SingleSeat) {
+            ticketDto.setSingleSeat(mapToSingleSeatDto((SingleSeat) ticket.getSeat()));
+        } else if (ticket.getSeat() instanceof DoubleSeat) {
+            ticketDto.setDoubleSeat(mapToDoubleSeatDto((DoubleSeat) ticket.getSeat()));
+        }
+        return ticketDto;
+    }
+
+    public ShowOutputDto mapToShowDto(Show show) {
+        ShowOutputDto showDto = new ShowOutputDto();
+        showDto.setId(show.getId());
+        showDto.setStartDateTime(show.getStartDateTime());
+        showDto.setBreakAfterInMinutes(show.getBreakAfterInMinutes());
+        showDto.setVenue(mapToVenueDto(show.getVenue()));
+        if (show.getContent() instanceof Movie) {
+            showDto.setMovieContent(mapToMovieDto((Movie) show.getContent()));
+        }
+        Set<Ticket> tickets = show.getTickets();
+        List<TicketOutputShortDto> ticketsDto = tickets.stream().map(this::mapToTicketShortDto).toList();
+        showDto.setTickets(ticketsDto);
+        return showDto;
+    }
 
 }

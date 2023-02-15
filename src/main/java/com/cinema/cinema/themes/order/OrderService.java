@@ -48,7 +48,7 @@ public class OrderService {
         order.setCouponCode(couponCode);
         order.setQrCode(QrCodeGenerator.generateQr());
         orderRepository.save(order);
-        ticketService.editOrder(order, tickets);
+        //ticketService.editOrder(order, tickets);
         if (user != null) {
             //userService.addOrder(user.getId(), order);
             cartService.clearCart(user.getCart().getId());

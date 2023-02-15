@@ -3,6 +3,7 @@ package com.cinema.cinema.themes.show;
 import com.cinema.cinema.themes.show.model.ShowInputDto;
 import com.cinema.cinema.themes.show.model.ShowOutputDto;
 import com.cinema.cinema.themes.show.model.ShowOutputShortDto;
+import com.cinema.cinema.themes.ticket.model.TicketOutputShortDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -56,15 +57,25 @@ public class ShowController {
         return new ResponseEntity<>(show, HttpStatus.OK);
     }
 
-//    @GetMapping("/{showId}/details")
-//    @Operation(summary = "Get show by its ID with reservation details")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Show returned"),
-//            @ApiResponse(responseCode = "404", description = "Show not found")})
-//    public ResponseEntity<ShowOutputDto> getShowWithVenueDetails(@PathVariable long showId) {
-//        ShowOutputDto show = showService.getShowWithVenueDetails(showId);
-//        return new ResponseEntity<>(show, HttpStatus.OK);
-//    }
+    @GetMapping("/{showId}/details")
+    @Operation(summary = "Get show by its ID with reservation details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Show returned"),
+            @ApiResponse(responseCode = "404", description = "Show not found")})
+    public ResponseEntity<ShowOutputDto> getShowWithVenueDetails(@PathVariable long showId) {
+        ShowOutputDto show = showService.getShowWithVenueDetails(showId);
+        return new ResponseEntity<>(show, HttpStatus.OK);
+    }
+
+    @GetMapping("/{showId}/tickets")
+    @Operation(summary = "Get all tickets for show")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List with tickets returned"),
+            @ApiResponse(responseCode = "204", description = "No ticket found")})
+    public ResponseEntity<List<TicketOutputShortDto>> getAllTickets(@PathVariable long showId) {
+        List<TicketOutputShortDto> tickets = showService.getAllTickets(showId);
+        return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
 
     @PostMapping
     @Operation(summary = "Create show")

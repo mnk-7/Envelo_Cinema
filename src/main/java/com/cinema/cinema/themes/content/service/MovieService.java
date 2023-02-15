@@ -39,12 +39,12 @@ public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> 
     @Override
     @Transactional(readOnly = true)
     public MovieOutputDto getContent(long movieId) {
-        Movie movie = getMovie(movieId);
+        Movie movie = getContentNotDto(movieId);
         return mapperService.mapToMovieDto(movie);
     }
 
     @Transactional(readOnly = true)
-    public Movie getMovie(long movieId) {
+    public Movie getContentNotDto(long movieId) {
         Movie movie = movieValidator.validateExists(movieId);
         movie.setRating(calculateRating(movie));
         return movie;

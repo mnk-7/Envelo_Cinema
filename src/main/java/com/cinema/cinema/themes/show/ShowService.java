@@ -1,10 +1,13 @@
 package com.cinema.cinema.themes.show;
 
-import com.cinema.cinema.themes.content.validator.ContentValidator;
 import com.cinema.cinema.themes.content.model.Content;
+import com.cinema.cinema.themes.content.validator.ContentValidator;
 import com.cinema.cinema.themes.show.model.Show;
 import com.cinema.cinema.themes.show.model.ShowInputDto;
+import com.cinema.cinema.themes.show.model.ShowOutputDto;
 import com.cinema.cinema.themes.show.model.ShowOutputShortDto;
+import com.cinema.cinema.themes.ticket.model.Ticket;
+import com.cinema.cinema.themes.ticket.model.TicketOutputShortDto;
 import com.cinema.cinema.themes.venue.VenueValidator;
 import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.utils.DtoMapperService;
@@ -12,7 +15,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -36,7 +40,6 @@ public class ShowService {
     public List<ShowOutputShortDto> getAllShows() {
         List<Show> shows = showRepository.findAllByStartDateTimeAfter(LocalDateTime.now());
         return shows.stream()
-                //.peek(show -> show.setEndDateTime(calculateEndDateTime(show)))
                 .map(mapperService::mapToShowShortDto)
                 .toList();
     }
@@ -47,7 +50,6 @@ public class ShowService {
         LocalDateTime dateTimeTo = setDateTimeTo(dateTimeFrom);
         List<Show> shows = showRepository.findAllByStartDateTimeBetween(dateTimeFrom, dateTimeTo);
         return shows.stream()
-                //.peek(show -> show.setEndDateTime(calculateEndDateTime(show)))
                 .map(mapperService::mapToShowShortDto)
                 .toList();
     }
@@ -77,33 +79,44 @@ public class ShowService {
         Show show = showValidator.validateExists(showId);
         LocalDateTime currentDateTime = LocalDateTime.now();
         showValidator.validateCancellation(show, currentDateTime);
-        //TODO sprawdzić, czy trzeba zerować venue i content + delete all tickets (przy czym usunąć show można jedynie, jeśli nie ma żadnego)
+        //działa bez nullowania venue i content;
+        //delete all tickets nie jest konieczne z uwagi na walidację, że show można usunąć jedynie, jeśli nie ma żadnego ticketu
         showRepository.deleteById(showId);
     }
 
-//    public void addTicket(long showId, Ticket ticket) {
-//        Show show = showValidator.validateExists(showId);
-//        show.getTickets().add(ticket);
-//        showRepository.save(show);
-//    }
-//
-//    public void removeTicket(long showId, Ticket ticket) {
-//        Show show = showValidator.validateExists(showId);
-//        show.getTickets().remove(ticket);
-//        showRepository.save(show);
-//    }
-//
-//    public Set<Ticket> getAllTickets(long showId) {
-//        Show show = showValidator.validateExists(showId);
-//        return show.getTickets();
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public ShowOutputDto getShowWithVenueDetails(long showId) {
-//        Show show = showValidator.validateExists(showId);
-//        show.setEndDateTime(calculateEndDateTime(show));
-//        return mapperService.mapToShowDto(show);
-//    }
+    @Transactional
+    public void addTicket(Show show, Ticket ticket) {
+        show.getTickets().add(ticket);
+        showValidator.validateInput(show);
+        showRepository.save(show);
+    }
+
+    @Transactional
+    public void removeTicket(Show show, Ticket ticket) {
+        show.getTickets().remove(ticket);
+        showValidator.validateInput(show);
+        showRepository.save(show);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketOutputShortDto> getAllTickets(long showId) {
+        List<Ticket> tickets = getAllTicketsNotDto(showId);
+        return tickets.stream()
+                .map(mapperService::mapToTicketShortDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Ticket> getAllTicketsNotDto(long showId) {
+        Show show = showValidator.validateExists(showId);
+        return show.getTickets().stream().toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ShowOutputDto getShowWithVenueDetails(long showId) {
+        Show show = showValidator.validateExists(showId);
+        return mapperService.mapToShowDto(show);
+    }
 
     private LocalDateTime setDateTimeTo(LocalDateTime dateTimeFrom) {
         DayOfWeek currentDayOfWeek = dateTimeFrom.getDayOfWeek();

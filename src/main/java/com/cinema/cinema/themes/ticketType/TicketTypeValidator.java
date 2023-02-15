@@ -3,6 +3,7 @@ package com.cinema.cinema.themes.ticketType;
 import com.cinema.cinema.exceptions.ElementFoundException;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ElementNotModifiedException;
+import com.cinema.cinema.exceptions.ProcessingException;
 import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.utils.ValidatorService;
 import jakarta.validation.Validator;
@@ -46,6 +47,12 @@ public class TicketTypeValidator extends ValidatorService<TicketType> {
         Optional<TicketType> ticketType = ticketTypeRepository.findByName(name);
         if (ticketType.isPresent() && ticketType.get().getId() != ticketTypeId) {
             throw new ElementFoundException("Ticket type with name " + ticketType.get().getName() + " already exists");
+        }
+    }
+
+    public void validateIsAvailable(TicketType ticketType) {
+        if (!ticketType.isAvailable()) {
+            throw new ProcessingException("Ticket type " + ticketType.getName() + " is not available anymore");
         }
     }
 
