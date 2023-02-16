@@ -17,6 +17,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class TicketService {
@@ -37,8 +39,23 @@ public class TicketService {
         return mapperService.mapToTicketDto(ticket);
     }
 
+    public void addTickets(Long userId, List<TicketInputDto> ticketsDto) {
+//        boolean addToCart = false;
+//        StandardUser user = null;
+//        if (userId != null) {
+//            user = userValidator.validateExists(userId);
+//            addToCart = true;
+//        }
+        for (TicketInputDto ticketInputDto : ticketsDto) {
+            Ticket ticket = addTicket(userId, ticketInputDto);
+//            if (addToCart) {
+//                cartService.addTicket(user, ticket);
+//            }
+        }
+    }
+
     @Transactional
-    public TicketOutputDto addTicket(Long userId, TicketInputDto ticketDto) {
+    private Ticket addTicket(Long userId, TicketInputDto ticketDto) {
         Ticket ticketFromDto = mapperService.mapToTicket(ticketDto);
         ticketValidator.validateInput(ticketFromDto);
         TicketType ticketType = ticketTypeValidator.validateExists(ticketDto.getTicketTypeId());
@@ -49,12 +66,7 @@ public class TicketService {
         Ticket ticket = createTicket(ticketType, show, seat);
         ticket = ticketRepository.save(ticket);
         showService.addTicket(show, ticket);
-//        TODO - cart
-//        if (userId != null) {
-//            StandardUser user = userValidator.validateExists(userId);
-//            cartService.addTicket(user, ticket);
-//        }
-        return mapperService.mapToTicketDto(ticket);
+        return ticket;
     }
 
     private Ticket createTicket(TicketType ticketType, Show show, Seat seat) {

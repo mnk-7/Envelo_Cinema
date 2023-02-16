@@ -10,9 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -37,14 +36,9 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ticket created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addTicket(@RequestParam(required = false) Long userId, @RequestBody TicketInputDto ticket) {
-        TicketOutputDto ticketCreated = ticketService.addTicket(userId, ticket);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{ticketId}")
-                .buildAndExpand(ticketCreated.getId())
-                .toUri();
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<Void> addTickets(@RequestParam(required = false) Long userId, @RequestBody List<TicketInputDto> tickets) {
+        ticketService.addTickets(userId, tickets);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{ticketId}")
