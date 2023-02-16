@@ -2,8 +2,8 @@ package com.cinema.cinema.themes.show;
 
 import com.cinema.cinema.themes.show.model.ShowInputDto;
 import com.cinema.cinema.themes.show.model.ShowOutputDto;
-import com.cinema.cinema.themes.show.model.ShowOutputShortDto;
-import com.cinema.cinema.themes.ticket.model.TicketOutputShortDto;
+import com.cinema.cinema.themes.show.model.ShowShortDto;
+import com.cinema.cinema.themes.ticket.model.TicketShortDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,8 +30,8 @@ public class ShowController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List with shows returned"),
             @ApiResponse(responseCode = "204", description = "No show found")})
-    public ResponseEntity<List<ShowOutputShortDto>> getAllShows() {
-        List<ShowOutputShortDto> shows = showService.getAllShows();
+    public ResponseEntity<List<ShowShortDto>> getAllShows() {
+        List<ShowShortDto> shows = showService.getAllShows();
         HttpStatus status = shows.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(shows, status);
     }
@@ -41,8 +41,8 @@ public class ShowController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List with shows returned"),
             @ApiResponse(responseCode = "204", description = "No show found")})
-    public ResponseEntity<List<ShowOutputShortDto>> getAllShowsForCurrentWeek() {
-        List<ShowOutputShortDto> shows = showService.getAllShowsForCurrentWeek();
+    public ResponseEntity<List<ShowShortDto>> getAllShowsForCurrentWeek() {
+        List<ShowShortDto> shows = showService.getAllShowsForCurrentWeek();
         HttpStatus status = shows.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(shows, status);
     }
@@ -52,8 +52,8 @@ public class ShowController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Show returned"),
             @ApiResponse(responseCode = "404", description = "Show not found")})
-    public ResponseEntity<ShowOutputShortDto> getShow(@PathVariable long showId) {
-        ShowOutputShortDto show = showService.getShow(showId);
+    public ResponseEntity<ShowShortDto> getShow(@PathVariable long showId) {
+        ShowShortDto show = showService.getShow(showId);
         return new ResponseEntity<>(show, HttpStatus.OK);
     }
 
@@ -72,8 +72,8 @@ public class ShowController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List with tickets returned"),
             @ApiResponse(responseCode = "204", description = "No ticket found")})
-    public ResponseEntity<List<TicketOutputShortDto>> getAllTickets(@PathVariable long showId) {
-        List<TicketOutputShortDto> tickets = showService.getAllTickets(showId);
+    public ResponseEntity<List<TicketShortDto>> getAllTickets(@PathVariable long showId) {
+        List<TicketShortDto> tickets = showService.getAllTickets(showId);
         return new ResponseEntity<>(tickets, HttpStatus.OK);
     }
 
@@ -83,7 +83,7 @@ public class ShowController {
             @ApiResponse(responseCode = "201", description = "Show created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
     public ResponseEntity<Void> addGenre(@RequestBody ShowInputDto show) {
-        ShowOutputShortDto showCreated = showService.addShow(show);
+        ShowShortDto showCreated = showService.addShow(show);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{showId}")

@@ -2,10 +2,10 @@ package com.cinema.cinema.themes.ticket;
 
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ProcessingException;
+import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.seat.model.Seat;
 import com.cinema.cinema.themes.show.ShowService;
 import com.cinema.cinema.themes.show.model.Show;
-import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.utils.ValidatorService;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;

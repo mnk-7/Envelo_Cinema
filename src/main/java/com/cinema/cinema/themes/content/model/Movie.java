@@ -1,7 +1,7 @@
 package com.cinema.cinema.themes.content.model;
 
 import com.cinema.cinema.themes.genre.model.Genre;
-
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,10 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
-
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,7 +27,7 @@ public class Movie extends Content {
     @JoinTable(name = "genres_in_movies",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private Set<Genre> genres = new HashSet<>();
+    private List<Genre> genres = new ArrayList<>();
 
     @Transient
     private double rating;

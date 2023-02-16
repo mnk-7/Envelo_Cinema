@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketOutputShortDto {
+public class TicketShortDto {
 
     private Long id;
     private SingleSeatOutputDto singleSeat;

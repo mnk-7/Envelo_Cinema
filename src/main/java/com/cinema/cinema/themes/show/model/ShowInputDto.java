@@ -1,5 +1,7 @@
 package com.cinema.cinema.themes.show.model;
 
+import com.cinema.cinema.themes.content.model.ContentIdDto;
+import com.cinema.cinema.themes.venue.model.VenueIdDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ShowInputDto {
 
-    private Long venueId;
-    private Long movieId; //dla każdego innego typu content potrzebne osobne pole
+    private VenueIdDto venue;
+    private ContentIdDto content;
     private Integer breakAfterInMinutes;
     private LocalDateTime startDateTime;
 

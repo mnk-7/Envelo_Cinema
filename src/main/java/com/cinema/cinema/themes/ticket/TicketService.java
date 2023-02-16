@@ -58,10 +58,10 @@ public class TicketService {
     private Ticket addTicket(Long userId, TicketInputDto ticketDto) {
         Ticket ticketFromDto = mapperService.mapToTicket(ticketDto);
         ticketValidator.validateInput(ticketFromDto);
-        TicketType ticketType = ticketTypeValidator.validateExists(ticketDto.getTicketTypeId());
+        TicketType ticketType = ticketTypeValidator.validateExists(ticketDto.getTicketType().getId());
         ticketTypeValidator.validateIsAvailable(ticketType);
-        Show show = showValidator.validateExists(ticketDto.getShowId());
-        Seat seat = seatValidator.validateExists(ticketDto.getSeatId());
+        Show show = showValidator.validateExists(ticketDto.getShow().getId());
+        Seat seat = seatValidator.validateExists(ticketDto.getSeat().getId());
         ticketValidator.validateSeat(seat, show);
         Ticket ticket = createTicket(ticketType, show, seat);
         ticket = ticketRepository.save(ticket);

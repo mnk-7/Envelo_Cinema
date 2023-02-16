@@ -5,9 +5,9 @@ import com.cinema.cinema.themes.content.validator.ContentValidator;
 import com.cinema.cinema.themes.show.model.Show;
 import com.cinema.cinema.themes.show.model.ShowInputDto;
 import com.cinema.cinema.themes.show.model.ShowOutputDto;
-import com.cinema.cinema.themes.show.model.ShowOutputShortDto;
+import com.cinema.cinema.themes.show.model.ShowShortDto;
 import com.cinema.cinema.themes.ticket.model.Ticket;
-import com.cinema.cinema.themes.ticket.model.TicketOutputShortDto;
+import com.cinema.cinema.themes.ticket.model.TicketShortDto;
 import com.cinema.cinema.themes.venue.VenueValidator;
 import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.utils.DtoMapperService;
@@ -30,14 +30,14 @@ public class ShowService {
     private DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public ShowOutputShortDto getShow(long showId) {
+    public ShowShortDto getShow(long showId) {
         Show show = showValidator.validateExists(showId);
         show.setEndDateTime(calculateEndDateTime(show));
         return mapperService.mapToShowShortDto(show);
     }
 
     @Transactional(readOnly = true)
-    public List<ShowOutputShortDto> getAllShows() {
+    public List<ShowShortDto> getAllShows() {
         List<Show> shows = showRepository.findAllByStartDateTimeAfter(LocalDateTime.now());
         return shows.stream()
                 .map(mapperService::mapToShowShortDto)
@@ -45,7 +45,7 @@ public class ShowService {
     }
 
     @Transactional(readOnly = true)
-    public List<ShowOutputShortDto> getAllShowsForCurrentWeek() {
+    public List<ShowShortDto> getAllShowsForCurrentWeek() {
         LocalDateTime dateTimeFrom = LocalDateTime.now();
         LocalDateTime dateTimeTo = setDateTimeTo(dateTimeFrom);
         List<Show> shows = showRepository.findAllByStartDateTimeBetween(dateTimeFrom, dateTimeTo);
@@ -55,7 +55,7 @@ public class ShowService {
     }
 
     @Transactional
-    public ShowOutputShortDto addShow(ShowInputDto showDto) {
+    public ShowShortDto addShow(ShowInputDto showDto) {
         Show showFromDto = mapperService.mapToShow(showDto);
         showValidator.validateInput(showFromDto);
         Show show = createShow(showFromDto);
@@ -99,7 +99,7 @@ public class ShowService {
     }
 
     @Transactional(readOnly = true)
-    public List<TicketOutputShortDto> getAllTickets(long showId) {
+    public List<TicketShortDto> getAllTickets(long showId) {
         List<Ticket> tickets = getAllTicketsNotDto(showId);
         return tickets.stream()
                 .map(mapperService::mapToTicketShortDto)

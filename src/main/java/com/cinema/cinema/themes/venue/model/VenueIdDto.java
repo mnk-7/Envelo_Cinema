@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VenueShortOutputDto {
+public class VenueIdDto {
 
     private Long id;
-    private String name;
 
 }

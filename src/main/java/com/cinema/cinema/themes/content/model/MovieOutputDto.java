@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +20,7 @@ public class MovieOutputDto {
     private String title;
     private Integer durationInMinutes;
     private AgeRestrictionOutputDto ageRestriction;
-    private Set<GenreOutputDto> genres = new HashSet<>();
+    private List<GenreOutputDto> genres = new ArrayList<>();
     private double rating;
     private boolean isPremiere;
     private String shortDescription;
