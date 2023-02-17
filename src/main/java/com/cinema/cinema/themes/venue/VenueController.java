@@ -1,6 +1,5 @@
 package com.cinema.cinema.themes.venue;
 
-import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.themes.venue.model.VenueInputDto;
 import com.cinema.cinema.themes.venue.model.VenueOutputDto;
 import io.swagger.v3.oas.annotations.Operation;

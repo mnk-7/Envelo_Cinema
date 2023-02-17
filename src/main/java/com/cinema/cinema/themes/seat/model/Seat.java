@@ -1,7 +1,6 @@
 package com.cinema.cinema.themes.seat.model;
 
 import com.cinema.cinema.themes.venue.model.Venue;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

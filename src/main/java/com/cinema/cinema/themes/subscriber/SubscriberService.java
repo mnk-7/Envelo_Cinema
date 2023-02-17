@@ -20,7 +20,6 @@ public class SubscriberService {
 
 
     @Transactional(readOnly = true)
-    //wywoływane, gdy wysyłana jest notyfikacja do subskrybentów, docelowo brak endpointu, dlatego brak konwersji na dto
     public List<String> getAllSubscribersEmails() {
         List<Subscriber> subscribers = subscriberRepository.findAll();
         return subscribers.stream()

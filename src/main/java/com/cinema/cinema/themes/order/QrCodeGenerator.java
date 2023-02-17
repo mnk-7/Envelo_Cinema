@@ -1,6 +1,5 @@
 package com.cinema.cinema.themes.order;
 
-//TODO
 public class QrCodeGenerator {
 
     private static int counter = 0;

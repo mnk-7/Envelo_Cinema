@@ -4,7 +4,6 @@ import com.cinema.cinema.themes.user.model.StandardUser;
 
 import java.util.Random;
 
-//TODO
 public class PasswordGenerator {
     private static int counter = 0;
 

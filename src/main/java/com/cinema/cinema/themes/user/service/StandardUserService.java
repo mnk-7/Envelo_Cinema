@@ -108,6 +108,7 @@ public class StandardUserService extends UserService<StandardUserOutputDto, Stan
 //        return user.getCart();
 //    }
 
+    //TODO invoice
 //    public List<Invoice> getAllInvoices(long id) {
 //        StandardUser user = getStandardUser(id);
 //        return user.getOrders().stream().map(Order::getInvoice).toList();

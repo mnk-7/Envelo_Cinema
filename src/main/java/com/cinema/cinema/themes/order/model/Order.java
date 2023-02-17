@@ -32,8 +32,9 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private StandardUser user; //data below needed because some user can make order for different data than his account has
+    private StandardUser user;
 
+    //data below needed because some user can make order for different data than his account has
     @NotNull(message = "Field is mandatory")
     @NotBlank(message = "Field cannot be empty or blank")
     @Size(min = 2, max = 50, message = "Field must contain between {min} and {max} characters")

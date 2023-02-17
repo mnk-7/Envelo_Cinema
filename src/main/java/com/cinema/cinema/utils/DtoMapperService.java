@@ -9,6 +9,9 @@ import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreIdDto;
 import com.cinema.cinema.themes.genre.model.GenreOutputDto;
 import com.cinema.cinema.themes.genre.model.GenreInputDto;
+import com.cinema.cinema.themes.newsletter.model.Newsletter;
+import com.cinema.cinema.themes.newsletter.model.NewsletterInputDto;
+import com.cinema.cinema.themes.newsletter.model.NewsletterOutputDto;
 import com.cinema.cinema.themes.order.model.*;
 import com.cinema.cinema.themes.seat.model.*;
 import com.cinema.cinema.themes.show.model.*;
@@ -270,6 +273,14 @@ public class DtoMapperService {
 
     public OrderShortDto mapToOrderShortDto(Order order) {
         return mapper.map(order, OrderShortDto.class);
+    }
+
+    public Newsletter mapToNewsletter(NewsletterInputDto newsletterDto) {
+        return mapper.map(newsletterDto, Newsletter.class);
+    }
+
+    public NewsletterOutputDto mapToNewsletterDto(Newsletter newsletter) {
+        return mapper.map(newsletter, NewsletterOutputDto.class);
     }
 
 }
