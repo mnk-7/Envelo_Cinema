@@ -9,6 +9,7 @@ import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreIdDto;
 import com.cinema.cinema.themes.genre.model.GenreOutputDto;
 import com.cinema.cinema.themes.genre.model.GenreInputDto;
+import com.cinema.cinema.themes.order.model.*;
 import com.cinema.cinema.themes.seat.model.*;
 import com.cinema.cinema.themes.show.model.*;
 import com.cinema.cinema.themes.subscriber.model.Subscriber;
@@ -246,6 +247,29 @@ public class DtoMapperService {
             ticketDto.setDoubleSeat(mapToDoubleSeatDto((DoubleSeat) ticket.getSeat()));
         }
         return ticketDto;
+    }
+
+    public Order mapToOrder(OrderInputDto orderDto) {
+        return mapper.map(orderDto, Order.class);
+    }
+
+//    private Order mapToOrder(OrderIdDto orderDto) {
+//        return mapper.map(orderDto, Order.class);
+//    }
+
+    public OrderOutputDto mapToOrderDto(Order order) {
+        OrderOutputDto orderDto = mapper.map(order, OrderOutputDto.class);
+        Set<TicketOutputDto> ticketsDto = new HashSet<>();
+        Set<Ticket> tickets = order.getTickets();
+        for (Ticket ticket : tickets) {
+            ticketsDto.add(mapToTicketDto(ticket));
+        }
+        orderDto.setTickets(ticketsDto);
+        return orderDto;
+    }
+
+    public OrderShortDto mapToOrderShortDto(Order order) {
+        return mapper.map(order, OrderShortDto.class);
     }
 
 }

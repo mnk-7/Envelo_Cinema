@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,5 +25,6 @@ public class OrderOutputDto {
     private Set<TicketOutputDto> tickets = new HashSet<>();
     private CouponCodeOutputDto couponCode;
     private String qrCode;
+    private BigDecimal price;
 
 }

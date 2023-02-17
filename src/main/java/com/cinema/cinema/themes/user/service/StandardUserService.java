@@ -1,21 +1,19 @@
 package com.cinema.cinema.themes.user.service;
 
 import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.content.model.MovieOutputDto;
-import com.cinema.cinema.themes.user.model.StandardUser;
-import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
-import com.cinema.cinema.themes.user.model.StandardUserInputDto;
-import com.cinema.cinema.themes.user.repository.StandardUserRepository;
 import com.cinema.cinema.themes.content.service.MovieService;
+import com.cinema.cinema.themes.order.model.Order;
+import com.cinema.cinema.themes.user.model.StandardUser;
+import com.cinema.cinema.themes.user.model.StandardUserInputDto;
+import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
+import com.cinema.cinema.themes.user.repository.StandardUserRepository;
 import com.cinema.cinema.themes.user.validator.StandardUserValidator;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -68,16 +66,6 @@ public class StandardUserService extends UserService<StandardUserOutputDto, Stan
         return password;
     }
 
-    @Transactional(readOnly = true)
-    public List<MovieOutputDto> getMoviesToWatch(long userId) {
-        StandardUser user = userValidator.validateExists(userId);
-        Set<Movie> moviesToWatch = user.getMoviesToWatch();
-        return moviesToWatch.stream()
-                .map(mapperService::mapToMovieDto)
-                .sorted(Comparator.comparing(MovieOutputDto::getTitle))
-                .toList();
-    }
-
     @Transactional
     public void addMovieToWatchlist(long userId, Movie movie) {
         StandardUser user = userValidator.validateExists(userId);
@@ -100,35 +88,21 @@ public class StandardUserService extends UserService<StandardUserOutputDto, Stan
         userValidator.validateMovieNotRated(user, movie);
         user.getRatedMovies().add(movie);
         movieService.rateMovie(movie, rate);
-        userRepository.save(user);
     }
 
+    @Transactional
+    public void addOrder(long userId, Order order) {
+        StandardUser user = userValidator.validateExists(userId);
+        user.getOrders().add(order);
+    }
 
-//    public Set<Order> getAllOrders(long id) {
-//        StandardUser user = getStandardUser(id);
-//        return user.getOrders();
-//    }
+    @Transactional
+    public void removeOrder(long userId, Order order) {
+        StandardUser user = userValidator.validateExists(userId);
+        user.getOrders().remove(order);
+    }
 
-//    public Order getOrder(long id, Order order) {
-//        StandardUser user = getStandardUser(id);
-//        if (user.getOrders().contains(order)) {
-//            return order;
-//        }
-//        throw new UserException("You don't have such an order");
-//    }
-
-//    public void addOrder(long id, Order order) {
-//        StandardUser user = getStandardUser(id);
-//        user.getOrders().add(order);
-//        userRepository.save(user);
-//    }
-
-//    public void removeOrder(long id, Order order) {
-//        StandardUser user = getStandardUser(id);
-//        user.getOrders().remove(order);
-//        userRepository.save(user);
-//    }
-
+    //TODO cart
 //    public Cart getCart(long id) {
 //        StandardUser user = getStandardUser(id);
 //        return user.getCart();
@@ -138,6 +112,7 @@ public class StandardUserService extends UserService<StandardUserOutputDto, Stan
 //        StandardUser user = getStandardUser(id);
 //        return user.getOrders().stream().map(Order::getInvoice).toList();
 //    }
+
     private void setFields(StandardUser user, StandardUser userFromDto) {
         user.setFirstName(userFromDto.getFirstName());
         user.setLastName(userFromDto.getLastName());

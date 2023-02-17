@@ -69,4 +69,10 @@ public class TicketValidator extends ValidatorService<Ticket> {
         }
     }
 
+    public void validateNotInOrder(Ticket ticket) {
+        if (ticket.getOrder() != null) {
+            throw new ProcessingException("Ticket is part of another order");
+        }
+    }
+
 }

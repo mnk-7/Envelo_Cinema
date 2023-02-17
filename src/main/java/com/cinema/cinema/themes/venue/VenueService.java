@@ -171,7 +171,7 @@ public class VenueService {
         doubleSeat.setLeft(left);
         doubleSeat.setRight(right);
         left.setPartOfCombinedSeat(true);
-        left.setPartOfCombinedSeat(true);
+        right.setPartOfCombinedSeat(true);
     }
 
     @Transactional

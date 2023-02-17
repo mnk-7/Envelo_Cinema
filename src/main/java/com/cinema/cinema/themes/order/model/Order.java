@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -62,5 +64,10 @@ public class Order {
 
     @OneToOne(mappedBy = "order")
     private Invoice invoice;
+
+    private LocalDateTime createdAt;
+
+    @Transient
+    private BigDecimal price;
 
 }

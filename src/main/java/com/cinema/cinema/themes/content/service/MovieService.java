@@ -8,13 +8,17 @@ import com.cinema.cinema.themes.content.model.MovieInputDto;
 import com.cinema.cinema.themes.content.repository.MovieRepository;
 import com.cinema.cinema.themes.genre.GenreValidator;
 import com.cinema.cinema.themes.genre.model.Genre;
+import com.cinema.cinema.themes.user.model.StandardUser;
+import com.cinema.cinema.themes.user.validator.StandardUserValidator;
 import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -23,6 +27,7 @@ public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> 
     private final MovieRepository movieRepository;
     private final MovieValidator movieValidator;
     private final GenreValidator genreValidator;
+    private final StandardUserValidator userValidator;
     private final AgeRestrictionValidator ageRestrictionValidator;
     private final DtoMapperService mapperService;
 
@@ -33,6 +38,16 @@ public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> 
         return movies.stream()
                 .peek(movie -> movie.setRating(calculateRating(movie)))
                 .map(mapperService::mapToMovieDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<MovieOutputDto> getMoviesToWatch(long userId) {
+        StandardUser user = userValidator.validateExists(userId);
+        Set<Movie> moviesToWatch = user.getMoviesToWatch();
+        return moviesToWatch.stream()
+                .map(mapperService::mapToMovieDto)
+                .sorted(Comparator.comparing(MovieOutputDto::getTitle))
                 .toList();
     }
 

@@ -42,7 +42,7 @@ public class InvoiceService {
         invoice.setRecipientAddress(address);
         invoice.setRecipientNip(nip);
         invoiceRepository.save(invoice);
-        orderService.addInvoice(order.getId(), invoice);
+        //orderService.addInvoice(order.getId(), invoice);
         return invoice;
     }
 

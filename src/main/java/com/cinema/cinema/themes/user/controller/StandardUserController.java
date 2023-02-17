@@ -2,6 +2,8 @@ package com.cinema.cinema.themes.user.controller;
 
 import com.cinema.cinema.themes.content.service.MovieService;
 import com.cinema.cinema.themes.content.model.MovieOutputDto;
+import com.cinema.cinema.themes.order.OrderService;
+import com.cinema.cinema.themes.order.model.OrderShortDto;
 import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
 import com.cinema.cinema.themes.user.model.StandardUserInputDto;
 import com.cinema.cinema.themes.user.service.StandardUserService;
@@ -24,6 +26,7 @@ public class StandardUserController {
 
     private final StandardUserService userService;
     private final MovieService movieService;
+    private final OrderService orderService;
 
     @GetMapping
     @Operation(summary = "Get all users")
@@ -63,11 +66,20 @@ public class StandardUserController {
             @ApiResponse(responseCode = "200", description = "List with movies to watch returned"),
             @ApiResponse(responseCode = "204", description = "No movie to watch found")})
     public ResponseEntity<List<MovieOutputDto>> getMoviesToWatch(@PathVariable long userId) {
-        List<MovieOutputDto> moviesToWatch = userService.getMoviesToWatch(userId);
+        List<MovieOutputDto> moviesToWatch = movieService.getMoviesToWatch(userId);
         HttpStatus status = moviesToWatch.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(moviesToWatch, status);
     }
 
-
+    @GetMapping("/{userId}/orders")
+    @Operation(summary = "Get orders")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List with orders returned"),
+            @ApiResponse(responseCode = "204", description = "No order to watch found")})
+    public ResponseEntity<List<OrderShortDto>> getOrders(@PathVariable long userId) {
+        List<OrderShortDto> orders = orderService.getAllOrders(userId);
+        HttpStatus status = orders.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(orders, status);
+    }
 
 }
