@@ -119,6 +119,10 @@ INSERT INTO shows (content_id, venue_id, start_date_time, end_date_time, break_a
 
 
 --//tickets
-INSERT INTO (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (1, 1, 1, false, null);
-INSERT INTO (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (10, 1, 2, false, null);
-INSERT INTO (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (1, 2, 1, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (2, 1, 1, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (3, 1, 1, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (5, 1, 1, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (7, 1, 2, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (8, 1, 2, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (11, 1, 2, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (2, 2, 1, false, null);
