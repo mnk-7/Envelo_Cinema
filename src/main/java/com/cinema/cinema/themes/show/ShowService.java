@@ -79,22 +79,22 @@ public class ShowService {
         Show show = showValidator.validateExists(showId);
         LocalDateTime currentDateTime = LocalDateTime.now();
         showValidator.validateCancellation(show, currentDateTime);
-        //działa bez nullowania venue i content;
-        //delete all tickets nie jest konieczne z uwagi na walidację, że show można usunąć jedynie, jeśli nie ma żadnego ticketu
         showRepository.deleteById(showId);
+
+        //działa bez nullowania venue i content;
+        //delete all tickets nie jest konieczne z uwagi na walidację,
+        //że show można usunąć jedynie, jeśli nie ma żadnego ticketu
     }
 
     @Transactional
     public void addTicket(Show show, Ticket ticket) {
         show.getTickets().add(ticket);
-        showValidator.validateInput(show);
         showRepository.save(show);
     }
 
     @Transactional
     public void removeTicket(Show show, Ticket ticket) {
         show.getTickets().remove(ticket);
-        showValidator.validateInput(show);
         showRepository.save(show);
     }
 

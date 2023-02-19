@@ -2,10 +2,12 @@ package com.cinema.cinema.themes.ticket;
 
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ProcessingException;
+import com.cinema.cinema.themes.seat.model.SingleSeat;
 import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.seat.model.Seat;
 import com.cinema.cinema.themes.show.ShowService;
 import com.cinema.cinema.themes.show.model.Show;
+import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.utils.ValidatorService;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
@@ -34,20 +36,22 @@ public class TicketValidator extends ValidatorService<Ticket> {
         return ticket.get();
     }
 
-    public void validateCanBeCancelled(Ticket ticket) {
+    public void validateNotPaid(Ticket ticket) {
         if (ticket.isPaid()) {
-            throw new ProcessingException("Ticket has already been paid, try to cancel the whole order");
+            throw new ProcessingException("Ticket has already been paid, you cannot modify or remove it");
         }
     }
 
-    public void validateNotPaid(Ticket ticket) {
-        if (ticket.isPaid()) {
-            throw new ProcessingException("Ticket has already been paid");
+    public TicketType validateTicketTypeNotEmpty(TicketType ticketType) {
+        if (ticketType.getId() == null) {
+            throw new ProcessingException("Ticket type cannot be empty");
         }
+        return ticketType;
     }
 
     public void validateSeat(Seat seat, Show show) {
         validateSeatInVenue(seat, show);
+        validateSeatNotPartOfDouble(seat);
         validateSeatAvailable(seat, show);
     }
 
@@ -66,6 +70,14 @@ public class TicketValidator extends ValidatorService<Ticket> {
                 .findFirst();
         if (seatAvailable.isPresent()) {
             throw new ProcessingException("Seat is not available");
+        }
+    }
+
+    private void validateSeatNotPartOfDouble(Seat seat) {
+        if (seat instanceof SingleSeat) {
+            if (((SingleSeat) seat).isPartOfCombinedSeat()) {
+                throw new ProcessingException("Seat is part of combined seat");
+            }
         }
     }
 

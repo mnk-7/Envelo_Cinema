@@ -40,7 +40,7 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order returned"),
             @ApiResponse(responseCode = "404", description = "Order not found")})
-    public ResponseEntity<OrderOutputDto> getGenre(@PathVariable long orderId) {
+    public ResponseEntity<OrderOutputDto> getOrder(@PathVariable long orderId) {
         OrderOutputDto order = orderService.getOrder(orderId);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
@@ -50,8 +50,8 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Order created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addOrder(@RequestBody OrderInputDto order) {
-        OrderShortDto orderCreated = orderService.addOrder(order);
+    public ResponseEntity<Void> addOrder(@RequestParam(required = false) Long userId, @RequestBody OrderInputDto order) {
+        OrderShortDto orderCreated = orderService.addOrder(userId, order);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{orderId}")

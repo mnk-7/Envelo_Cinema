@@ -1,6 +1,7 @@
 package com.cinema.cinema.themes.order;
 
 import com.cinema.cinema.themes.cart.CartService;
+import com.cinema.cinema.themes.cart.CartValidator;
 import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.order.model.OrderInputDto;
 import com.cinema.cinema.themes.order.model.OrderOutputDto;
@@ -32,6 +33,7 @@ public class OrderService {
     private final OrderValidator orderValidator;
     private final StandardUserValidator userValidator;
     private final TicketValidator ticketValidator;
+    private final CartValidator cartValidator;
     private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
@@ -61,69 +63,85 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderShortDto addOrder(OrderInputDto orderDto) {
+    public OrderShortDto addOrder(Long userId, OrderInputDto orderDto) {
+        StandardUser user = null;
+        if (userId != null) {
+            user = userValidator.validateExists(userId);
+        }
         Order orderFromDto = mapperService.mapToOrder(orderDto);
-        Order order = createOrder(orderFromDto);
+        Order order = createOrder(user, orderFromDto);
         orderValidator.validateInput(order);
         order = orderRepository.save(order);
         ticketService.addOrder(order, order.getTickets());
-        //TODO cart
-        if (order.getUser() != null) {
-            userService.addOrder(order.getUser().getId(), order);
-            //cartService.clearCart(user.getCart().getId());
+        if (user != null) {
+            userService.addOrder(user.getId(), order);
+            cartService.clearCart(user.getCart().getId());
         }
         return mapperService.mapToOrderShortDto(order);
     }
 
-    private Order createOrder(Order orderFromDto ) {
+    private Order createOrder(StandardUser user, Order orderFromDto) {
         Order order = new Order();
-        setFields(order, orderFromDto);
+        setFields(user, order, orderFromDto);
         order.setCreatedAt(LocalDateTime.now());
         order.setQrCode(QrCodeGenerator.generateQr());
         return order;
     }
 
-    private void setFields(Order order, Order orderFromDto) {
-        if (orderFromDto.getUser() != null) {
-            StandardUser user = userValidator.validateExists(orderFromDto.getUser().getId());
+    private void setFields(StandardUser user, Order order, Order orderFromDto) {
+        if (user != null) {
             order.setUser(user);
         }
-
         order.setPhone(orderFromDto.getPhone());
         order.setCouponCode(orderFromDto.getCouponCode());
         order.setFirstName(orderFromDto.getFirstName());
         order.setLastName(orderFromDto.getLastName());
         order.setEmail(orderFromDto.getEmail());
+        setTickets(user, order, orderFromDto);
+    }
 
-        Set<Ticket> ticketsFromDto = orderFromDto.getTickets();
-        if (ticketsFromDto != null) {
-            for (Ticket ticketFromDto : ticketsFromDto) {
-                Ticket ticket = ticketValidator.validateExists(ticketFromDto.getId());
-                ticketValidator.validateNotInOrder(ticket);
-                order.getTickets().add(ticket);
+    private void setTickets(StandardUser user, Order order, Order orderFromDto) {
+        //TODO poprawić + dopasować OrderInputDto, by zamiast listy ticketów zawierał cart (po zaimplementowaniu koszyka dla niezalogowanych userów)
+        if (user == null) {
+            Set<Ticket> ticketsFromDto = orderFromDto.getTickets();
+            if (ticketsFromDto != null) {
+                for (Ticket ticketFromDto : ticketsFromDto) {
+                    Ticket ticket = ticketValidator.validateExists(ticketFromDto.getId());
+                    ticketValidator.validateNotInOrder(ticket);
+                    cartValidator.validateTicketNotInAnotherCart(ticketFromDto);
+                    ticket.setPaid(true);
+                    order.getTickets().add(ticket);
+                }
             }
-            order.setPrice(calculatePrice(order));
+        } else {
+            for (Ticket ticketFromCart : user.getCart().getTickets()) {
+                ticketValidator.validateNotInOrder(ticketFromCart);
+                ticketFromCart.setPaid(true);
+                order.getTickets().add(ticketFromCart);
+            }
         }
+        order.setPrice(calculatePrice(order));
     }
 
     private BigDecimal calculatePrice(Order order) {
         return order.getTickets().stream()
-                .map(ticket -> ticket.getType().getPrice())
+                .map(ticket -> ticket.getTicketType().getPrice())
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.valueOf(0));
     }
 
 //    public void cancelOrder(long orderId) {
-//        //TODO przeanalizować ticket cancellation i order cancellation
 //        Order order = orderValidator.validateExists(orderId);
+//        //orderValidator.validateCancellation(order); //żaden seans nie może być w przeszłości
 //        if (order.getUser() != null) {
 //            userService.removeOrder(order.getUser().getId(), order);
 //        }
-//        //TODO zwrot pieniędzy
+//        //TODO zwrot pieniędzy -> zniżkowy coupon code
 //        if (!calculateTicketRefund(order).equals(BigDecimal.valueOf(0))) {
+//
 //        }
 //        ticketService.removeOrder(order);
-//        //TODO sprawdzic, czy trzeba zerować invoice, coupon code
+//        //TODO sprawdzić, czy trzeba zerować invoice, coupon code
 //        //TODO usunięcie ticketów, zwolnienie miejsc
 //        orderRepository.deleteById(orderId);
 //    }
@@ -135,11 +153,11 @@ public class OrderService {
 //        orderRepository.save(order);
 //    }
 
-//    private BigDecimal calculateTicketRefund(Order order) {
-//        return order.getTickets().stream()
-//                .map(ticket -> ticket.isPaid() ? ticket.getType().getPrice() : BigDecimal.valueOf(0))
-//                .reduce(BigDecimal::add)
-//                .orElse(BigDecimal.valueOf(0));
-//    }
+    private BigDecimal calculateTicketRefund(Order order) {
+        return order.getTickets().stream()
+                .map(ticket -> ticket.isPaid() ? ticket.getTicketType().getPrice() : BigDecimal.valueOf(0))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.valueOf(0));
+    }
 
 }

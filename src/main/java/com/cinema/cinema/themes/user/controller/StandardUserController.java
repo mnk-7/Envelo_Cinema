@@ -1,5 +1,7 @@
 package com.cinema.cinema.themes.user.controller;
 
+import com.cinema.cinema.themes.cart.CartService;
+import com.cinema.cinema.themes.cart.model.CartOutputDto;
 import com.cinema.cinema.themes.content.service.MovieService;
 import com.cinema.cinema.themes.content.model.MovieOutputDto;
 import com.cinema.cinema.themes.order.OrderService;
@@ -27,6 +29,7 @@ public class StandardUserController {
     private final StandardUserService userService;
     private final MovieService movieService;
     private final OrderService orderService;
+    private final CartService cartService;
 
     @GetMapping
     @Operation(summary = "Get all users")
@@ -80,6 +83,16 @@ public class StandardUserController {
         List<OrderShortDto> orders = orderService.getAllOrders(userId);
         HttpStatus status = orders.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
         return new ResponseEntity<>(orders, status);
+    }
+
+    @GetMapping("/{userId}/cart")
+    @Operation(summary = "Get user's cart")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cart returned"),
+            @ApiResponse(responseCode = "404", description = "Cart not found")})
+    public ResponseEntity<CartOutputDto> getCart(@PathVariable long userId) {
+        CartOutputDto cart = cartService.getCartByUserId(userId);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
 }

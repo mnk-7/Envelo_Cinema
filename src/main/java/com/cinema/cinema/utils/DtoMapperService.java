@@ -4,6 +4,8 @@ import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionIdDto;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionInputDto;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionOutputDto;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
+import com.cinema.cinema.themes.cart.model.Cart;
+import com.cinema.cinema.themes.cart.model.CartOutputDto;
 import com.cinema.cinema.themes.content.model.*;
 import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreIdDto;
@@ -220,7 +222,7 @@ public class DtoMapperService {
             ticket.setSeat(mapToSeat(ticketDto.getSeat()));
         }
         if (ticketDto.getTicketType() != null) {
-            ticket.setType(mapToTicketType(ticketDto.getTicketType()));
+            ticket.setTicketType(mapToTicketType(ticketDto.getTicketType()));
         }
         return ticket;
     }
@@ -230,7 +232,7 @@ public class DtoMapperService {
         ticketDto.setId(ticket.getId());
         ticketDto.setPaid(ticket.isPaid());
         ticketDto.setShow(mapToShowShortDto(ticket.getShow()));
-        ticketDto.setTicketType(mapToTicketTypeDto(ticket.getType()));
+        ticketDto.setTicketType(mapToTicketTypeDto(ticket.getTicketType()));
         if (ticket.getSeat() instanceof SingleSeat) {
             ticketDto.setSingleSeat(mapToSingleSeatDto((SingleSeat) ticket.getSeat()));
         } else if (ticket.getSeat() instanceof DoubleSeat) {
@@ -243,7 +245,7 @@ public class DtoMapperService {
         TicketShortDto ticketDto = new TicketShortDto();
         ticketDto.setId(ticket.getId());
         ticketDto.setPaid(ticket.isPaid());
-        ticketDto.setTicketType(mapToTicketTypeDto(ticket.getType()));
+        ticketDto.setTicketType(mapToTicketTypeDto(ticket.getTicketType()));
         if (ticket.getSeat() instanceof SingleSeat) {
             ticketDto.setSingleSeat(mapToSingleSeatDto((SingleSeat) ticket.getSeat()));
         } else if (ticket.getSeat() instanceof DoubleSeat) {
@@ -281,6 +283,17 @@ public class DtoMapperService {
 
     public NewsletterOutputDto mapToNewsletterDto(Newsletter newsletter) {
         return mapper.map(newsletter, NewsletterOutputDto.class);
+    }
+
+    public CartOutputDto mapToCartDto(Cart cart) {
+        CartOutputDto cartDto = mapper.map(cart, CartOutputDto.class);
+        Set<TicketOutputDto> ticketsDto = new HashSet<>();
+        Set<Ticket> tickets = cart.getTickets();
+        for (Ticket ticket : tickets) {
+            ticketsDto.add(mapToTicketDto(ticket));
+        }
+        cartDto.setTickets(ticketsDto);
+        return cartDto;
     }
 
 }

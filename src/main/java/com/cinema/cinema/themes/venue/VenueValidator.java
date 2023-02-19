@@ -38,7 +38,6 @@ public class VenueValidator extends ValidatorService<Venue> {
         if (!venue.isActive()) {
             throw new ProcessingException("You cannot modify or remove an inactive venue");
         }
-
     }
 
     public void validateVipSeatExists(int row, int column, Seat[][] seatsArray) {

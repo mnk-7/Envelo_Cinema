@@ -28,16 +28,24 @@ INSERT INTO ticket_types (name, description, is_available, price) VALUES ('stude
 INSERT INTO ticket_types (name, description, is_available, price) VALUES ('exclusive', 'exclusive ticket', false, 100);
 
 
+--//carts
+INSERT INTO carts () VALUES ();
+INSERT INTO carts () VALUES ();
+INSERT INTO carts () VALUES ();
+INSERT INTO carts () VALUES ();
+INSERT INTO carts () VALUES ();
+
+
 --//admins
 INSERT INTO admins (email, first_name, last_name, password, phone, role) VALUES ('admin@mail.com', 'Jan', 'Jakubowski', 'admin', '789456123', 'ROLE_ADMIN');
 
 
 --//users
-INSERT INTO users (email, first_name, last_name, password, phone, role, is_active) VALUES ('woj.wi@mail.com', 'Wojciech', 'Wiśniewski', 'user1', '789456123', 'ROLE_USER', true);
-INSERT INTO users (email, first_name, last_name, password, phone, role, is_active) VALUES ('nor.no@mail.com', 'Norbert', 'Nowak', 'user2', '789456456', 'ROLE_USER', true);
-INSERT INTO users (email, first_name, last_name, password, phone, role, is_active) VALUES ('krzy-ko@mail.com', 'Krzysztof', 'Kowal', 'user3', '789456753', 'ROLE_USER', true);
-INSERT INTO users (email, first_name, last_name, password, phone, role, is_active) VALUES ('kry-kru@mail.com', 'Krystian', 'Kruk', 'user4', null, 'ROLE_USER', true);
-INSERT INTO users (email, first_name, last_name, password, phone, role, is_active) VALUES ('luc-la@mail.com', 'Lucjan', 'Lawenda', 'user5', '789456324', 'ROLE_USER', false);
+INSERT INTO users (email, first_name, last_name, password, phone, role, is_active, cart_id) VALUES ('woj.wi@mail.com', 'Wojciech', 'Wiśniewski', 'user1', '789456123', 'ROLE_USER', true, 1);
+INSERT INTO users (email, first_name, last_name, password, phone, role, is_active, cart_id) VALUES ('nor.no@mail.com', 'Norbert', 'Nowak', 'user2', '789456456', 'ROLE_USER', true, 2);
+INSERT INTO users (email, first_name, last_name, password, phone, role, is_active, cart_id) VALUES ('krzy-ko@mail.com', 'Krzysztof', 'Kowal', 'user3', '789456753', 'ROLE_USER', true, 3);
+INSERT INTO users (email, first_name, last_name, password, phone, role, is_active, cart_id) VALUES ('kry-kru@mail.com', 'Krystian', 'Kruk', 'user4', null, 'ROLE_USER', true, 4);
+INSERT INTO users (email, first_name, last_name, password, phone, role, is_active, cart_id) VALUES ('luc-la@mail.com', 'Lucjan', 'Lawenda', 'user5', '789456324', 'ROLE_USER', false, 5);
 
 
 --//subscribers
@@ -119,10 +127,22 @@ INSERT INTO shows (content_id, venue_id, start_date_time, end_date_time, break_a
 
 
 --//tickets
-INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (2, 1, 1, false, null);
 INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (3, 1, 1, false, null);
-INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (5, 1, 1, false, null);
-INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (7, 1, 2, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (4, 1, 1, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (7, 1, 1, false, null);
 INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (8, 1, 2, false, null);
+INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (9, 1, 2, false, null);
 INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (11, 1, 2, false, null);
 INSERT INTO tickets (seat_id, show_id, ticket_type_id, is_paid, order_id) VALUES (2, 2, 1, false, null);
+
+
+--//tickets in carts
+INSERT INTO tickets_in_carts (cart_id, ticket_id) VALUES (1, 1);
+INSERT INTO tickets_in_carts (cart_id, ticket_id) VALUES (1, 2);
+INSERT INTO tickets_in_carts (cart_id, ticket_id) VALUES (2, 3);
+
+
+--SELECT * FROM TICKETS;
+--SELECT * FROM TICKETS_IN_CARTS;
+--SELECT * FROM ORDERS;
+--SELECT * FROM USERS;

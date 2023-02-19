@@ -40,7 +40,7 @@ public class Ticket {
     @NotNull(message = "Field is mandatory")
     @ManyToOne
     @JoinColumn(name = "ticket_type_id")
-    private TicketType type;
+    private TicketType ticketType;
 
     private boolean isPaid;
 

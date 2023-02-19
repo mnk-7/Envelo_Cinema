@@ -2,7 +2,6 @@ package com.cinema.cinema.themes.order.model;
 
 import com.cinema.cinema.themes.couponCode.model.CouponCodeInputDto;
 import com.cinema.cinema.themes.ticket.model.TicketIdDto;
-import com.cinema.cinema.themes.user.model.StandardUserIdDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class OrderInputDto {
 
-    private StandardUserIdDto user;
     private String firstName;
     private String lastName;
     private String email;

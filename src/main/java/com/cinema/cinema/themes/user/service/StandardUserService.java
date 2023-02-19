@@ -96,22 +96,10 @@ public class StandardUserService extends UserService<StandardUserOutputDto, Stan
         user.getOrders().add(order);
     }
 
-    @Transactional
-    public void removeOrder(long userId, Order order) {
-        StandardUser user = userValidator.validateExists(userId);
-        user.getOrders().remove(order);
-    }
-
-    //TODO cart
-//    public Cart getCart(long id) {
-//        StandardUser user = getStandardUser(id);
-//        return user.getCart();
-//    }
-
-    //TODO invoice
-//    public List<Invoice> getAllInvoices(long id) {
-//        StandardUser user = getStandardUser(id);
-//        return user.getOrders().stream().map(Order::getInvoice).toList();
+//    @Transactional
+//    public void removeOrder(long userId, Order order) {
+//        StandardUser user = userValidator.validateExists(userId);
+//        user.getOrders().remove(order);
 //    }
 
     private void setFields(StandardUser user, StandardUser userFromDto) {
