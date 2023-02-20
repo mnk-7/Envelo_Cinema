@@ -137,6 +137,7 @@ public class DtoMapperService {
     public VenueOutputDto mapToVenueDto(Venue venue) {
         VenueOutputDto venueDto = new VenueOutputDto();
         venueDto.setId(venue.getId());
+        venueDto.setName(venue.getName());
         setVenueOutputDtoSeats(venueDto, venue);
         return venueDto;
     }

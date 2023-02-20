@@ -62,7 +62,7 @@ public class TicketValidator extends ValidatorService<Ticket> {
     }
 
     private void validateSeatAvailable(Seat seat, Show show) {
-        List<Ticket> tickets = showService.getAllTicketsNotDto(show.getId());
+        List<Ticket> tickets = showService.getAllTickets(show.getId());
         Optional<Seat> seatAvailable = tickets
                 .stream()
                 .map(Ticket::getSeat)

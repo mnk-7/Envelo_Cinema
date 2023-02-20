@@ -1,15 +1,13 @@
 package com.cinema.cinema.themes.venue;
 
 import com.cinema.cinema.themes.seat.SeatService;
+import com.cinema.cinema.themes.seat.SeatValidator;
 import com.cinema.cinema.themes.seat.model.DoubleSeat;
 import com.cinema.cinema.themes.seat.model.Seat;
-import com.cinema.cinema.themes.seat.model.SingleSeatInputDto;
 import com.cinema.cinema.themes.seat.model.SingleSeat;
-import com.cinema.cinema.themes.seat.SeatValidator;
+import com.cinema.cinema.themes.seat.model.SingleSeatInputDto;
 import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.themes.venue.model.VenueInputDto;
-import com.cinema.cinema.themes.venue.model.VenueOutputDto;
-import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,28 +24,22 @@ public class VenueService {
     private final VenueValidator venueValidator;
     private final SeatService seatService;
     private final SeatValidator seatValidator;
-    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public VenueOutputDto getVenue(long venueId) {
-        Venue venue = venueValidator.validateExists(venueId);
-        return mapperService.mapToVenueDto(venue);
+    public Venue getVenue(long venueId) {
+        return venueValidator.validateExists(venueId);
     }
 
     @Transactional(readOnly = true)
-    public List<VenueOutputDto> getAllVenues() {
-        List<Venue> venues = venueRepository.findAllByIsActiveTrue();
-        return venues.stream()
-                .map(mapperService::mapToVenueDto)
-                .toList();
+    public List<Venue> getAllVenues() {
+        return venueRepository.findAllByIsActiveTrue();
     }
 
     @Transactional
-    public VenueOutputDto addVenue(VenueInputDto venueDto) {
-        Venue venueFromDto = mapperService.mapToVenue(venueDto);
+    public Venue addVenue(Venue venueFromDto, VenueInputDto venueDto) {
         venueValidator.validateInput(venueFromDto);
         Venue venue = createVenue(venueFromDto);
-        Seat[][] seatsGrid = createSeatsGrid(venueDto);
+        Seat[][] seatsGrid = createSeatsGrid(venueFromDto);
         Set<Seat> singleSeats = createSingleSeats(seatsGrid, venueDto);
         venue = venueRepository.save(venue);
         seatService.addSeats(venue, singleSeats);
@@ -55,7 +47,7 @@ public class VenueService {
         seatService.addSeats(venue, doubleSeats);
         venue.getSeats().addAll(singleSeats);
         venue.getSeats().addAll(doubleSeats);
-        return mapperService.mapToVenueDto(venue);
+        return venue;
     }
 
     private Venue createVenue(Venue venueFromDto) {
@@ -83,9 +75,9 @@ public class VenueService {
         return new HashSet<>();
     }
 
-    private Seat[][] createSeatsGrid(VenueInputDto venueDto) {
-        int rows = venueDto.getRowsNumber() + 1;
-        int columns = venueDto.getColumnsNumber() + 1;
+    private Seat[][] createSeatsGrid(Venue venue) {
+        int rows = venue.getRowsNumber() + 1;
+        int columns = venue.getColumnsNumber() + 1;
         Seat[][] seats = new Seat[rows][columns];
 
         for (int i = 1; i < rows; i++) {
@@ -175,19 +167,19 @@ public class VenueService {
     }
 
     @Transactional
-    public void editVenueName(long venueId, VenueInputDto venueDto) {
+    public void editVenueName(long venueId, Venue venueFromDto) {
         Venue venue = venueValidator.validateExists(venueId);
         venueValidator.validateIsActive(venue);
-        Venue venueFromDto = mapperService.mapToVenue(venueDto);
         venueValidator.validateInput(venueFromDto);
-        venue.setName(venueDto.getName());
+        venue.setName(venueFromDto.getName());
+        System.out.println(venueFromDto.getName());
         venueRepository.save(venue);
     }
 
     @Transactional
-    public void editVenueStructure(long venueId, VenueInputDto venueDto) {
+    public void editVenueStructure(long venueId, Venue venue, VenueInputDto venueDto) {
         removeVenue(venueId);
-        addVenue(venueDto);
+        addVenue(venue, venueDto);
     }
 
     @Transactional

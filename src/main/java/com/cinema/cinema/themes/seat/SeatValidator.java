@@ -1,10 +1,9 @@
 package com.cinema.cinema.themes.seat;
 
 import com.cinema.cinema.exceptions.ElementNotFoundException;
-import com.cinema.cinema.exceptions.ProcessingException;
+import com.cinema.cinema.themes.seat.model.Seat;
 import com.cinema.cinema.themes.seat.model.SingleSeat;
 import com.cinema.cinema.themes.seat.repository.SeatRepository;
-import com.cinema.cinema.themes.seat.model.Seat;
 import com.cinema.cinema.themes.seat.repository.SingleSeatRepository;
 import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.utils.ValidatorService;

@@ -1,11 +1,9 @@
 package com.cinema.cinema.themes.cart;
 
 import com.cinema.cinema.themes.cart.model.Cart;
-import com.cinema.cinema.themes.cart.model.CartOutputDto;
 import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.user.model.StandardUser;
 import com.cinema.cinema.themes.user.validator.StandardUserValidator;
-import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,18 +17,16 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartValidator cartValidator;
     private final StandardUserValidator userValidator;
-    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public CartOutputDto getCartByUserId(long userId) {
+    public Cart getCartByUserId(long userId) {
         StandardUser user = userValidator.validateExists(userId);
-        return mapperService.mapToCartDto(user.getCart());
+        return user.getCart();
     }
 
     @Transactional(readOnly = true)
-    public CartOutputDto getCartByCartId(long cartId) {
-        Cart cart = cartValidator.validateExists(cartId);
-        return mapperService.mapToCartDto(cart);
+    public Cart getCartByCartId(long cartId) {
+        return cartValidator.validateExists(cartId);
     }
 
     @Transactional

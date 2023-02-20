@@ -1,7 +1,9 @@
 package com.cinema.cinema.themes.newsletter;
 
+import com.cinema.cinema.themes.newsletter.model.Newsletter;
 import com.cinema.cinema.themes.newsletter.model.NewsletterInputDto;
 import com.cinema.cinema.themes.newsletter.model.NewsletterOutputDto;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +24,7 @@ import java.util.List;
 public class NewsletterController {
 
     private final NewsletterService newsletterService;
+    private final DtoMapperService mapperService;
 
     @GetMapping
     @Operation(summary = "Get all newsletters")
@@ -29,9 +32,12 @@ public class NewsletterController {
             @ApiResponse(responseCode = "200", description = "List with newsletters returned"),
             @ApiResponse(responseCode = "204", description = "No newsletter found")})
     public ResponseEntity<List<NewsletterOutputDto>> getAllNewsletters() {
-        List<NewsletterOutputDto> newsletters = newsletterService.getAllNewsletters();
-        HttpStatus status = newsletters.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(newsletters, status);
+        List<Newsletter> newsletters = newsletterService.getAllNewsletters();
+        List<NewsletterOutputDto> newslettersDto = newsletters.stream()
+                .map(mapperService::mapToNewsletterDto)
+                .toList();
+        HttpStatus status = newslettersDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(newslettersDto, status);
     }
 
     @GetMapping("/{newsletterId}")
@@ -40,8 +46,9 @@ public class NewsletterController {
             @ApiResponse(responseCode = "200", description = "Newsletter returned"),
             @ApiResponse(responseCode = "404", description = "Newsletter not found")})
     public ResponseEntity<NewsletterOutputDto> getNewsletter(@PathVariable long newsletterId) {
-        NewsletterOutputDto newsletter = newsletterService.getNewsletter(newsletterId);
-        return new ResponseEntity<>(newsletter, HttpStatus.OK);
+        Newsletter newsletter = newsletterService.getNewsletter(newsletterId);
+        NewsletterOutputDto newsletterDto = mapperService.mapToNewsletterDto(newsletter);
+        return new ResponseEntity<>(newsletterDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -49,12 +56,13 @@ public class NewsletterController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Newsletter created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addNewsletter(@RequestBody NewsletterInputDto newsletter) {
-        NewsletterOutputDto newsletterCreated = newsletterService.addNewsletter(newsletter);
+    public ResponseEntity<Void> addNewsletter(@RequestBody NewsletterInputDto newsletterDto) {
+        Newsletter newsletter = mapperService.mapToNewsletter(newsletterDto);
+        newsletter = newsletterService.addNewsletter(newsletter);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{newsletterId}")
-                .buildAndExpand(newsletterCreated.getId())
+                .buildAndExpand(newsletter.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -65,7 +73,8 @@ public class NewsletterController {
             @ApiResponse(responseCode = "200", description = "Newsletter updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Newsletter not found")})
-    public ResponseEntity<Void> editNewsletter(@PathVariable long newsletterId, @RequestBody NewsletterInputDto newsletter) {
+    public ResponseEntity<Void> editNewsletter(@PathVariable long newsletterId, @RequestBody NewsletterInputDto newsletterDto) {
+        Newsletter newsletter = mapperService.mapToNewsletter(newsletterDto);
         newsletterService.editNewsletter(newsletterId, newsletter);
         return new ResponseEntity<>(HttpStatus.OK);
     }

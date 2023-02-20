@@ -1,15 +1,12 @@
 package com.cinema.cinema.themes.genre;
 
 import com.cinema.cinema.themes.genre.model.Genre;
-import com.cinema.cinema.themes.genre.model.GenreInputDto;
-import com.cinema.cinema.themes.genre.model.GenreOutputDto;
-import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -17,35 +14,27 @@ public class GenreService {
 
     private final GenreRepository genreRepository;
     private final GenreValidator genreValidator;
-    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public List<GenreOutputDto> getAllGenres() {
-        List<Genre> genres = genreRepository.findAll(Sort.by("name"));
-        return genres.stream()
-                .map(mapperService::mapToGenreDto)
-                .toList();
+    public List<Genre> getAllGenres() {
+        return genreRepository.findAll(Sort.by("name"));
     }
 
     @Transactional(readOnly = true)
-    public GenreOutputDto getGenre(long genreId) {
-        Genre genre = genreValidator.validateExists(genreId);
-        return mapperService.mapToGenreDto(genre);
+    public Genre getGenre(long genreId) {
+        return genreValidator.validateExists(genreId);
     }
 
     @Transactional
-    public GenreOutputDto addGenre(GenreInputDto genreDto) {
-        Genre genre = mapperService.mapToGenre(genreDto);
+    public Genre addGenre(Genre genre) {
         genreValidator.validateNotExists(genre);
         genreValidator.validateInput(genre);
-        genre = genreRepository.save(genre);
-        return mapperService.mapToGenreDto(genre);
+        return genreRepository.save(genre);
     }
 
     @Transactional
-    public void editGenre(long genreId, GenreInputDto genreDto) {
+    public void editGenre(long genreId, Genre genreFromDto) {
         Genre genre = genreValidator.validateExists(genreId);
-        Genre genreFromDto = mapperService.mapToGenre(genreDto);
         genreValidator.validateInput(genreFromDto);
         genreValidator.validateChanged(genre, genreFromDto);
         genreValidator.validateNotExists(genreFromDto);

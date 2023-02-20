@@ -9,14 +9,10 @@ import com.cinema.cinema.themes.show.ShowService;
 import com.cinema.cinema.themes.show.ShowValidator;
 import com.cinema.cinema.themes.show.model.Show;
 import com.cinema.cinema.themes.ticket.model.Ticket;
-import com.cinema.cinema.themes.ticket.model.TicketInputDto;
-import com.cinema.cinema.themes.ticket.model.TicketOutputDto;
-import com.cinema.cinema.themes.ticket.model.TicketShortDto;
 import com.cinema.cinema.themes.ticketType.TicketTypeValidator;
 import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.themes.user.model.StandardUser;
 import com.cinema.cinema.themes.user.validator.StandardUserValidator;
-import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,23 +32,20 @@ public class TicketService {
     private final SeatValidator seatValidator;
     private final StandardUserValidator userValidator;
     private final CartValidator cartValidator;
-    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public TicketOutputDto getTicket(long ticketId) {
-        Ticket ticket = ticketValidator.validateExists(ticketId);
-        return mapperService.mapToTicketDto(ticket);
+    public Ticket getTicket(long ticketId) {
+        return ticketValidator.validateExists(ticketId);
     }
 
     @Transactional
-    public TicketShortDto addTicket(Long userId, TicketInputDto ticketDto) {
-        Ticket ticketFromDto = mapperService.mapToTicket(ticketDto);
+    public Ticket addTicket(Long userId, Ticket ticketFromDto) {
         ticketValidator.validateInput(ticketFromDto);
-        TicketType ticketType = ticketTypeValidator.validateExists(ticketDto.getTicketType().getId());
+        TicketType ticketType = ticketTypeValidator.validateExists(ticketFromDto.getTicketType().getId());
         ticketTypeValidator.validateIsAvailable(ticketType);
-        Show show = showValidator.validateExists(ticketDto.getShow().getId());
+        Show show = showValidator.validateExists(ticketFromDto.getShow().getId());
         showValidator.validateInFuture(show);
-        Seat seat = seatValidator.validateExists(ticketDto.getSeat().getId());
+        Seat seat = seatValidator.validateExists(ticketFromDto.getSeat().getId());
         ticketValidator.validateSeat(seat, show);
         Ticket ticket = createTicket(ticketType, show, seat);
         ticket = ticketRepository.save(ticket);
@@ -63,7 +56,7 @@ public class TicketService {
 //        } else {
 //            //TODO - koszyk niezalogowanego użytkownika
         }
-        return mapperService.mapToTicketShortDto(ticket);
+        return ticket;
     }
 
     private Ticket createTicket(TicketType ticketType, Show show, Seat seat) {
@@ -76,12 +69,12 @@ public class TicketService {
     }
 
     @Transactional
-    public void editTicketType(long ticketId, TicketInputDto ticketDto) {
+    public void editTicketType(long ticketId, Ticket ticketFromDto) {
         Ticket ticket = ticketValidator.validateExists(ticketId);
         ticketValidator.validateNotPaid(ticket);
-        Ticket ticketFromDto = mapperService.mapToTicket(ticketDto);
         TicketType ticketType = ticketValidator.validateTicketTypeNotEmpty(ticketFromDto.getTicketType());
         ticketType = ticketTypeValidator.validateExists(ticketType.getId());
+        ticketTypeValidator.validateIsAvailable(ticketType);
         ticket.setTicketType(ticketType);
         ticketRepository.save(ticket);
     }

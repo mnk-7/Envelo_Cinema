@@ -1,7 +1,9 @@
 package com.cinema.cinema.themes.venue;
 
+import com.cinema.cinema.themes.venue.model.Venue;
 import com.cinema.cinema.themes.venue.model.VenueInputDto;
 import com.cinema.cinema.themes.venue.model.VenueOutputDto;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +24,7 @@ import java.util.List;
 public class VenueController {
 
     private final VenueService venueService;
+    private final DtoMapperService mapperService;
 
     @GetMapping
     @Operation(summary = "Get all active venues")
@@ -29,9 +32,12 @@ public class VenueController {
             @ApiResponse(responseCode = "200", description = "List with venues returned"),
             @ApiResponse(responseCode = "204", description = "No venue found")})
     public ResponseEntity<List<VenueOutputDto>> getAllVenues() {
-        List<VenueOutputDto> venues = venueService.getAllVenues();
-        HttpStatus status = venues.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(venues, status);
+        List<Venue> venues = venueService.getAllVenues();
+        List<VenueOutputDto> venuesDto = venues.stream()
+                .map(mapperService::mapToVenueDto)
+                .toList();
+        HttpStatus status = venuesDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(venuesDto, status);
     }
 
     @GetMapping("/{venueId}")
@@ -40,8 +46,9 @@ public class VenueController {
             @ApiResponse(responseCode = "200", description = "Venue returned"),
             @ApiResponse(responseCode = "404", description = "Venue not found")})
     public ResponseEntity<VenueOutputDto> getVenue(@PathVariable long venueId) {
-        VenueOutputDto venue = venueService.getVenue(venueId);
-        return new ResponseEntity<>(venue, HttpStatus.OK);
+        Venue venue = venueService.getVenue(venueId);
+        VenueOutputDto venueDto = mapperService.mapToVenueDto(venue);
+        return new ResponseEntity<>(venueDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -49,12 +56,13 @@ public class VenueController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Venue created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addVenue(@RequestBody VenueInputDto venue) {
-        VenueOutputDto venueCreated = venueService.addVenue(venue);
+    public ResponseEntity<Void> addVenue(@RequestBody VenueInputDto venueDto) {
+        Venue venue = mapperService.mapToVenue(venueDto);
+        venue = venueService.addVenue(venue, venueDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{venueId}")
-                .buildAndExpand(venueCreated.getId())
+                .buildAndExpand(venue.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -65,8 +73,9 @@ public class VenueController {
             @ApiResponse(responseCode = "200", description = "Venue updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Venue not found")})
-    public ResponseEntity<Void> editVenueStructure(@PathVariable long venueId, @RequestBody VenueInputDto venue) {
-        venueService.editVenueStructure(venueId, venue);
+    public ResponseEntity<Void> editVenueStructure(@PathVariable long venueId, @RequestBody VenueInputDto venueDto) {
+        Venue venue = mapperService.mapToVenue(venueDto);
+        venueService.editVenueStructure(venueId, venue, venueDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -76,7 +85,8 @@ public class VenueController {
             @ApiResponse(responseCode = "200", description = "Venue updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Venue not found")})
-    public ResponseEntity<Void> editVenueName(@PathVariable long venueId, @RequestBody VenueInputDto venue) {
+    public ResponseEntity<Void> editVenueName(@PathVariable long venueId, @RequestBody VenueInputDto venueDto) {
+        Venue venue = mapperService.mapToVenue(venueDto);
         venueService.editVenueName(venueId, venue);
         return new ResponseEntity<>(HttpStatus.OK);
     }

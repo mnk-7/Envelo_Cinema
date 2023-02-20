@@ -1,7 +1,9 @@
 package com.cinema.cinema.themes.ticketType;
 
+import com.cinema.cinema.themes.ticketType.model.TicketType;
 import com.cinema.cinema.themes.ticketType.model.TicketTypeOutputDto;
 import com.cinema.cinema.themes.ticketType.model.TicketTypeInputDto;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +24,7 @@ import java.util.List;
 public class TicketTypeController {
 
     private final TicketTypeService ticketTypeService;
+    private final DtoMapperService mapperService;
 
     @GetMapping
     @Operation(summary = "Get all ticket types")
@@ -29,9 +32,12 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "List with ticket types returned"),
             @ApiResponse(responseCode = "204", description = "No ticket type found")})
     public ResponseEntity<List<TicketTypeOutputDto>> getAllTicketTypes() {
-        List<TicketTypeOutputDto> ticketTypes = ticketTypeService.getAllTicketTypes();
-        HttpStatus status = ticketTypes.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(ticketTypes, status);
+        List<TicketType> ticketTypes = ticketTypeService.getAllTicketTypes();
+        List<TicketTypeOutputDto> ticketTypesDto = ticketTypes.stream()
+                .map(mapperService::mapToTicketTypeDto)
+                .toList();
+        HttpStatus status = ticketTypesDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(ticketTypesDto, status);
     }
 
     @GetMapping("/active")
@@ -40,9 +46,12 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "List with active ticket types returned"),
             @ApiResponse(responseCode = "204", description = "No active ticket type found")})
     public ResponseEntity<List<TicketTypeOutputDto>> getAllActiveTicketTypes() {
-        List<TicketTypeOutputDto> ticketTypes = ticketTypeService.getAllActiveTicketTypes();
-        HttpStatus status = ticketTypes.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(ticketTypes, status);
+        List<TicketType> ticketTypes = ticketTypeService.getAllActiveTicketTypes();
+        List<TicketTypeOutputDto> ticketTypesDto = ticketTypes.stream()
+                .map(mapperService::mapToTicketTypeDto)
+                .toList();
+        HttpStatus status = ticketTypesDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(ticketTypesDto, status);
     }
 
     @GetMapping("/{ticketTypeId}")
@@ -51,8 +60,9 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "Ticket type returned"),
             @ApiResponse(responseCode = "404", description = "Ticket type not found")})
     public ResponseEntity<TicketTypeOutputDto> getTicketType(@PathVariable long ticketTypeId) {
-        TicketTypeOutputDto ticketType = ticketTypeService.getTicketType(ticketTypeId);
-        return new ResponseEntity<>(ticketType, HttpStatus.OK);
+        TicketType ticketType = ticketTypeService.getTicketType(ticketTypeId);
+        TicketTypeOutputDto ticketTypeDto = mapperService.mapToTicketTypeDto(ticketType);
+        return new ResponseEntity<>(ticketTypeDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -60,12 +70,13 @@ public class TicketTypeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ticket type created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addTicketType(@RequestBody TicketTypeInputDto ticketType) {
-        TicketTypeOutputDto ticketTypeCreated = ticketTypeService.addTicketType(ticketType);
+    public ResponseEntity<Void> addTicketType(@RequestBody TicketTypeInputDto ticketTypeDto) {
+        TicketType ticketType = mapperService.mapToTicketType(ticketTypeDto);
+        ticketType = ticketTypeService.addTicketType(ticketType);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{ticketTypeId}")
-                .buildAndExpand(ticketTypeCreated.getId())
+                .buildAndExpand(ticketType.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -76,7 +87,8 @@ public class TicketTypeController {
             @ApiResponse(responseCode = "200", description = "Ticket type updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Ticket type not found")})
-    public ResponseEntity<Void> editTicketType(@PathVariable long ticketTypeId, @RequestBody TicketTypeInputDto ticketType) {
+    public ResponseEntity<Void> editTicketType(@PathVariable long ticketTypeId, @RequestBody TicketTypeInputDto ticketTypeDto) {
+        TicketType ticketType = mapperService.mapToTicketType(ticketTypeDto);
         ticketTypeService.editTicketType(ticketTypeId, ticketType);
         return new ResponseEntity<>(HttpStatus.OK);
     }

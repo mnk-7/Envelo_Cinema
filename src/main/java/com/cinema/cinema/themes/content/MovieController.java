@@ -5,6 +5,7 @@ import com.cinema.cinema.themes.content.model.MovieOutputDto;
 import com.cinema.cinema.themes.content.model.MovieInputDto;
 import com.cinema.cinema.themes.content.service.MovieService;
 import com.cinema.cinema.themes.user.service.StandardUserService;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,6 +27,8 @@ public class MovieController {
 
     private final MovieService movieService;
     private final StandardUserService userService;
+    private final DtoMapperService mapperService;
+
 
     @GetMapping
     @Operation(summary = "Get all movies")
@@ -33,9 +36,12 @@ public class MovieController {
             @ApiResponse(responseCode = "200", description = "List with movies returned"),
             @ApiResponse(responseCode = "204", description = "No movie found")})
     public ResponseEntity<List<MovieOutputDto>> getAllMovies() {
-        List<MovieOutputDto> movies = movieService.getAllContents();
-        HttpStatus status = movies.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(movies, status);
+        List<Movie> movies = movieService.getAllContents();
+        List<MovieOutputDto> moviesDto = movies.stream()
+                .map(mapperService::mapToMovieDto)
+                .toList();
+        HttpStatus status = moviesDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(moviesDto, status);
     }
 
     @GetMapping("/{movieId}")
@@ -44,8 +50,9 @@ public class MovieController {
             @ApiResponse(responseCode = "200", description = "Movie returned"),
             @ApiResponse(responseCode = "404", description = "Movie not found")})
     public ResponseEntity<MovieOutputDto> getMovie(@PathVariable long movieId) {
-        MovieOutputDto movie = movieService.getContent(movieId);
-        return new ResponseEntity<>(movie, HttpStatus.OK);
+        Movie movie = movieService.getContent(movieId);
+        MovieOutputDto movieDto = mapperService.mapToMovieDto(movie);
+        return new ResponseEntity<>(movieDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -53,12 +60,13 @@ public class MovieController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Movie created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addMovie(@RequestBody MovieInputDto movie) {
-        MovieOutputDto movieCreated = movieService.addContent(movie);
+    public ResponseEntity<Void> addMovie(@RequestBody MovieInputDto movieDto) {
+        Movie movie = mapperService.mapToMovie(movieDto);
+        movie = movieService.addContent(movie);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{movieId}")
-                .buildAndExpand(movieCreated.getId())
+                .buildAndExpand(movie.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -69,7 +77,8 @@ public class MovieController {
             @ApiResponse(responseCode = "200", description = "Movie updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Movie not found")})
-    public ResponseEntity<Void> editMovie(long movieId, @RequestBody MovieInputDto movie) {
+    public ResponseEntity<Void> editMovie(long movieId, @RequestBody MovieInputDto movieDto) {
+        Movie movie = mapperService.mapToMovie(movieDto);
         movieService.editContent(movieId, movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -81,7 +90,7 @@ public class MovieController {
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Movie or user not found")})
     public ResponseEntity<Void> rateMovie(@PathVariable long movieId, @PathVariable int userId, @RequestParam int rate) {
-        Movie movie = movieService.getContentNotDto(movieId);
+        Movie movie = movieService.getContent(movieId);
         userService.rateMovie(userId, movie, rate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -93,7 +102,7 @@ public class MovieController {
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Movie or user not found")})
     public ResponseEntity<Void> addMovieToWatchList(@PathVariable long userId, @PathVariable long movieId) {
-        Movie movie = movieService.getContentNotDto(movieId);
+        Movie movie = movieService.getContent(movieId);
         userService.addMovieToWatchlist(userId, movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -105,7 +114,7 @@ public class MovieController {
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Movie or user not found")})
     public ResponseEntity<Void> removeMovieFromWatchList(@PathVariable long userId, @PathVariable long movieId) {
-        Movie movie = movieService.getContentNotDto(movieId);
+        Movie movie = movieService.getContent(movieId);
         userService.removeMovieFromWatchlist(userId, movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -1,8 +1,9 @@
 package com.cinema.cinema.themes.ticket;
 
+import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.ticket.model.TicketInputDto;
 import com.cinema.cinema.themes.ticket.model.TicketOutputDto;
-import com.cinema.cinema.themes.ticket.model.TicketShortDto;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +23,7 @@ import java.net.URI;
 public class TicketController {
 
     private final TicketService ticketService;
+    private final DtoMapperService mapperService;
 
     @GetMapping("/{ticketId}")
     @Operation(summary = "Get ticket by its ID")
@@ -29,8 +31,9 @@ public class TicketController {
             @ApiResponse(responseCode = "200", description = "Ticket returned"),
             @ApiResponse(responseCode = "404", description = "Ticket not found")})
     public ResponseEntity<TicketOutputDto> getTicket(@PathVariable long ticketId) {
-        TicketOutputDto ticket = ticketService.getTicket(ticketId);
-        return new ResponseEntity<>(ticket, HttpStatus.OK);
+        Ticket ticket = ticketService.getTicket(ticketId);
+        TicketOutputDto ticketDto = mapperService.mapToTicketDto(ticket);
+        return new ResponseEntity<>(ticketDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -38,12 +41,13 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ticket created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addTicket(@RequestParam(required = false) Long userId, @RequestBody TicketInputDto ticket) {
-        TicketShortDto ticketCreated = ticketService.addTicket(userId, ticket);
+    public ResponseEntity<Void> addTicket(@RequestParam(required = false) Long userId, @RequestBody TicketInputDto ticketDto) {
+        Ticket ticket = mapperService.mapToTicket(ticketDto);
+        ticket = ticketService.addTicket(userId, ticket);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{ticketId}")
-                .buildAndExpand(ticketCreated.getId())
+                .buildAndExpand(ticket.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -54,7 +58,8 @@ public class TicketController {
             @ApiResponse(responseCode = "200", description = "Ticket updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Ticket not found")})
-    public ResponseEntity<Void> editTicketType(@RequestParam long ticketId, @RequestBody TicketInputDto ticket) {
+    public ResponseEntity<Void> editTicketType(@RequestParam long ticketId, @RequestBody TicketInputDto ticketDto) {
+        Ticket ticket = mapperService.mapToTicket(ticketDto);
         ticketService.editTicketType(ticketId, ticket);
         return new ResponseEntity<>(HttpStatus.OK);
     }

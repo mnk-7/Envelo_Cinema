@@ -1,16 +1,13 @@
 package com.cinema.cinema.themes.content.service;
 
 import com.cinema.cinema.themes.ageRestriction.AgeRestrictionValidator;
-import com.cinema.cinema.themes.content.validator.MovieValidator;
 import com.cinema.cinema.themes.content.model.Movie;
-import com.cinema.cinema.themes.content.model.MovieOutputDto;
-import com.cinema.cinema.themes.content.model.MovieInputDto;
 import com.cinema.cinema.themes.content.repository.MovieRepository;
+import com.cinema.cinema.themes.content.validator.MovieValidator;
 import com.cinema.cinema.themes.genre.GenreValidator;
 import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.user.model.StandardUser;
 import com.cinema.cinema.themes.user.validator.StandardUserValidator;
-import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,44 +19,35 @@ import java.util.Set;
 
 @AllArgsConstructor
 @Service
-public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> {
+public class MovieService extends ContentService<Movie> {
 
     private final MovieRepository movieRepository;
     private final MovieValidator movieValidator;
     private final GenreValidator genreValidator;
     private final StandardUserValidator userValidator;
     private final AgeRestrictionValidator ageRestrictionValidator;
-    private final DtoMapperService mapperService;
 
     @Override
     @Transactional(readOnly = true)
-    public List<MovieOutputDto> getAllContents() {
+    public List<Movie> getAllContents() {
         List<Movie> movies = movieRepository.findAll(Sort.by("title"));
         return movies.stream()
                 .peek(movie -> movie.setRating(calculateRating(movie)))
-                .map(mapperService::mapToMovieDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<MovieOutputDto> getMoviesToWatch(long userId) {
+    public List<Movie> getMoviesToWatch(long userId) {
         StandardUser user = userValidator.validateExists(userId);
         Set<Movie> moviesToWatch = user.getMoviesToWatch();
         return moviesToWatch.stream()
-                .map(mapperService::mapToMovieDto)
-                .sorted(Comparator.comparing(MovieOutputDto::getTitle))
+                .sorted(Comparator.comparing(Movie::getTitle))
                 .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public MovieOutputDto getContent(long movieId) {
-        Movie movie = getContentNotDto(movieId);
-        return mapperService.mapToMovieDto(movie);
-    }
-
-    @Transactional(readOnly = true)
-    public Movie getContentNotDto(long movieId) {
+    public Movie getContent(long movieId) {
         Movie movie = movieValidator.validateExists(movieId);
         movie.setRating(calculateRating(movie));
         return movie;
@@ -67,22 +55,19 @@ public class MovieService extends ContentService<MovieOutputDto, MovieInputDto> 
 
     @Override
     @Transactional
-    public MovieOutputDto addContent(MovieInputDto movieDto) {
-        Movie movie = mapperService.mapToMovie(movieDto);
+    public Movie addContent(Movie movie) {
         movieValidator.validateInput(movie);
         ageRestrictionValidator.validateExists(movie.getAgeRestriction().getId());
         for (Genre genre : movie.getGenres()) {
             genreValidator.validateExists(genre.getId());
         }
-        movie = movieRepository.save(movie);
-        return mapperService.mapToMovieDto(movie);
+        return movieRepository.save(movie);
     }
 
     @Override
     @Transactional
-    public void editContent(long movieId, MovieInputDto movieDto) {
+    public void editContent(long movieId, Movie movieFromDto) {
         Movie movie = movieValidator.validateExists(movieId);
-        Movie movieFromDto = mapperService.mapToMovie(movieDto);
         movieValidator.validateInput(movieFromDto);
         ageRestrictionValidator.validateExists(movie.getAgeRestriction().getId());
         for (Genre genre : movie.getGenres()) {

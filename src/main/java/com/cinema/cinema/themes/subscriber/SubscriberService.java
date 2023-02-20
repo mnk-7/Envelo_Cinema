@@ -1,14 +1,11 @@
 package com.cinema.cinema.themes.subscriber;
 
 import com.cinema.cinema.themes.subscriber.model.Subscriber;
-import com.cinema.cinema.themes.subscriber.model.SubscriberOutputDto;
-import com.cinema.cinema.themes.subscriber.model.SubscriberInputDto;
-import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -16,8 +13,6 @@ public class SubscriberService {
 
     private final SubscriberRepository subscriberRepository;
     private final SubscriberValidator subscriberValidator;
-    private final DtoMapperService mapperService;
-
 
     @Transactional(readOnly = true)
     public List<String> getAllSubscribersEmails() {
@@ -28,17 +23,15 @@ public class SubscriberService {
     }
 
     @Transactional
-    public SubscriberOutputDto addSubscriber(SubscriberInputDto subscriberDto) {
-        Subscriber subscriber = mapperService.mapToSubscriber(subscriberDto);
+    public Subscriber addSubscriber(Subscriber subscriber) {
         subscriberValidator.validateNotExists(subscriber);
         subscriberValidator.validateInput(subscriber);
-        subscriber = subscriberRepository.save(subscriber);
-        return mapperService.mapToSubscriberDto(subscriber);
+        return subscriberRepository.save(subscriber);
     }
 
     @Transactional
-    public void removeSubscriber(SubscriberInputDto subscriberDto) {
-        Subscriber subscriber = subscriberValidator.validateExists(subscriberDto.getEmail());
+    public void removeSubscriber(Subscriber subscriber) {
+        subscriber = subscriberValidator.validateExists(subscriber.getEmail());
         subscriberRepository.deleteById(subscriber.getId());
     }
 

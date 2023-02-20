@@ -35,6 +35,7 @@ public class ShowValidator extends ValidatorService<Show> {
 
     public void validateVenueAndDateTime(Show show) {
         List<Show> shows = showRepository.findAllByVenueAndDates(show.getVenue(), show.getStartDateTime(), show.getEndDateTime());
+        shows.remove(show);
         if (!shows.isEmpty()) {
             throw new ArgumentNotValidException("Venue " + show.getVenue().getName() + " is not available between " + show.getStartDateTime() + " and " + show.getEndDateTime());
         }

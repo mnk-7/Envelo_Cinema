@@ -1,8 +1,10 @@
 package com.cinema.cinema.themes.order;
 
+import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.order.model.OrderInputDto;
 import com.cinema.cinema.themes.order.model.OrderOutputDto;
 import com.cinema.cinema.themes.order.model.OrderShortDto;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,6 +25,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final DtoMapperService mapperService;
 
     @GetMapping
     @Operation(summary = "Get all orders")
@@ -30,9 +33,12 @@ public class OrderController {
             @ApiResponse(responseCode = "200", description = "List with orders returned"),
             @ApiResponse(responseCode = "204", description = "No order found")})
     public ResponseEntity<List<OrderShortDto>> getAllOrders() {
-        List<OrderShortDto> orders = orderService.getAllOrders();
-        HttpStatus status = orders.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(orders, status);
+        List<Order> orders = orderService.getAllOrders();
+        List<OrderShortDto> ordersDto = orders.stream()
+                .map(mapperService::mapToOrderShortDto)
+                .toList();
+        HttpStatus status = ordersDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(ordersDto, status);
     }
 
     @GetMapping("/{orderId}")
@@ -41,8 +47,9 @@ public class OrderController {
             @ApiResponse(responseCode = "200", description = "Order returned"),
             @ApiResponse(responseCode = "404", description = "Order not found")})
     public ResponseEntity<OrderOutputDto> getOrder(@PathVariable long orderId) {
-        OrderOutputDto order = orderService.getOrder(orderId);
-        return new ResponseEntity<>(order, HttpStatus.OK);
+        Order order = orderService.getOrder(orderId);
+        OrderOutputDto orderDto = mapperService.mapToOrderDto(order);
+        return new ResponseEntity<>(orderDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -50,12 +57,13 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Order created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addOrder(@RequestParam(required = false) Long userId, @RequestBody OrderInputDto order) {
-        OrderShortDto orderCreated = orderService.addOrder(userId, order);
+    public ResponseEntity<Void> addOrder(@RequestParam(required = false) Long userId, @RequestBody OrderInputDto orderDto) {
+        Order order = mapperService.mapToOrder(orderDto);
+        order = orderService.addOrder(userId, order);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{orderId}")
-                .buildAndExpand(orderCreated.getId())
+                .buildAndExpand(order.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }

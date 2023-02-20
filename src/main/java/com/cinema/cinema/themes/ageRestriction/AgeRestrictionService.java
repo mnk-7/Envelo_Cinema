@@ -1,15 +1,12 @@
 package com.cinema.cinema.themes.ageRestriction;
 
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
-import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionOutputDto;
-import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionInputDto;
-import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -17,36 +14,28 @@ public class AgeRestrictionService {
 
     private final AgeRestrictionRepository ageRestrictionRepository;
     private final AgeRestrictionValidator ageRestrictionValidator;
-    private final DtoMapperService mapperService;
 
 
     @Transactional(readOnly = true)
-    public List<AgeRestrictionOutputDto> getAllAgeRestrictions() {
-        List<AgeRestriction> ageRestrictions = ageRestrictionRepository.findAll(Sort.by("minAge"));
-        return ageRestrictions.stream()
-                .map(mapperService::mapToAgeRestrictionDto)
-                .toList();
+    public List<AgeRestriction> getAllAgeRestrictions() {
+        return ageRestrictionRepository.findAll(Sort.by("minAge"));
     }
 
     @Transactional(readOnly = true)
-    public AgeRestrictionOutputDto getAgeRestriction(long ageRestrictionId) {
-        AgeRestriction ageRestriction = ageRestrictionValidator.validateExists(ageRestrictionId);
-        return mapperService.mapToAgeRestrictionDto(ageRestriction);
+    public AgeRestriction getAgeRestriction(long ageRestrictionId) {
+        return ageRestrictionValidator.validateExists(ageRestrictionId);
     }
 
     @Transactional
-    public AgeRestrictionOutputDto addAgeRestriction(AgeRestrictionInputDto ageRestrictionDto) {
-        AgeRestriction ageRestriction = mapperService.mapToAgeRestriction(ageRestrictionDto);
+    public AgeRestriction addAgeRestriction(AgeRestriction ageRestriction) {
         ageRestrictionValidator.validateNotExists(ageRestriction);
         ageRestrictionValidator.validateInput(ageRestriction);
-        ageRestriction = ageRestrictionRepository.save(ageRestriction);
-        return mapperService.mapToAgeRestrictionDto(ageRestriction);
+        return ageRestrictionRepository.save(ageRestriction);
     }
 
     @Transactional
-    public void editAgeRestriction(long ageRestrictionId, AgeRestrictionInputDto ageRestrictionDto) {
+    public void editAgeRestriction(long ageRestrictionId, AgeRestriction ageRestrictionFromDto) {
         AgeRestriction ageRestriction = ageRestrictionValidator.validateExists(ageRestrictionId);
-        AgeRestriction ageRestrictionFromDto = mapperService.mapToAgeRestriction(ageRestrictionDto);
         ageRestrictionValidator.validateInput(ageRestrictionFromDto);
         ageRestrictionValidator.validateChanged(ageRestriction, ageRestrictionFromDto);
         ageRestrictionValidator.validateNotExists(ageRestrictionFromDto);

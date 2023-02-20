@@ -1,10 +1,9 @@
 package com.cinema.cinema.themes.user.controller;
 
-import com.cinema.cinema.themes.user.model.AdminUserOutputDto;
-import com.cinema.cinema.themes.user.model.AdminUserInputDto;
-import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
+import com.cinema.cinema.themes.user.model.*;
 import com.cinema.cinema.themes.user.service.AdminUserService;
 import com.cinema.cinema.themes.user.service.StandardUserService;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +21,7 @@ public class AdminUserController {
 
     private final AdminUserService adminService;
     private final StandardUserService userService;
+    private final DtoMapperService mapperService;
 
     @GetMapping("/admins/{adminId}")
     @Operation(summary = "Get admin by its ID")
@@ -29,8 +29,9 @@ public class AdminUserController {
             @ApiResponse(responseCode = "200", description = "Admin returned"),
             @ApiResponse(responseCode = "404", description = "Admin not found")})
     public ResponseEntity<AdminUserOutputDto> getAdmin(@PathVariable long adminId) {
-        AdminUserOutputDto admin = adminService.getUser(adminId);
-        return new ResponseEntity<>(admin, HttpStatus.OK);
+        AdminUser admin = adminService.getUser(adminId);
+        AdminUserOutputDto adminDto = mapperService.mapToAdminUserDto(admin);
+        return new ResponseEntity<>(adminDto, HttpStatus.OK);
     }
 
     @PutMapping("/admins/{adminId}")
@@ -39,7 +40,8 @@ public class AdminUserController {
             @ApiResponse(responseCode = "200", description = "Admin updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Admin not found")})
-    public ResponseEntity<Void> editAdmin(@PathVariable long adminId, @RequestBody AdminUserInputDto admin) {
+    public ResponseEntity<Void> editAdmin(@PathVariable long adminId, @RequestBody AdminUserInputDto adminDto) {
+        AdminUser admin = mapperService.mapToAdminUser(adminDto);
         adminService.editUser(adminId, admin);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -51,8 +53,9 @@ public class AdminUserController {
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "User not found")})
     public ResponseEntity<StandardUserOutputDto> activateUser(@PathVariable long userId) {
-        StandardUserOutputDto user = userService.editIsActive(userId, true);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        StandardUser user = userService.editIsActive(userId, true);
+        StandardUserOutputDto userDto = mapperService.mapToStandardUserDto(user);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @PutMapping("/admin-panel/users/{userId}/deactivate")
@@ -62,8 +65,9 @@ public class AdminUserController {
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "User not found")})
     public ResponseEntity<StandardUserOutputDto> deactivateUser(@PathVariable long userId) {
-        StandardUserOutputDto user = userService.editIsActive(userId, false);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        StandardUser user = userService.editIsActive(userId, false);
+        StandardUserOutputDto userDto = mapperService.mapToStandardUserDto(user);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @PutMapping("/admin-panel/users/{userId}/password")

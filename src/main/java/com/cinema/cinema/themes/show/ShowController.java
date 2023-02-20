@@ -1,9 +1,12 @@
 package com.cinema.cinema.themes.show;
 
+import com.cinema.cinema.themes.show.model.Show;
 import com.cinema.cinema.themes.show.model.ShowInputDto;
 import com.cinema.cinema.themes.show.model.ShowOutputDto;
 import com.cinema.cinema.themes.show.model.ShowShortDto;
+import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.ticket.model.TicketShortDto;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,6 +27,7 @@ import java.util.List;
 public class ShowController {
 
     private final ShowService showService;
+    private DtoMapperService mapperService;
 
     @GetMapping
     @Operation(summary = "Get all shows")
@@ -31,9 +35,12 @@ public class ShowController {
             @ApiResponse(responseCode = "200", description = "List with shows returned"),
             @ApiResponse(responseCode = "204", description = "No show found")})
     public ResponseEntity<List<ShowShortDto>> getAllShows() {
-        List<ShowShortDto> shows = showService.getAllShows();
-        HttpStatus status = shows.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(shows, status);
+        List<Show> shows = showService.getAllShows();
+        List<ShowShortDto> showsDto = shows.stream()
+                .map(mapperService::mapToShowShortDto)
+                .toList();
+        HttpStatus status = showsDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(showsDto, status);
     }
 
     @GetMapping("/current")
@@ -42,9 +49,12 @@ public class ShowController {
             @ApiResponse(responseCode = "200", description = "List with shows returned"),
             @ApiResponse(responseCode = "204", description = "No show found")})
     public ResponseEntity<List<ShowShortDto>> getAllShowsForCurrentWeek() {
-        List<ShowShortDto> shows = showService.getAllShowsForCurrentWeek();
-        HttpStatus status = shows.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(shows, status);
+        List<Show> shows = showService.getAllShowsForCurrentWeek();
+        List<ShowShortDto> showsDto = shows.stream()
+                .map(mapperService::mapToShowShortDto)
+                .toList();
+        HttpStatus status = showsDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(showsDto, status);
     }
 
     @GetMapping("/{showId}")
@@ -53,8 +63,9 @@ public class ShowController {
             @ApiResponse(responseCode = "200", description = "Show returned"),
             @ApiResponse(responseCode = "404", description = "Show not found")})
     public ResponseEntity<ShowShortDto> getShow(@PathVariable long showId) {
-        ShowShortDto show = showService.getShow(showId);
-        return new ResponseEntity<>(show, HttpStatus.OK);
+        Show show = showService.getShow(showId);
+        ShowShortDto showDto = mapperService.mapToShowShortDto(show);
+        return new ResponseEntity<>(showDto, HttpStatus.OK);
     }
 
     @GetMapping("/{showId}/details")
@@ -63,8 +74,9 @@ public class ShowController {
             @ApiResponse(responseCode = "200", description = "Show returned"),
             @ApiResponse(responseCode = "404", description = "Show not found")})
     public ResponseEntity<ShowOutputDto> getShowWithVenueDetails(@PathVariable long showId) {
-        ShowOutputDto show = showService.getShowWithVenueDetails(showId);
-        return new ResponseEntity<>(show, HttpStatus.OK);
+        Show show = showService.getShowWithVenueDetails(showId);
+        ShowOutputDto showDto = mapperService.mapToShowDto(show);
+        return new ResponseEntity<>(showDto, HttpStatus.OK);
     }
 
     @GetMapping("/{showId}/tickets")
@@ -73,8 +85,12 @@ public class ShowController {
             @ApiResponse(responseCode = "200", description = "List with tickets returned"),
             @ApiResponse(responseCode = "204", description = "No ticket found")})
     public ResponseEntity<List<TicketShortDto>> getAllTickets(@PathVariable long showId) {
-        List<TicketShortDto> tickets = showService.getAllTickets(showId);
-        return new ResponseEntity<>(tickets, HttpStatus.OK);
+        List<Ticket> tickets = showService.getAllTickets(showId);
+        List<TicketShortDto> ticketsDto = tickets.stream()
+                .map(mapperService::mapToTicketShortDto)
+                .toList();
+        HttpStatus status = ticketsDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(ticketsDto, status);
     }
 
     @PostMapping
@@ -82,12 +98,13 @@ public class ShowController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Show created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addGenre(@RequestBody ShowInputDto show) {
-        ShowShortDto showCreated = showService.addShow(show);
+    public ResponseEntity<Void> addShow(@RequestBody ShowInputDto showDto) {
+        Show show = mapperService.mapToShow(showDto);
+        show = showService.addShow(show);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{showId}")
-                .buildAndExpand(showCreated.getId())
+                .buildAndExpand(show.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -98,7 +115,8 @@ public class ShowController {
             @ApiResponse(responseCode = "200", description = "Show updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Show not found")})
-    public ResponseEntity<Void> editShow(@PathVariable long showId, @RequestBody ShowInputDto show) {
+    public ResponseEntity<Void> editShow(@PathVariable long showId, @RequestBody ShowInputDto showDto) {
+        Show show = mapperService.mapToShow(showDto);
         showService.editShow(showId, show);
         return new ResponseEntity<>(HttpStatus.OK);
     }

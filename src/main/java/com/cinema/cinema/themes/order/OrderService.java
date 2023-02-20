@@ -3,9 +3,6 @@ package com.cinema.cinema.themes.order;
 import com.cinema.cinema.themes.cart.CartService;
 import com.cinema.cinema.themes.cart.CartValidator;
 import com.cinema.cinema.themes.order.model.Order;
-import com.cinema.cinema.themes.order.model.OrderInputDto;
-import com.cinema.cinema.themes.order.model.OrderOutputDto;
-import com.cinema.cinema.themes.order.model.OrderShortDto;
 import com.cinema.cinema.themes.show.ShowValidator;
 import com.cinema.cinema.themes.ticket.TicketService;
 import com.cinema.cinema.themes.ticket.TicketValidator;
@@ -13,7 +10,6 @@ import com.cinema.cinema.themes.ticket.model.Ticket;
 import com.cinema.cinema.themes.user.model.StandardUser;
 import com.cinema.cinema.themes.user.service.StandardUserService;
 import com.cinema.cinema.themes.user.validator.StandardUserValidator;
-import com.cinema.cinema.utils.DtoMapperService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,41 +32,37 @@ public class OrderService {
     private final TicketValidator ticketValidator;
     private final CartValidator cartValidator;
     private final ShowValidator showValidator;
-    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public OrderOutputDto getOrder(long orderId) {
+    public Order getOrder(long orderId) {
         Order order = orderValidator.validateExists(orderId);
         order.setPrice(calculatePrice(order));
-        return mapperService.mapToOrderDto(order);
+        return order;
     }
 
     @Transactional(readOnly = true)
-    public List<OrderShortDto> getAllOrders() {
+    public List<Order> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()
                 .peek(order -> order.setPrice(calculatePrice(order)))
-                .map(mapperService::mapToOrderShortDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<OrderShortDto> getAllOrders(long userId) {
+    public List<Order> getAllOrders(long userId) {
         StandardUser user = userValidator.validateExists(userId);
         Set<Order> orders = user.getOrders();
         return orders.stream()
                 .peek(order -> order.setPrice(calculatePrice(order)))
-                .map(mapperService::mapToOrderShortDto)
                 .toList();
     }
 
     @Transactional
-    public OrderShortDto addOrder(Long userId, OrderInputDto orderDto) {
+    public Order addOrder(Long userId, Order orderFromDto) {
         StandardUser user = null;
         if (userId != null) {
             user = userValidator.validateExists(userId);
         }
-        Order orderFromDto = mapperService.mapToOrder(orderDto);
         Order order = createOrder(user, orderFromDto);
         orderValidator.validateInput(order);
         order = orderRepository.save(order);
@@ -79,7 +71,7 @@ public class OrderService {
             userService.addOrder(user.getId(), order);
             cartService.clearCart(user.getCart().getId());
         }
-        return mapperService.mapToOrderShortDto(order);
+        return order;
     }
 
     private Order createOrder(StandardUser user, Order orderFromDto) {

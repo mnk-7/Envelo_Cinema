@@ -4,8 +4,6 @@ import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.themes.content.service.MovieService;
 import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.user.model.StandardUser;
-import com.cinema.cinema.themes.user.model.StandardUserInputDto;
-import com.cinema.cinema.themes.user.model.StandardUserOutputDto;
 import com.cinema.cinema.themes.user.repository.StandardUserRepository;
 import com.cinema.cinema.themes.user.validator.StandardUserValidator;
 import com.cinema.cinema.utils.DtoMapperService;
@@ -17,45 +15,38 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class StandardUserService extends UserService<StandardUserOutputDto, StandardUserInputDto> {
+public class StandardUserService extends UserService<StandardUser> {
 
     private final StandardUserRepository userRepository;
     private final StandardUserValidator userValidator;
     private final MovieService movieService;
-    private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
-    public List<StandardUserOutputDto> getAllUsers() {
-        List<StandardUser> users = userRepository.findAll();
-        return users.stream()
-                .map(mapperService::mapToStandardUserDto)
-                .toList();
+    public List<StandardUser> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public StandardUserOutputDto getUser(long userId) {
-        StandardUser user = userValidator.validateExists(userId);
-        return mapperService.mapToStandardUserDto(user);
+    public StandardUser getUser(long userId) {
+        return userValidator.validateExists(userId);
     }
 
     @Override
     @Transactional
-    public void editUser(long id, StandardUserInputDto userDto) {
+    public void editUser(long id, StandardUser userFromDto) {
         StandardUser user = userValidator.validateExists(id);
-        StandardUser userFromDto = mapperService.mapToStandardUser(userDto);
         userValidator.validateInput(userFromDto);
         setFields(user, userFromDto);
         userRepository.save(user);
     }
 
     @Transactional
-    public StandardUserOutputDto editIsActive(long userId, boolean isActive) {
+    public StandardUser editIsActive(long userId, boolean isActive) {
         StandardUser user = userValidator.validateExists(userId);
         userValidator.validateIsActiveChange(user, isActive);
         user.setActive(isActive);
-        user = userRepository.save(user);
-        return mapperService.mapToStandardUserDto(user);
+        return userRepository.save(user);
     }
 
     @Transactional

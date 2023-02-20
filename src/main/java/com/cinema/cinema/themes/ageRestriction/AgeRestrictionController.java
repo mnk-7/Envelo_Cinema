@@ -1,7 +1,9 @@
 package com.cinema.cinema.themes.ageRestriction;
 
+import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionOutputDto;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionInputDto;
+import com.cinema.cinema.utils.DtoMapperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +24,7 @@ import java.util.List;
 public class AgeRestrictionController {
 
     private final AgeRestrictionService ageRestrictionService;
+    private final DtoMapperService mapperService;
 
     @GetMapping
     @Operation(summary = "Get all age restrictions")
@@ -29,9 +32,12 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "200", description = "List with age restrictions returned"),
             @ApiResponse(responseCode = "204", description = "No age restriction found")})
     public ResponseEntity<List<AgeRestrictionOutputDto>> getAllAgeRestrictions() {
-        List<AgeRestrictionOutputDto> ageRestrictions = ageRestrictionService.getAllAgeRestrictions();
+        List<AgeRestriction> ageRestrictions = ageRestrictionService.getAllAgeRestrictions();
+        List<AgeRestrictionOutputDto> ageRestrictionDto = ageRestrictions.stream()
+                .map(mapperService::mapToAgeRestrictionDto)
+                .toList();
         HttpStatus status = ageRestrictions.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(ageRestrictions, status);
+        return new ResponseEntity<>(ageRestrictionDto, status);
     }
 
     @GetMapping("/{ageRestrictionId}")
@@ -40,8 +46,9 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "200", description = "Age restriction returned"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
     public ResponseEntity<AgeRestrictionOutputDto> getAgeRestriction(@PathVariable long ageRestrictionId) {
-        AgeRestrictionOutputDto ageRestriction = ageRestrictionService.getAgeRestriction(ageRestrictionId);
-        return new ResponseEntity<>(ageRestriction, HttpStatus.OK);
+        AgeRestriction ageRestriction = ageRestrictionService.getAgeRestriction(ageRestrictionId);
+        AgeRestrictionOutputDto ageRestrictionDto = mapperService.mapToAgeRestrictionDto(ageRestriction);
+        return new ResponseEntity<>(ageRestrictionDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -49,12 +56,13 @@ public class AgeRestrictionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Age restriction created"),
             @ApiResponse(responseCode = "400", description = "Wrong data")})
-    public ResponseEntity<Void> addAgeRestriction(@RequestBody AgeRestrictionInputDto ageRestriction) {
-        AgeRestrictionOutputDto ageRestrictionCreated = ageRestrictionService.addAgeRestriction(ageRestriction);
+    public ResponseEntity<Void> addAgeRestriction(@RequestBody AgeRestrictionInputDto ageRestrictionDto) {
+        AgeRestriction ageRestriction = mapperService.mapToAgeRestriction(ageRestrictionDto);
+        ageRestriction = ageRestrictionService.addAgeRestriction(ageRestriction);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{ageRestrictionId}")
-                .buildAndExpand(ageRestrictionCreated.getId())
+                .buildAndExpand(ageRestriction.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -65,7 +73,8 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "200", description = "Age restriction updated"),
             @ApiResponse(responseCode = "400", description = "Wrong data"),
             @ApiResponse(responseCode = "404", description = "Age restriction not found")})
-    public ResponseEntity<Void> editAgeRestriction(@PathVariable long ageRestrictionId, @RequestBody AgeRestrictionInputDto ageRestriction) {
+    public ResponseEntity<Void> editAgeRestriction(@PathVariable long ageRestrictionId, @RequestBody AgeRestrictionInputDto ageRestrictionDto) {
+        AgeRestriction ageRestriction = mapperService.mapToAgeRestriction(ageRestrictionDto);
         ageRestrictionService.editAgeRestriction(ageRestrictionId, ageRestriction);
         return new ResponseEntity<>(HttpStatus.OK);
     }

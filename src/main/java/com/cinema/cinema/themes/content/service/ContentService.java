@@ -2,14 +2,14 @@ package com.cinema.cinema.themes.content.service;
 
 import java.util.List;
 
-public abstract class ContentService<R, W> {
+public abstract class ContentService<T> {
 
-    protected abstract R getContent(long id);
+    protected abstract T getContent(long id);
 
-    protected abstract List<R> getAllContents();
+    protected abstract List<T> getAllContents();
 
-    protected abstract R addContent(W w);
+    protected abstract T addContent(T t);
 
-    protected abstract void editContent(long id, W w);
+    protected abstract void editContent(long id, T t);
 
 }
