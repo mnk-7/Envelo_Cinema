@@ -60,14 +60,14 @@ public class OrderController {
         return ResponseEntity.created(location).build();
     }
 
-//    @DeleteMapping("/{orderId}")
-//    @Operation(summary = "Delete order")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "204", description = "Order deleted"),
-//            @ApiResponse(responseCode = "404", description = "Order not found")})
-//    public ResponseEntity<Void> cancelOrder(@PathVariable long orderId) {
-//        orderService.cancelOrder(orderId);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @DeleteMapping("/{orderId}")
+    @Operation(summary = "Delete order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Order deleted"),
+            @ApiResponse(responseCode = "404", description = "Order not found")})
+    public ResponseEntity<Void> cancelOrder(@RequestParam(required = false) Long userId, @PathVariable long orderId) {
+        orderService.cancelOrder(userId, orderId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 }

@@ -65,7 +65,7 @@ public class TicketController {
             @ApiResponse(responseCode = "204", description = "Ticket deleted"),
             @ApiResponse(responseCode = "404", description = "Ticket not found")})
     public ResponseEntity<Void> removeTicket(@RequestParam(required = false) Long userId, @PathVariable long ticketId) {
-        ticketService.removeTicket(userId, ticketId);
+        ticketService.removeTicketFromCart(userId, ticketId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

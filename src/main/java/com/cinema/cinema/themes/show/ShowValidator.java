@@ -64,4 +64,10 @@ public class ShowValidator extends ValidatorService<Show> {
         }
     }
 
+    public void validateInFuture(Show show) {
+        if (show.getStartDateTime().isBefore(LocalDateTime.now())) {
+            throw new ProcessingException("You cannot buy a ticket for a show that is in the past");
+        }
+    }
+
 }

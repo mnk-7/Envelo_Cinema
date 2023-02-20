@@ -3,6 +3,7 @@ package com.cinema.cinema.themes.user.validator;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ProcessingException;
 import com.cinema.cinema.themes.content.model.Movie;
+import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.user.model.StandardUser;
 import com.cinema.cinema.themes.user.repository.StandardUserRepository;
 import com.cinema.cinema.utils.ValidatorService;
@@ -54,6 +55,12 @@ public class StandardUserValidator extends ValidatorService<StandardUser> {
     public void validateMovieInWatchList(StandardUser user, Movie movie) {
         if (!user.getMoviesToWatch().contains(movie)) {
             throw new ProcessingException("Movie " + movie.getTitle() + " has not been found in the watch list of the user with id " + user.getId());
+        }
+    }
+
+    public void validateOrderInOrderList(StandardUser user, Order order) {
+        if (!user.getOrders().contains(order)) {
+            throw new ProcessingException("Order " + order.getId() + " has not been found in the order list of the user with id " + user.getId());
         }
     }
 

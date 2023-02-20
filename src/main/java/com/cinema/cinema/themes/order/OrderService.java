@@ -6,6 +6,7 @@ import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.order.model.OrderInputDto;
 import com.cinema.cinema.themes.order.model.OrderOutputDto;
 import com.cinema.cinema.themes.order.model.OrderShortDto;
+import com.cinema.cinema.themes.show.ShowValidator;
 import com.cinema.cinema.themes.ticket.TicketService;
 import com.cinema.cinema.themes.ticket.TicketValidator;
 import com.cinema.cinema.themes.ticket.model.Ticket;
@@ -34,6 +35,7 @@ public class OrderService {
     private final StandardUserValidator userValidator;
     private final TicketValidator ticketValidator;
     private final CartValidator cartValidator;
+    private final ShowValidator showValidator;
     private final DtoMapperService mapperService;
 
     @Transactional(readOnly = true)
@@ -109,6 +111,7 @@ public class OrderService {
                     Ticket ticket = ticketValidator.validateExists(ticketFromDto.getId());
                     ticketValidator.validateNotInOrder(ticket);
                     cartValidator.validateTicketNotInAnotherCart(ticketFromDto);
+                    showValidator.validateInFuture(ticket.getShow());
                     ticket.setPaid(true);
                     order.getTickets().add(ticket);
                 }
@@ -116,6 +119,7 @@ public class OrderService {
         } else {
             for (Ticket ticketFromCart : user.getCart().getTickets()) {
                 ticketValidator.validateNotInOrder(ticketFromCart);
+                showValidator.validateInFuture(ticketFromCart.getShow());
                 ticketFromCart.setPaid(true);
                 order.getTickets().add(ticketFromCart);
             }
@@ -130,21 +134,26 @@ public class OrderService {
                 .orElse(BigDecimal.valueOf(0));
     }
 
-//    public void cancelOrder(long orderId) {
-//        Order order = orderValidator.validateExists(orderId);
-//        //orderValidator.validateCancellation(order); //żaden seans nie może być w przeszłości
-//        if (order.getUser() != null) {
-//            userService.removeOrder(order.getUser().getId(), order);
-//        }
-//        //TODO zwrot pieniędzy -> zniżkowy coupon code
+    public void cancelOrder(Long userId, long orderId) {
+        Order order = orderValidator.validateExists(orderId);
+        if (userId != null) {
+            userService.removeOrder(userId, order);
+        } else {
+            orderValidator.validateNoUser(order);
+        }
+        orderValidator.validateCancellation(order);
 //        if (!calculateTicketRefund(order).equals(BigDecimal.valueOf(0))) {
-//
+//            //TODO zwrot pieniędzy -> zniżkowy coupon code
 //        }
-//        ticketService.removeOrder(order);
-//        //TODO sprawdzić, czy trzeba zerować invoice, coupon code
-//        //TODO usunięcie ticketów, zwolnienie miejsc
-//        orderRepository.deleteById(orderId);
-//    }
+//        if (order.getCouponCode() != null) {
+//            //TODO coupon code
+//        }
+//        if (order.getInvoice() != null) {
+//            //TODO zerowanie invoice
+//        }
+        ticketService.removeTicketFromOrder(order);
+        orderRepository.deleteById(orderId);
+    }
 
     //TODO invoice
 //    public void addInvoice(long id, Invoice invoice) {

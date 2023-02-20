@@ -96,11 +96,12 @@ public class StandardUserService extends UserService<StandardUserOutputDto, Stan
         user.getOrders().add(order);
     }
 
-//    @Transactional
-//    public void removeOrder(long userId, Order order) {
-//        StandardUser user = userValidator.validateExists(userId);
-//        user.getOrders().remove(order);
-//    }
+    @Transactional
+    public void removeOrder(long userId, Order order) {
+        StandardUser user = userValidator.validateExists(userId);
+        userValidator.validateOrderInOrderList(user, order);
+        user.getOrders().remove(order);
+    }
 
     private void setFields(StandardUser user, StandardUser userFromDto) {
         user.setFirstName(userFromDto.getFirstName());

@@ -51,6 +51,7 @@ public class TicketService {
         TicketType ticketType = ticketTypeValidator.validateExists(ticketDto.getTicketType().getId());
         ticketTypeValidator.validateIsAvailable(ticketType);
         Show show = showValidator.validateExists(ticketDto.getShow().getId());
+        showValidator.validateInFuture(show);
         Seat seat = seatValidator.validateExists(ticketDto.getSeat().getId());
         ticketValidator.validateSeat(seat, show);
         Ticket ticket = createTicket(ticketType, show, seat);
@@ -59,8 +60,8 @@ public class TicketService {
         if (userId != null) {
             StandardUser user = userValidator.validateExists(userId);
             cartService.addTicket(user.getCart().getId(), ticket);
-        } else {
-            //TODO - koszyk niezalogowanego użytkownika
+//        } else {
+//            //TODO - koszyk niezalogowanego użytkownika
         }
         return mapperService.mapToTicketShortDto(ticket);
     }
@@ -86,7 +87,7 @@ public class TicketService {
     }
 
     @Transactional
-    public void removeTicket(Long userId, long ticketId) {
+    public void removeTicketFromCart(Long userId, long ticketId) {
         Ticket ticket = ticketValidator.validateExists(ticketId);
         ticketValidator.validateNotPaid(ticket);
         if (userId != null) {
@@ -109,12 +110,13 @@ public class TicketService {
         }
     }
 
-//    @Transactional
-//    public void removeOrder(Order order) {
-//        for (Ticket ticket : order.getTickets()) {
-//            ticket.setOrder(null);
-//            ticketRepository.save(ticket);
-//        }
-//    }
+    @Transactional
+    public void removeTicketFromOrder(Order order) {
+        for (Ticket ticket : order.getTickets()) {
+            ticket.setOrder(null);
+            showService.removeTicket(ticket.getShow(), ticket);
+            ticketRepository.deleteById(ticket.getId());
+        }
+    }
 
 }
