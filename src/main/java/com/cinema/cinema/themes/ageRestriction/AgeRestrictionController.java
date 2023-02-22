@@ -33,11 +33,11 @@ public class AgeRestrictionController {
             @ApiResponse(responseCode = "204", description = "No age restriction found")})
     public ResponseEntity<List<AgeRestrictionOutputDto>> getAllAgeRestrictions() {
         List<AgeRestriction> ageRestrictions = ageRestrictionService.getAllAgeRestrictions();
-        List<AgeRestrictionOutputDto> ageRestrictionDto = ageRestrictions.stream()
+        List<AgeRestrictionOutputDto> ageRestrictionsDto = ageRestrictions.stream()
                 .map(mapperService::mapToAgeRestrictionDto)
                 .toList();
-        HttpStatus status = ageRestrictions.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        return new ResponseEntity<>(ageRestrictionDto, status);
+        HttpStatus status = ageRestrictionsDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(ageRestrictionsDto, status);
     }
 
     @GetMapping("/{ageRestrictionId}")

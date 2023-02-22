@@ -1,9 +1,7 @@
 package com.cinema.cinema.themes.couponCode.model;
 
 import com.cinema.cinema.themes.order.model.Order;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,11 +22,15 @@ public class CouponCode {
 
     @NotNull(message = "Field is mandatory")
     @NotBlank(message = "Field cannot be empty or blank")
-    @Size(min = 10, max = 15, message = "Field must contain between {min} and {max} characters")
     private String code;
 
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @NotNull(message = "Field is mandatory")
+    @Min(value = 1, message = "Value cannot be less than {value}")
+    @Max(value = 100, message = "Value cannot be more than {value}")
+    private Integer discountPercent;
 
 }

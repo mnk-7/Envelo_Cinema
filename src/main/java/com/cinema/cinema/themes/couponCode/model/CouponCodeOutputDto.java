@@ -13,5 +13,6 @@ public class CouponCodeOutputDto {
 
     private Long id;
     private String code;
+    private Integer discountPercent;
 
 }

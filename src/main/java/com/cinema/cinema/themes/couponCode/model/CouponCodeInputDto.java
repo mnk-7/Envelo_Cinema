@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CouponCodeInputDto {
 
+    private Integer discountPercent;
     private String code;
 
 }

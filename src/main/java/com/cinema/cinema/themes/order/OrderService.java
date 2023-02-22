@@ -2,6 +2,8 @@ package com.cinema.cinema.themes.order;
 
 import com.cinema.cinema.themes.cart.CartService;
 import com.cinema.cinema.themes.cart.CartValidator;
+import com.cinema.cinema.themes.couponCode.CouponCodeService;
+import com.cinema.cinema.themes.couponCode.model.CouponCode;
 import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.show.ShowValidator;
 import com.cinema.cinema.themes.ticket.TicketService;
@@ -27,6 +29,7 @@ public class OrderService {
     private final StandardUserService userService;
     private final CartService cartService;
     private final TicketService ticketService;
+    private final CouponCodeService couponCodeService;
     private final OrderValidator orderValidator;
     private final StandardUserValidator userValidator;
     private final TicketValidator ticketValidator;
@@ -86,8 +89,11 @@ public class OrderService {
         if (user != null) {
             order.setUser(user);
         }
+        if (orderFromDto.getCouponCode() != null) {
+            CouponCode couponCode = couponCodeService.useCouponCode(orderFromDto.getCouponCode().getCode(), order);
+            order.setCouponCode(couponCode);
+        }
         order.setPhone(orderFromDto.getPhone());
-        order.setCouponCode(orderFromDto.getCouponCode());
         order.setFirstName(orderFromDto.getFirstName());
         order.setLastName(orderFromDto.getLastName());
         order.setEmail(orderFromDto.getEmail());
@@ -120,10 +126,16 @@ public class OrderService {
     }
 
     private BigDecimal calculatePrice(Order order) {
-        return order.getTickets().stream()
+        BigDecimal price = order.getTickets().stream()
                 .map(ticket -> ticket.getTicketType().getPrice())
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.valueOf(0));
+
+        if (!price.equals(BigDecimal.valueOf(0)) && order.getCouponCode() != null) {
+            BigDecimal discount = price.multiply(BigDecimal.valueOf(order.getCouponCode().getDiscountPercent() / 100.0));
+            price = price.subtract(discount);
+        }
+        return price;
     }
 
     public void cancelOrder(Long userId, long orderId) {
@@ -134,12 +146,13 @@ public class OrderService {
             orderValidator.validateNoUser(order);
         }
         orderValidator.validateCancellation(order);
-//        if (!calculateTicketRefund(order).equals(BigDecimal.valueOf(0))) {
+//        if (!calculatePrice(order).equals(BigDecimal.valueOf(0))) {
 //            //TODO zwrot pieniędzy -> zniżkowy coupon code
 //        }
-//        if (order.getCouponCode() != null) {
-//            //TODO coupon code
-//        }
+        if (order.getCouponCode() != null) {
+            couponCodeService.removeOrder(order.getCouponCode());
+            order.setCouponCode(null);
+        }
 //        if (order.getInvoice() != null) {
 //            //TODO zerowanie invoice
 //        }
@@ -153,12 +166,5 @@ public class OrderService {
 //        order.setInvoice(invoice);
 //        orderRepository.save(order);
 //    }
-
-    private BigDecimal calculateTicketRefund(Order order) {
-        return order.getTickets().stream()
-                .map(ticket -> ticket.isPaid() ? ticket.getTicketType().getPrice() : BigDecimal.valueOf(0))
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.valueOf(0));
-    }
 
 }

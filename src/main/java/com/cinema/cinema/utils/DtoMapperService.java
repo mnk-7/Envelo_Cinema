@@ -7,6 +7,9 @@ import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
 import com.cinema.cinema.themes.cart.model.Cart;
 import com.cinema.cinema.themes.cart.model.CartOutputDto;
 import com.cinema.cinema.themes.content.model.*;
+import com.cinema.cinema.themes.couponCode.model.CouponCode;
+import com.cinema.cinema.themes.couponCode.model.CouponCodeInputDto;
+import com.cinema.cinema.themes.couponCode.model.CouponCodeOutputDto;
 import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreIdDto;
 import com.cinema.cinema.themes.genre.model.GenreOutputDto;
@@ -295,6 +298,14 @@ public class DtoMapperService {
         }
         cartDto.setTickets(ticketsDto);
         return cartDto;
+    }
+
+    public CouponCode mapToCouponCode(CouponCodeInputDto couponCodeDto) {
+        return mapper.map(couponCodeDto, CouponCode.class);
+    }
+
+    public CouponCodeOutputDto mapToCouponCodeDto(CouponCode couponCode) {
+        return mapper.map(couponCode, CouponCodeOutputDto.class);
     }
 
 }
