@@ -59,6 +59,12 @@ public class DtoMapperService {
         return mapper.map(ageRestriction, AgeRestrictionOutputDto.class);
     }
 
+    public List<AgeRestrictionOutputDto> mapToAgeRestrictionDtoList(List<AgeRestriction> ageRestrictions) {
+        return ageRestrictions.stream()
+                .map(this::mapToAgeRestrictionDto)
+                .toList();
+    }
+
     public Genre mapToGenre(GenreInputDto genreDto) {
         return mapper.map(genreDto, Genre.class);
     }

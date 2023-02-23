@@ -41,4 +41,12 @@ public class AgeRestriction {
         return Objects.hash(minAge);
     }
 
+    @Override
+    public String toString() {
+        return "AgeRestriction{" +
+                "id=" + id +
+                ", minAge='" + minAge + '\'' +
+                '}';
+    }
+
 }

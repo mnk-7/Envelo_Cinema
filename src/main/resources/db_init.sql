@@ -17,7 +17,7 @@ INSERT INTO genres (name) VALUES ('western');
 --//age restrictions
 INSERT INTO age_restrictions (min_age) VALUES ('all');
 INSERT INTO age_restrictions (min_age) VALUES ('6');
-INSERT INTO age_restrictions (min_age) VALUES ('12');
+INSERT INTO age_restrictions (min_age) VALUES ('10');
 INSERT INTO age_restrictions (min_age) VALUES ('15');
 INSERT INTO age_restrictions (min_age) VALUES ('18');
 
