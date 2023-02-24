@@ -3,6 +3,7 @@ package com.cinema.cinema.themes.ageRestriction;
 import com.cinema.cinema.exceptions.ElementFoundException;
 import com.cinema.cinema.exceptions.ElementNotFoundException;
 import com.cinema.cinema.exceptions.ElementNotModifiedException;
+import com.cinema.cinema.exceptions.Error;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,98 +25,84 @@ class AgeRestrictionValidatorTest {
     @InjectMocks
     private AgeRestrictionValidator validator;
 
-    private static final long id = 1L;
-    private static final String minAge1 = "12";
-    private static final String minAge2 = "15";
 
     @Test
-    void validateExists() {
-        AgeRestriction restriction = new AgeRestriction();
-        restriction.setId(id);
-        restriction.setMinAge(minAge2);
+    void shouldNotThrowExceptionWhenValidateExists() {
+        AgeRestriction ageRestriction = AgeRestrictionData.initializeSingleData();
 
-        Mockito.when(repository.findById(id)).thenReturn(Optional.of(restriction));
+        Mockito.when(repository.findById(AgeRestrictionData.ID)).thenReturn(Optional.of(ageRestriction));
+
         try {
-            AgeRestriction ageRestriction = validator.validateExists(id);
-            assertNotNull(ageRestriction);
-            assertEquals(ageRestriction.getId(), id);
+            AgeRestriction ageRestrictionValidated = validator.validateExists(AgeRestrictionData.ID);
+            assertNotNull(ageRestrictionValidated);
+            assertEquals(ageRestrictionValidated.getId(), AgeRestrictionData.ID);
         } catch (ElementNotFoundException ex) {
-            fail("Exception thrown");
+            fail(Error.EX_THROWN);
         }
     }
 
     @Test
-    void validateExistsThrowEx() {
-        Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
+    void shouldThrowExceptionWhenValidateExists() {
+        Mockito.when(repository.findById(AgeRestrictionData.ID)).thenReturn(Optional.empty());
+
         try {
-            validator.validateExists(id);
-            fail("Exception not thrown");
+            validator.validateExists(AgeRestrictionData.ID);
+            fail(Error.EX_NOT_THROWN);
         } catch (ElementNotFoundException ex) {
-            assertEquals("Age restriction with ID " + id + " not found", ex.getMessage());
+            assertEquals("Age restriction with ID " + AgeRestrictionData.ID + " not found", ex.getMessage());
         }
     }
 
     @Test
-    void validateNotExists() {
-        AgeRestriction restriction = new AgeRestriction();
-        restriction.setId(id);
-        restriction.setMinAge(minAge1);
+    void shouldNotThrowExceptionWhenValidateNotExists() {
+        AgeRestriction ageRestriction = AgeRestrictionData.initializeSingleData();
 
-        Mockito.when(repository.findByMinAge(restriction.getMinAge())).thenReturn(Optional.empty());
+        Mockito.when(repository.findByMinAge(ageRestriction.getMinAge())).thenReturn(Optional.empty());
+
         try {
-            validator.validateNotExists(restriction);
+            validator.validateNotExists(ageRestriction);
         } catch (ElementFoundException ex) {
-            fail("Exception thrown");
+            fail(Error.EX_THROWN);
         }
     }
 
     @Test
-    void validateNotExistsThrowEx() {
-        AgeRestriction restriction = new AgeRestriction();
-        restriction.setId(id);
-        restriction.setMinAge(minAge1);
+    void shouldThrowExceptionWhenValidateNotExists() {
+        AgeRestriction ageRestriction = AgeRestrictionData.initializeSingleData();
 
-        Mockito.when(repository.findByMinAge(restriction.getMinAge())).thenReturn(Optional.of(restriction));
+        Mockito.when(repository.findByMinAge(ageRestriction.getMinAge())).thenReturn(Optional.of(ageRestriction));
+
         try {
-            validator.validateNotExists(restriction);
-            fail("Exception not thrown");
+            validator.validateNotExists(ageRestriction);
+            fail(Error.EX_NOT_THROWN);
         } catch (ElementFoundException ex) {
-            assertEquals("Age restriction with min age " + restriction.getMinAge() + " already exists", ex.getMessage());
+            assertEquals("Age restriction with min age " + ageRestriction.getMinAge() + " already exists", ex.getMessage());
         }
     }
 
     @Test
-    void validateChanged() {
-        AgeRestriction restriction1 = new AgeRestriction();
-        restriction1.setId(id);
-        restriction1.setMinAge(minAge1);
-
-        AgeRestriction restriction2 = new AgeRestriction();
-        restriction2.setId(id);
-        restriction2.setMinAge(minAge1);
+    void shouldNotThrowExceptionWhenValidateChanged() {
+        AgeRestriction ageRestriction = AgeRestrictionData.initializeSingleData();
+        AgeRestriction ageRestrictionEdited = AgeRestrictionData.initializeSingleData();
+        ageRestrictionEdited.setMinAge(AgeRestrictionData.MIN_AGE_18);
 
         try {
-            validator.validateChanged(restriction1, restriction2);
-            fail("Exception not thrown");
+            validator.validateChanged(ageRestriction, ageRestrictionEdited);
         } catch (ElementNotModifiedException ex) {
-            assertEquals("No change detected, age restriction with min age " + restriction1.getMinAge() + " has not been modified", ex.getMessage());
+            fail(Error.EX_THROWN);
         }
     }
 
     @Test
-    void validateChangedThrowEx() {
-        AgeRestriction restriction1 = new AgeRestriction();
-        restriction1.setId(id);
-        restriction1.setMinAge(minAge1);
-
-        AgeRestriction restriction2 = new AgeRestriction();
-        restriction2.setId(id);
-        restriction2.setMinAge(minAge2);
+    void shouldThrowExceptionWhenValidateChanged() {
+        AgeRestriction ageRestriction = AgeRestrictionData.initializeSingleData();
+        AgeRestriction ageRestrictionEdited = AgeRestrictionData.initializeSingleData();
 
         try {
-            validator.validateChanged(restriction1, restriction2);
+            validator.validateChanged(ageRestriction, ageRestrictionEdited);
+            fail(Error.EX_NOT_THROWN);
         } catch (ElementNotModifiedException ex) {
-            fail("Exception thrown");
+            assertEquals("No change detected, age restriction with min age " + ageRestriction.getMinAge() + " has not been modified", ex.getMessage());
         }
     }
 

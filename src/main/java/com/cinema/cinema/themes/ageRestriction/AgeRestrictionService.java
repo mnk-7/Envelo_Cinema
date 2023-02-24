@@ -14,11 +14,12 @@ public class AgeRestrictionService {
 
     private final AgeRestrictionRepository ageRestrictionRepository;
     private final AgeRestrictionValidator ageRestrictionValidator;
+    public static String SORT_BY_FIELD = "minAge";
 
 
     @Transactional(readOnly = true)
     public List<AgeRestriction> getAllAgeRestrictions() {
-        return ageRestrictionRepository.findAll(Sort.by("minAge"));
+        return ageRestrictionRepository.findAll(Sort.by(SORT_BY_FIELD));
     }
 
     @Transactional(readOnly = true)

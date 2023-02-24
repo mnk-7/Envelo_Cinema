@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +17,13 @@ class AgeRestrictionRepositoryTest {
     private AgeRestrictionRepository repository;
     private static int idCounter = 0;
 
+
     @Test
-    void testCreatingNewAgeRestriction() {
-        AgeRestriction ageRestriction = initializeSingleData();
+    void shouldSaveInDbNewAgeRestriction() {
+        AgeRestriction ageRestriction = AgeRestrictionData.initializeSingleData();
+
+        repository.save(ageRestriction);
+        idCounter++;
 
         assertNotNull(ageRestriction);
         assertNotNull(ageRestriction.getId());
@@ -29,89 +32,84 @@ class AgeRestrictionRepositoryTest {
     }
 
     @Test
-    void testEditingAgeRestriction() {
-        AgeRestriction ageRestriction = initializeSingleData();
+    void shouldUpdateInDBExistingAgeRestriction() {
+        AgeRestriction ageRestriction = AgeRestrictionData.initializeSingleData();
+        ageRestriction = repository.save(ageRestriction);
+        idCounter++;
 
-        ageRestriction.setMinAge("50");
+        ageRestriction.setMinAge(AgeRestrictionData.MIN_AGE_12);
         ageRestriction = repository.save(ageRestriction);
 
-        assertEquals("50", ageRestriction.getMinAge());
+        assertEquals(AgeRestrictionData.MIN_AGE_12, ageRestriction.getMinAge());
         assertEquals(1, repository.findAll().size());
     }
 
     @Test
-    void testGettingAgeRestrictionById() {
-        List<AgeRestriction> ageRestrictions = initializeListData();
-
-        Optional<AgeRestriction> ageRestrictionFromDB = repository.findById((long) idCounter);
-
-        assertTrue(ageRestrictionFromDB.isPresent());
-        assertEquals(ageRestrictionFromDB.get(), ageRestrictions.get(2));
-    }
-
-    @Test
-    void testGettingAgeRestrictionByIdNotInDB() {
-        initializeListData();
-
-        Optional<AgeRestriction> ageRestrictionFromDB = repository.findById(idCounter + 1L);
-
-        assertFalse(ageRestrictionFromDB.isPresent());
-    }
-
-    @Test
-    void testGettingByMinAge() {
-        List<AgeRestriction> ageRestrictions = initializeListData();
-
-        Optional<AgeRestriction> ageRestrictionFromDB = repository.findByMinAge("12");
-
-        assertTrue(ageRestrictionFromDB.isPresent());
-        assertEquals(ageRestrictionFromDB.get(), ageRestrictions.get(1));
-    }
-
-    @Test
-    void testGettingByMinAgeNotInDB() {
-        initializeListData();
-
-        Optional<AgeRestriction> ageRestrictionFromDB = repository.findByMinAge("16");
-
-        assertFalse(ageRestrictionFromDB.isPresent());
-    }
-
-    @Test
-    void testGettingAllAgeRestrictions() {
-        initializeListData();
-
-        List<AgeRestriction> ageRestrictionsFromDB = repository.findAll();
-
-        assertEquals(3, ageRestrictionsFromDB.size());
-    }
-
-    private AgeRestriction initializeSingleData() {
-        AgeRestriction ageRestriction = new AgeRestriction();
-        ageRestriction.setMinAge("21");
-        idCounter++;
-        return repository.save(ageRestriction);
-    }
-
-    private List<AgeRestriction> initializeListData() {
-        List<AgeRestriction> ageRestrictions = new ArrayList<>();
-        AgeRestriction first = new AgeRestriction();
-        first.setMinAge("all");
-        ageRestrictions.add(first);
-
-        AgeRestriction second = new AgeRestriction();
-        second.setMinAge("12");
-        ageRestrictions.add(second);
-
-        AgeRestriction third = new AgeRestriction();
-        third.setMinAge("18");
-        ageRestrictions.add(third);
-
+    void shouldGetFromDBAgeRestrictionById() {
+        List<AgeRestriction> ageRestrictions = AgeRestrictionData.initializeListData();
         for (AgeRestriction ageRestriction : ageRestrictions) {
             repository.save(ageRestriction);
             idCounter++;
         }
-        return ageRestrictions;
+
+        Optional<AgeRestriction> ageRestriction = repository.findById((long) idCounter);
+
+        assertTrue(ageRestriction.isPresent());
+        assertEquals(ageRestriction.get(), ageRestrictions.get(ageRestrictions.size() - 1));
+    }
+
+    @Test
+    void shouldNotGetFromDBAgeRestrictionByIdWhileNotExistingId() {
+        List<AgeRestriction> ageRestrictions = AgeRestrictionData.initializeListData();
+        for (AgeRestriction ageRestriction : ageRestrictions) {
+            repository.save(ageRestriction);
+            idCounter++;
+        }
+
+        Optional<AgeRestriction> ageRestriction = repository.findById(idCounter + 1L);
+
+        assertFalse(ageRestriction.isPresent());
+    }
+
+    @Test
+    void shouldGetFromDBAgeRestrictionByMinAge() {
+        List<AgeRestriction> ageRestrictions = AgeRestrictionData.initializeListData();
+        for (AgeRestriction ageRestriction : ageRestrictions) {
+            repository.save(ageRestriction);
+            idCounter++;
+        }
+
+        Optional<AgeRestriction> ageRestriction = repository.findByMinAge(AgeRestrictionData.MIN_AGE_12);
+
+        assertTrue(ageRestriction.isPresent());
+        AgeRestriction restriction = ageRestriction.get();
+        assertEquals(restriction, ageRestrictions.get((int) (restriction.getId() - 1 - idCounter + ageRestrictions.size())));
+    }
+
+    @Test
+    void shouldNotGetFromDBAgeRestrictionByMinAgeWhileNotExistingMinAge() {
+        List<AgeRestriction> ageRestrictions = AgeRestrictionData.initializeListData();
+        for (AgeRestriction ageRestriction : ageRestrictions) {
+            repository.save(ageRestriction);
+            idCounter++;
+        }
+
+        Optional<AgeRestriction> ageRestriction = repository.findByMinAge(AgeRestrictionData.MIN_AGE_6);
+
+        assertFalse(ageRestriction.isPresent());
+    }
+
+    @Test
+    void shouldGetFromDBAllAgeRestrictions() {
+        List<AgeRestriction> ageRestrictions = AgeRestrictionData.initializeListData();
+        for (AgeRestriction ageRestriction : ageRestrictions) {
+            repository.save(ageRestriction);
+            idCounter++;
+        }
+
+        List<AgeRestriction> restrictions = repository.findAll();
+
+        assertEquals(ageRestrictions.size(), restrictions.size());
     }
 
 }
