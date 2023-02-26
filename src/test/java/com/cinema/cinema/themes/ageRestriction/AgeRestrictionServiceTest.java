@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,6 +85,50 @@ class AgeRestrictionServiceTest {
         service.editAgeRestriction(AgeRestrictionData.ID, ageRestrictionEdited);
         assertEquals(ageRestriction.toString(), ageRestrictionEdited.toString());
         assertEquals(ageRestriction.getMinAge(), AgeRestrictionData.MIN_AGE_18);
+    }
+
+    @Test
+    void shouldBeEqualSameMinAgeAndId() {
+        AgeRestriction ageRestriction1 = AgeRestrictionData.initializeSingleData();
+        AgeRestriction ageRestriction2 = AgeRestrictionData.initializeSingleData();
+
+        boolean isEqual = ageRestriction1.equals(ageRestriction2);
+
+        assertTrue(isEqual);
+    }
+
+    @Test
+    void shouldBeEqualSameMinAgeDifferentId() {
+        AgeRestriction ageRestriction1 = AgeRestrictionData.initializeSingleData();
+        AgeRestriction ageRestriction2 = AgeRestrictionData.initializeSingleData();
+        ageRestriction2.setId(AgeRestrictionData.ID + 1);
+
+        boolean isEqual = ageRestriction1.equals(ageRestriction2);
+
+        assertTrue(isEqual);
+    }
+
+    @Test
+    void shouldNotBeEqualDifferentMinAgeSameId() {
+        AgeRestriction ageRestriction1 = AgeRestrictionData.initializeSingleData();
+        AgeRestriction ageRestriction2 = AgeRestrictionData.initializeSingleData();
+        ageRestriction2.setMinAge(AgeRestrictionData.MIN_AGE_12);
+
+        boolean isEqual = ageRestriction1.equals(ageRestriction2);
+
+        assertFalse(isEqual);
+    }
+
+    @Test
+    void shouldNotBeEqualDifferentMinAgeAndId() {
+        AgeRestriction ageRestriction1 = AgeRestrictionData.initializeSingleData();
+        AgeRestriction ageRestriction2 = AgeRestrictionData.initializeSingleData();
+        ageRestriction2.setId(AgeRestrictionData.ID + 1);
+        ageRestriction2.setMinAge(AgeRestrictionData.MIN_AGE_12);
+
+        boolean isEqual = ageRestriction1.equals(ageRestriction2);
+
+        assertFalse(isEqual);
     }
 
 }

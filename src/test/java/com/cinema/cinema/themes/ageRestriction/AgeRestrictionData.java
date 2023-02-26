@@ -3,6 +3,9 @@ package com.cinema.cinema.themes.ageRestriction;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestriction;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionInputDto;
 import com.cinema.cinema.themes.ageRestriction.model.AgeRestrictionOutputDto;
+import jakarta.validation.ConstraintViolation;
+import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
+import org.hibernate.validator.internal.engine.path.PathImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +76,10 @@ public class AgeRestrictionData {
         ageRestrictionsDto.add(third);
 
         return ageRestrictionsDto;
+    }
+
+    public static ConstraintViolation<AgeRestriction> initializeViolation(String key, String value) {
+        return ConstraintViolationImpl.forParameterValidation(null, null, null, value, null, null, null, null, PathImpl.createPathFromString(key), null, null, null);
     }
 
 }
