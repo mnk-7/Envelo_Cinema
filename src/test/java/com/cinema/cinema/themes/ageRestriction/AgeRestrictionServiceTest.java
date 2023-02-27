@@ -35,7 +35,7 @@ class AgeRestrictionServiceTest {
         Mockito.when(repository.findAll(Sort.by(AgeRestrictionService.SORT_BY_FIELD))).thenReturn(ageRestrictions);
 
         List<AgeRestriction> restrictions = service.getAllAgeRestrictions();
-        assertEquals(ageRestrictions.toString(), restrictions.toString());
+        assertEquals(ageRestrictions, restrictions);
     }
 
     @Test
@@ -45,7 +45,7 @@ class AgeRestrictionServiceTest {
         Mockito.when(repository.findAll(Sort.by(AgeRestrictionService.SORT_BY_FIELD))).thenReturn(ageRestrictions);
 
         List<AgeRestriction> restrictions = service.getAllAgeRestrictions();
-        assertEquals(ageRestrictions.toString(), restrictions.toString());
+        assertEquals(ageRestrictions, restrictions);
     }
 
     @Test
@@ -55,7 +55,7 @@ class AgeRestrictionServiceTest {
         Mockito.when(validator.validateExists(AgeRestrictionData.ID)).thenReturn(ageRestriction);
 
         AgeRestriction restriction = service.getAgeRestriction(AgeRestrictionData.ID);
-        assertEquals(ageRestriction.toString(), restriction.toString());
+        assertEquals(ageRestriction, restriction);
     }
 
     @Test
@@ -67,7 +67,7 @@ class AgeRestrictionServiceTest {
         Mockito.when(repository.save(ageRestriction)).thenReturn(ageRestriction);
 
         AgeRestriction restriction = service.addAgeRestriction(ageRestriction);
-        assertEquals(ageRestriction.toString(), restriction.toString());
+        assertEquals(ageRestriction, restriction);
     }
 
     @Test
@@ -83,7 +83,7 @@ class AgeRestrictionServiceTest {
         Mockito.when(repository.save(ageRestriction)).thenReturn(ageRestriction);
 
         service.editAgeRestriction(AgeRestrictionData.ID, ageRestrictionEdited);
-        assertEquals(ageRestriction.toString(), ageRestrictionEdited.toString());
+        assertEquals(ageRestriction, ageRestrictionEdited);
         assertEquals(ageRestriction.getMinAge(), AgeRestrictionData.MIN_AGE_18);
     }
 
