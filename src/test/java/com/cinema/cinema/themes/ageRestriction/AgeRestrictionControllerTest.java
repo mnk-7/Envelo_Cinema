@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(AgeRestrictionController.class)
-//@AutoConfigureMockMvc(addFilters = false)
 class AgeRestrictionControllerTest {
 
     @MockBean
@@ -77,7 +76,7 @@ class AgeRestrictionControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(path)
                 .content(ageRestrictionsDtoJson)).andReturn().getResponse();
 
-        assertEquals(response.getContentAsString(), ageRestrictionsDtoJson);
+        assertEquals(ageRestrictionsDtoJson, response.getContentAsString());
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
@@ -94,7 +93,7 @@ class AgeRestrictionControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(path)
                 .content(ageRestrictionsDtoJson)).andReturn().getResponse();
 
-        assertEquals(response.getContentAsString(), ageRestrictionsDtoJson);
+        assertEquals(ageRestrictionsDtoJson, response.getContentAsString());
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
     }
 
@@ -111,7 +110,7 @@ class AgeRestrictionControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(path + "/" + AgeRestrictionData.ID)
                 .content(ageRestrictionDtoJson)).andReturn().getResponse();
 
-        assertEquals(response.getContentAsString(), ageRestrictionDtoJson);
+        assertEquals(ageRestrictionDtoJson, response.getContentAsString());
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 

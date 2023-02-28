@@ -79,7 +79,9 @@ public class AgeRestrictionData {
     }
 
     public static ConstraintViolation<AgeRestriction> initializeViolation(String key, String value) {
-        return ConstraintViolationImpl.forParameterValidation(null, null, null, value, null, null, null, null, PathImpl.createPathFromString(key), null, null, null);
+        return ConstraintViolationImpl.forParameterValidation(null, null, null,
+                value, null, null, null, null, PathImpl.createPathFromString(key),
+                null, null, null);
     }
 
 }

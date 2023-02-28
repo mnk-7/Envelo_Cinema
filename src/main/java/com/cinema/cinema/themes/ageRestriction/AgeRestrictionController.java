@@ -77,14 +77,4 @@ public class AgeRestrictionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @DeleteMapping("/{ageRestrictionId}")
-//    @Operation(summary = "Delete age restriction")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "204", description = "Age restriction deleted"),
-//            @ApiResponse(responseCode = "404", description = "Age restriction not found")})
-//    public ResponseEntity<Void> removeAgeRestriction(@PathVariable long ageRestrictionId) {
-//        ageRestrictionService.removeAgeRestriction(ageRestrictionId);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
-
 }

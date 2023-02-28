@@ -44,12 +44,6 @@ public class AgeRestrictionService {
         ageRestrictionRepository.save(ageRestriction);
     }
 
-//    @Transactional
-//    public void removeAgeRestriction(long ageRestrictionId) {
-//        validateAgeRestrictionExists(ageRestrictionId);
-//        ageRestrictionRepository.deleteById(ageRestrictionId);
-//    }
-
     private void setFields(AgeRestriction ageRestriction, AgeRestriction ageRestrictionFromDto) {
         ageRestriction.setMinAge(ageRestrictionFromDto.getMinAge());
     }
