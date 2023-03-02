@@ -14,6 +14,9 @@ import com.cinema.cinema.themes.genre.model.Genre;
 import com.cinema.cinema.themes.genre.model.GenreIdDto;
 import com.cinema.cinema.themes.genre.model.GenreOutputDto;
 import com.cinema.cinema.themes.genre.model.GenreInputDto;
+import com.cinema.cinema.themes.invoice.model.Invoice;
+import com.cinema.cinema.themes.invoice.model.InvoiceInputDto;
+import com.cinema.cinema.themes.invoice.model.InvoiceOutputDto;
 import com.cinema.cinema.themes.newsletter.model.Newsletter;
 import com.cinema.cinema.themes.newsletter.model.NewsletterInputDto;
 import com.cinema.cinema.themes.newsletter.model.NewsletterOutputDto;
@@ -268,9 +271,9 @@ public class DtoMapperService {
         return mapper.map(orderDto, Order.class);
     }
 
-//    private Order mapToOrder(OrderIdDto orderDto) {
-//        return mapper.map(orderDto, Order.class);
-//    }
+    private Order mapToOrder(OrderIdDto orderDto) {
+        return mapper.map(orderDto, Order.class);
+    }
 
     public OrderOutputDto mapToOrderDto(Order order) {
         OrderOutputDto orderDto = mapper.map(order, OrderOutputDto.class);
@@ -312,6 +315,17 @@ public class DtoMapperService {
 
     public CouponCodeOutputDto mapToCouponCodeDto(CouponCode couponCode) {
         return mapper.map(couponCode, CouponCodeOutputDto.class);
+    }
+
+    public Invoice mapToInvoice(InvoiceInputDto invoiceDto) {
+        return mapper.map(invoiceDto, Invoice.class);
+    }
+
+    public InvoiceOutputDto mapToInvoiceDto(Invoice invoice) {
+        InvoiceOutputDto invoiceDto = mapper.map(invoice, InvoiceOutputDto.class);
+        OrderOutputDto orderDto = mapToOrderDto(invoice.getOrder());
+        invoiceDto.setOrder(orderDto);
+        return invoiceDto;
     }
 
 }

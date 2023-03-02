@@ -4,6 +4,7 @@ import com.cinema.cinema.themes.cart.CartService;
 import com.cinema.cinema.themes.cart.CartValidator;
 import com.cinema.cinema.themes.couponCode.CouponCodeService;
 import com.cinema.cinema.themes.couponCode.model.CouponCode;
+import com.cinema.cinema.themes.invoice.model.Invoice;
 import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.show.ShowValidator;
 import com.cinema.cinema.themes.ticket.TicketService;
@@ -153,18 +154,17 @@ public class OrderService {
             couponCodeService.removeOrder(order.getCouponCode());
             order.setCouponCode(null);
         }
-//        if (order.getInvoice() != null) {
-//            //TODO zerowanie invoice
-//        }
+        if (order.getInvoice() != null) {
+            //TODO invoice
+            //invoiceService.removeOrder(order.getInvoice());
+        }
         ticketService.removeTicketFromOrder(order);
         orderRepository.deleteById(orderId);
     }
 
-    //TODO invoice
-//    public void addInvoice(long id, Invoice invoice) {
-//        Order order = getOrder(id);
-//        order.setInvoice(invoice);
-//        orderRepository.save(order);
-//    }
+    public void addInvoice(Order order, Invoice invoice) {
+        order.setInvoice(invoice);
+        orderRepository.save(order);
+    }
 
 }

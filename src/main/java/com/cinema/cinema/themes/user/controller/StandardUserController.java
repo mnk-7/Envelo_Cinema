@@ -6,6 +6,9 @@ import com.cinema.cinema.themes.cart.model.CartOutputDto;
 import com.cinema.cinema.themes.content.model.Movie;
 import com.cinema.cinema.themes.content.service.MovieService;
 import com.cinema.cinema.themes.content.model.MovieOutputDto;
+import com.cinema.cinema.themes.invoice.InvoiceService;
+import com.cinema.cinema.themes.invoice.model.Invoice;
+import com.cinema.cinema.themes.invoice.model.InvoiceOutputDto;
 import com.cinema.cinema.themes.order.OrderService;
 import com.cinema.cinema.themes.order.model.Order;
 import com.cinema.cinema.themes.order.model.OrderShortDto;
@@ -35,6 +38,7 @@ public class StandardUserController {
     private final MovieService movieService;
     private final OrderService orderService;
     private final CartService cartService;
+    private final InvoiceService invoiceService;
     private final DtoMapperService mapperService;
 
     @GetMapping
@@ -111,6 +115,20 @@ public class StandardUserController {
         Cart cart = cartService.getCartByUserId(userId);
         CartOutputDto cartDto = mapperService.mapToCartDto(cart);
         return new ResponseEntity<>(cartDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/invoices")
+    @Operation(summary = "Get invoices")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List with invoices returned"),
+            @ApiResponse(responseCode = "204", description = "No invoice found")})
+    public ResponseEntity<List<InvoiceOutputDto>> getInvoices(@PathVariable long userId) {
+        List<Invoice> invoices = invoiceService.getAllInvoices(userId);
+        List<InvoiceOutputDto> invoicesDto = invoices.stream()
+                .map(mapperService::mapToInvoiceDto)
+                .toList();
+        HttpStatus status = invoicesDto.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return new ResponseEntity<>(invoicesDto, status);
     }
 
 }
